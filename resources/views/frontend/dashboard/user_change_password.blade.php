@@ -2,22 +2,7 @@
 @section('main')
 
 
-  <!-- Inner Banner -->
-  <div class="inner-banner inner-bg6">
-    <div class="container">
-        <div class="inner-title">
-            <ul>
-                <li>
-                    <a href="{{ route('home') }}">Home</a>
-                </li>
-                <li><i class='bx bx-chevron-right'></i></li>
-                <li>User Change Password </li>
-            </ul>
-            <h3>User Change Password</h3>
-        </div>
-    </div>
-</div>
-<!-- Inner Banner End -->
+@include('frontend.body.page_head', ['title' => 'Change password', 'class' => 'hms-page-head--booking'])
 
 <!-- Service Details Area -->
 <div class="service-details-area pt-100 pb-70">

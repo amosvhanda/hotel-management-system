@@ -2,18 +2,7 @@
 @section('title', 'My Account')
 @section('main')
 
-<div class="inner-banner inner-bg6">
-    <div class="container">
-        <div class="inner-title">
-            <ul>
-                <li><a href="{{ route('home') }}">Home</a></li>
-                <li><i class='bx bx-chevron-right'></i></li>
-                <li>My Account</li>
-            </ul>
-            <h3>Welcome back, {{ \Illuminate\Support\Str::before(Auth::user()->name, ' ') }}</h3>
-        </div>
-    </div>
-</div>
+@include('frontend.body.page_head', ['title' => 'Welcome back, '.\Illuminate\Support\Str::before(Auth::user()->name, ' '), 'class' => 'hms-page-head--booking'])
 
 <div class="pt-100 pb-70">
     <div class="container">

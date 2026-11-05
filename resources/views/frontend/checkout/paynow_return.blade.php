@@ -8,18 +8,7 @@
     $wallet = $booking->payment_method === 'OneMoney' ? 'NetOne OneMoney' : 'EcoCash';
 @endphp
 
-<div class="inner-banner inner-bg7">
-    <div class="container">
-        <div class="inner-title">
-            <ul>
-                <li><a href="{{ route('home') }}">Home</a></li>
-                <li><i class='bx bx-chevron-right'></i></li>
-                <li>Payment</li>
-            </ul>
-            <h3>Booking #{{ $booking->code }}</h3>
-        </div>
-    </div>
-</div>
+@include('frontend.body.page_head', ['title' => 'Booking #'.$booking->code, 'class' => 'hms-page-head--booking'])
 
 <section class="pt-100 pb-100">
     <div class="container">

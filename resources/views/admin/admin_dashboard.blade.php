@@ -26,6 +26,7 @@
 	<link href="{{asset('backend/assets/css/bootstrap.min.css')}}" rel="stylesheet">
 	<link href="{{asset('backend/assets/css/bootstrap-extended.css')}}" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 	<link href="{{asset('backend/assets/css/app.css')}}" rel="stylesheet">
 	<link href="{{asset('backend/assets/css/icons.css')}}" rel="stylesheet">
 	<!-- Theme Style CSS -->
@@ -41,6 +42,7 @@
    <!-- dataTables CSS --> 
 
 	<link href="{{ asset('backend/assets/css/hms-admin.css') }}?v=1" rel="stylesheet" />
+	<link href="{{ asset('backend/assets/css/hms-admin-premium.css') }}?v=1" rel="stylesheet" />
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<!-- jQuery first, so inline scripts inside pages can use it -->
 	<script src="{{asset('backend/assets/js/jquery.min.js')}}"></script>

@@ -2,20 +2,7 @@
 @section('title', 'My Bookings')
 @section('main')
 
-<div class="inner-banner inner-bg6">
-    <div class="container">
-        <div class="inner-title">
-            <ul>
-                <li><a href="{{ route('home') }}">Home</a></li>
-                <li><i class='bx bx-chevron-right'></i></li>
-                <li><a href="{{ route('dashboard') }}">My Account</a></li>
-                <li><i class='bx bx-chevron-right'></i></li>
-                <li>My Bookings</li>
-            </ul>
-            <h3>My Bookings</h3>
-        </div>
-    </div>
-</div>
+@include('frontend.body.page_head', ['title' => 'My bookings', 'class' => 'hms-page-head--booking'])
 
 <div class="pt-100 pb-70">
     <div class="container">

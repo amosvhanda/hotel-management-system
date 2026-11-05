@@ -1,8 +1,8 @@
 @if ($bookings->isEmpty())
     <div class="hms-empty">
         <i class="bx bx-calendar-x"></i>
-        You have no bookings yet.
-        <div class="mt-3"><a href="{{ route('froom.all') }}" class="default-btn btn-bg-one border-radius-5">Find a Room</a></div>
+        No bookings yet. Your reservations will appear here.
+        <div class="mt-3"><a href="{{ route('froom.all') }}" class="default-btn btn-bg-one border-radius-5">Browse rooms</a></div>
     </div>
 @else
     <div class="table-responsive">

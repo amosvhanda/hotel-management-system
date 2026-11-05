@@ -1,0 +1,178 @@
+/* ==========================================================================
+   Mopane Heights — admin panel, same lodge palette as the public site.
+   Loaded after hms-admin.css. Staff tool: calm, dense, legible.
+   ========================================================================== */
+
+:root {
+    --ad-forest: #14241b;
+    --ad-forest-2: #1b3125;
+    --ad-canopy: #1f3a2b;
+    --ad-leaf: #3f6b4a;
+    --ad-sand: #c9b88a;
+    --ad-bg: #f1f1e9;
+    --ad-card: #fbfbf6;
+    --ad-ink: #15201a;
+    --ad-muted: #5d695f;
+    --ad-line: #dcdacb;
+    --ad-display: "Fraunces", Georgia, serif;
+    --ad-text: "Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
+
+    --hms-ink: var(--ad-ink);
+    --hms-muted: var(--ad-muted);
+    --hms-line: var(--ad-line);
+    --bs-primary: #1f3a2b;
+    --bs-primary-rgb: 31, 58, 43;
+    --bs-link-color: #1f3a2b;
+}
+
+body, .wrapper, .page-wrapper { font-family: var(--ad-text); color: var(--ad-ink); }
+.page-wrapper { background: var(--ad-bg); }
+h1, h2, h3, h4, h5, h6 { font-family: var(--ad-text); color: var(--ad-ink); }
+.page-content h4:first-child, .page-content > div:first-child h4 {
+    font-family: var(--ad-display);
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+}
+a { color: var(--ad-canopy); }
+a:hover { color: var(--ad-leaf); }
+.text-primary { color: var(--ad-canopy) !important; }
+.text-secondary { color: var(--ad-muted) !important; }
+
+/* ---------- Sidebar ---------- */
+.sidebar-wrapper { background: var(--ad-forest) !important; border-right: 0 !important; box-shadow: none !important; }
+.sidebar-wrapper .sidebar-header { background: var(--ad-forest) !important; border-bottom: 1px solid rgba(244, 243, 236, .1) !important; }
+.sidebar-wrapper .sidebar-header .logo-text { font-family: var(--ad-display); font-weight: 400; color: #f4f3ec; letter-spacing: -0.01em; }
+.sidebar-wrapper .metismenu a,
+.sidebar-wrapper .metismenu a .menu-title { color: #cfd8ca !important; font-size: 14.5px; font-weight: 500; }
+.sidebar-wrapper .metismenu a .parent-icon,
+.sidebar-wrapper .metismenu a i { color: #8fa690 !important; }
+.sidebar-wrapper .metismenu a {
+    border-left: 3px solid transparent;
+    transition: background-color .2s ease, border-color .2s ease;
+}
+.sidebar-wrapper .metismenu a:hover,
+.sidebar-wrapper .metismenu .mm-active > a {
+    background: rgba(244, 243, 236, .07) !important;
+    color: #fbfaf4 !important;
+    border-left-color: var(--ad-sand);
+}
+.sidebar-wrapper .metismenu a:hover .menu-title,
+.sidebar-wrapper .metismenu .mm-active > a .menu-title { color: #fbfaf4 !important; }
+.sidebar-wrapper .metismenu a:hover i,
+.sidebar-wrapper .metismenu .mm-active > a i { color: var(--ad-sand) !important; }
+.sidebar-wrapper .metismenu ul { background: rgba(0, 0, 0, .14) !important; }
+.sidebar-wrapper .menu-label { color: #8fa690 !important; font-size: 12px; letter-spacing: .02em; text-transform: none; font-weight: 600; }
+.sidebar-wrapper .simplebar-scrollbar::before { background: rgba(244, 243, 236, .25); }
+
+/* ---------- Top bar ---------- */
+.topbar { background: var(--ad-card) !important; border-bottom: 1px solid var(--ad-line) !important; box-shadow: none !important; }
+.topbar .nav-link, .topbar .topbar-nav i { color: var(--ad-ink); }
+.topbar .user-name, .topbar .user-box .user-name { font-weight: 600; color: var(--ad-ink); }
+.topbar .designattion, .topbar .user-box .designation { color: var(--ad-muted); }
+.topbar .dropdown-menu { border: 1px solid var(--ad-line); border-radius: 8px; box-shadow: 0 12px 32px rgba(20, 36, 27, .12); }
+.page-footer { background: var(--ad-card) !important; border-top: 1px solid var(--ad-line); color: var(--ad-muted); }
+
+/* ---------- Cards and tiles ---------- */
+.card {
+    background: var(--ad-card);
+    border: 1px solid var(--ad-line);
+    border-radius: 8px;
+    box-shadow: none;
+}
+.card-header { background: transparent; border-bottom: 1px solid var(--ad-line); }
+.card-header h6, .card-title { font-weight: 600; color: var(--ad-ink); }
+
+.hms-stat-card {
+    background: var(--ad-card);
+    border: 1px solid var(--ad-line);
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 22px 24px;
+    transition: border-color .2s ease;
+}
+.hms-stat-card:hover { border-color: var(--ad-leaf); }
+.hms-stat-card p { color: var(--ad-muted); font-size: 14px; }
+.hms-stat-card h3 { font-family: var(--ad-display); font-size: 38px; font-weight: 300; letter-spacing: -0.02em; line-height: 1.1; margin: 2px 0 4px; }
+.hms-stat-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: #e8e8da !important;
+    color: var(--ad-canopy) !important;
+    font-size: 22px;
+}
+.hms-stat-card .progress { background: #e4e4d6; border-radius: 99px; }
+.hms-stat-card .progress-bar { background: var(--ad-leaf) !important; border-radius: 99px; }
+.hms-date-chip { background: #e8e8da; border-radius: 6px; }
+
+/* ---------- Buttons ---------- */
+.btn { border-radius: 6px; font-weight: 500; transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
+.btn-primary { background: var(--ad-canopy); border-color: var(--ad-canopy); color: #f4f3ec; }
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active { background: var(--ad-leaf) !important; border-color: var(--ad-leaf) !important; color: #fff; }
+.btn-outline-primary { color: var(--ad-canopy); border-color: var(--ad-canopy); }
+.btn-outline-primary:hover { background: var(--ad-canopy) !important; border-color: var(--ad-canopy) !important; color: #f4f3ec; }
+.btn-outline-dark { color: var(--ad-ink); border-color: var(--ad-ink); }
+.btn:focus-visible, a:focus-visible, .form-control:focus-visible { outline: 2px solid var(--ad-leaf); outline-offset: 2px; }
+
+/* ---------- Badges: soft, same tones as the public site ---------- */
+.badge { font-weight: 600; border-radius: 999px; padding: .38em .8em; font-size: 12px; }
+.bg-success-subtle { background-color: #e1eddc !important; }
+.bg-warning-subtle { background-color: #f1ead2 !important; }
+.bg-danger-subtle { background-color: #f3ddd8 !important; }
+.bg-primary-subtle, .bg-info-subtle { background-color: #e1e8e0 !important; }
+.text-success { color: #24492f !important; }
+.badge.text-warning, .text-warning { color: #6b5316 !important; }
+.text-danger { color: #84301f !important; }
+.text-info { color: #2f5d3f !important; }
+.bg-primary { background-color: var(--ad-canopy) !important; }
+.bg-success { background-color: var(--ad-leaf) !important; }
+
+/* ---------- Tables ---------- */
+.table { --bs-table-bg: transparent; color: var(--ad-ink); }
+.table thead th {
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: .01em;
+    color: var(--ad-muted);
+    font-weight: 600;
+    background: transparent;
+    border-bottom: 1px solid var(--ad-ink) !important;
+}
+.table > :not(caption) > * > * { border-bottom-color: var(--ad-line); padding: .9rem .8rem; }
+.table-hover > tbody > tr:hover > * { background: #eeeee3; color: var(--ad-ink); }
+.table-striped > tbody > tr:nth-of-type(odd) > * { background: transparent; }
+div.dataTables_wrapper div.dataTables_filter input,
+div.dataTables_wrapper div.dataTables_length select { border-radius: 6px; border: 1px solid var(--ad-line); background: var(--ad-card); }
+.page-item.active .page-link { background: var(--ad-canopy); border-color: var(--ad-canopy); color: #f4f3ec; }
+.page-link { color: var(--ad-canopy); }
+
+/* ---------- Forms ---------- */
+.form-label, label { font-weight: 600; font-size: 14px; color: var(--ad-ink); }
+.form-control, .form-select { border-radius: 6px; border-color: var(--ad-line); background-color: #fff; min-height: 42px; }
+.form-control:focus, .form-select:focus { border-color: var(--ad-leaf); box-shadow: 0 0 0 .2rem rgba(63, 107, 74, .16); }
+.form-check-input:checked { background-color: var(--ad-canopy); border-color: var(--ad-canopy); }
+.breadcrumb-title { font-family: var(--ad-display); font-weight: 400; font-size: 20px; }
+.breadcrumb-item a { color: var(--ad-canopy); }
+
+/* ---------- Admin sign-in ---------- */
+.hms-auth { background: var(--ad-bg); }
+.hms-auth-side::before { background: linear-gradient(180deg, rgba(14, 26, 19, .25), rgba(14, 26, 19, .9)); }
+.hms-auth-side h1 { font-family: var(--ad-display); font-weight: 300; font-size: clamp(36px, 3.6vw, 54px); line-height: 1.02; letter-spacing: -0.025em; }
+.hms-auth-side p { color: #cdd6c8; }
+.hms-auth-form { background: var(--ad-card); }
+.hms-auth-form h3, .hms-auth-form h4 { font-family: var(--ad-display); font-weight: 400; font-size: 32px; }
+.hms-auth-form .form-control { height: 50px; }
+.hms-auth-form .btn-primary { min-height: 52px; font-weight: 600; }
+
+/* ---------- Dark theme (template's built-in switch) ---------- */
+html.dark-theme .page-wrapper, html.dark-theme body { background: #0e1711; }
+html.dark-theme .card, html.dark-theme .hms-stat-card, html.dark-theme .topbar, html.dark-theme .page-footer { background: #15221a !important; border-color: #2a382e; }
+html.dark-theme .table-hover > tbody > tr:hover > * { background: #1b2820; }
+html.dark-theme .hms-stat-icon, html.dark-theme .hms-date-chip { background: #1f3225 !important; color: #a8cdb2 !important; }
+
+@media (max-width: 767px) {
+    .hms-stat-card h3 { font-size: 30px; }
+    .page-content h4:first-child { font-size: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .btn, .hms-stat-card, .sidebar-wrapper .metismenu a { transition: none; }
+}

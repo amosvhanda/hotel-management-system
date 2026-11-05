@@ -13,20 +13,7 @@
     $method = old('payment_method', 'COD');
 @endphp
 
-<div class="inner-banner inner-bg7">
-    <div class="container">
-        <div class="inner-title">
-            <ul>
-                <li><a href="{{ route('home') }}">Home</a></li>
-                <li><i class='bx bx-chevron-right'></i></li>
-                <li><a href="{{ route('froom.all') }}">Rooms</a></li>
-                <li><i class='bx bx-chevron-right'></i></li>
-                <li>Checkout</li>
-            </ul>
-            <h3>Complete Your Booking</h3>
-        </div>
-    </div>
-</div>
+@include('frontend.body.page_head', ['title' => 'Complete your booking', 'class' => 'hms-page-head--booking'])
 
 <section class="checkout-area pt-100 pb-70">
     <div class="container">
