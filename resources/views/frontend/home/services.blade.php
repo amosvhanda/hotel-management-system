@@ -1,66 +1,31 @@
-<div class="services-area-three pt-100 pb-70 section-bg">
+@php
+    $site = $site ?? App\Models\SiteSetting::current();
+    $services = App\Models\Service::latest()->get();
+@endphp
+
+@if ($services->isNotEmpty())
+<section class="hms-band hms-band--white" id="services">
     <div class="container">
-        <div class="section-title text-center">
-            <span class="sp-color">Our Services</span>
-            <h2>Our Services on the Global Market for Our Client's Reservation</h2>
+        <div class="hms-section-head">
+            <p class="hms-kicker hms-kicker--dark">{{ $site->home('services_kicker') }}</p>
+            <h2>{{ $site->home('services_title') }}</h2>
         </div>
 
-        <div class="row pt-45">
-            <div class="col-lg-6 col-md-6">
-                <div class="service-item-two">
-                    <i class="flaticon-hotel"></i>
-                    <div class="content">
-                        <h3><a href="service-details.html">Hotel Room Reservation into the Desire Places</a></h3>
-                        <p>
-                            You can easily reserve a hotel room in a good place as you want. This will be able to make good feelings. 
-                            This will be really effective for us and all & all of the customers & clients.
-                        </p>
-                        <a href="service-details.html" class="read-btn">Read More</a>
-                    </div>
+        <div class="row g-4">
+            @foreach ($services as $service)
+                <div class="col-lg-4 col-md-6">
+                    <a href="{{ route('service.details', $service->id) }}" class="hms-service-card">
+                        <div class="img" style="background-image:url('{{ $service->display_image }}')"></div>
+                        <div class="body">
+                            <span class="hms-service-card__icon"><i class="{{ $service->icon }}"></i></span>
+                            <h3>{{ $service->title }}</h3>
+                            <p>{{ \Illuminate\Support\Str::limit($service->description, 110) }}</p>
+                            <span class="more">Learn more <i class="bx bx-right-arrow-alt"></i></span>
+                        </div>
+                    </a>
                 </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6">
-                <div class="service-item-two">
-                    <i class="flaticon-resort"></i>
-                    <div class="content">
-                        <h3><a href="service-details.html">Resort Reservation Into the Good and Suitable Place</a></h3>
-                        <p>
-                            You can easily reserve a hotel room in a good place as you want. This will be able to make good feelings. 
-                            This will be really effective for us and all & all of the customers & clients.
-                        </p>
-                        <a href="service-details.html" class="read-btn">Read More</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6">
-                <div class="service-item-two">
-                    <i class="flaticon-buildings"></i>
-                    <div class="content">
-                        <h3><a href="service-details.html">Weeding Hall Reservation in the Suitable and Good Place</a></h3>
-                        <p>
-                            You can easily reserve a hotel room in a good place as you want. This will be able to make good feelings. 
-                            This will be really effective for us and all & all of the customers & clients.
-                        </p>
-                        <a href="service-details.html" class="read-btn">Read More</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6">
-                <div class="service-item-two">
-                    <i class="flaticon-businessmen"></i>
-                    <div class="content">
-                        <h3><a href="service-details.html">Conference Room Reservation in the Suitable and Good Place</a></h3>
-                        <p>
-                            You can easily reserve a hotel room in a good place as you want. This will be able to make good feelings. 
-                            This will be really effective for us and all & all of the customers & clients.
-                        </p>
-                        <a href="service-details.html" class="read-btn">Read More</a>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
-</div>
+</section>
+@endif

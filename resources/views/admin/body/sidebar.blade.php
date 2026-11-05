@@ -4,14 +4,14 @@
             <img src="{{asset('backend/assets/images/logo-icon.png')}}" class="logo-icon" alt="logo icon">
         </div>
         <div>
-            <h4 class="logo-text">Easy</h4>
+            <h4 class="logo-text">{{ \Illuminate\Support\Str::limit(App\Models\SiteSetting::current()->name, 14) }}</h4>
         </div>
         <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i>
         </div>
      </div>
     <!--navigation-->
     <ul class="metismenu" id="menu">
-        
+
         <li>
             <a href="{{ route('admin.dashboard') }}">
                 <div class="parent-icon"><i class='bx bx-home-alt'></i>
@@ -19,7 +19,7 @@
                 <div class="menu-title">Dashboard</div>
             </a>
         </li>
-        
+
         @if(Auth::user()->can('team.menu'))
         <li>
             <a href="javascript:;" class="has-arrow">
@@ -31,14 +31,39 @@
                 @if(Auth::user()->can('team.all'))
                 <li> <a href="{{ route('all.team') }}"><i class='bx bx-radio-circle'></i>All Team</a>
                 </li>
-                @endif 
+                @endif
                 @if(Auth::user()->can('team.add'))
                 <li> <a href="{{ route('add.team') }}"><i class='bx bx-radio-circle'></i>Add Team</a>
                 </li>
-                @endif 
+                @endif
             </ul>
+
+
+
         </li>
         @endif
+@if(Auth::user()->can('service.menu'))
+    <li>
+        <a href="javascript:;" class="has-arrow">
+            <div class="parent-icon">
+                <i class="bx bx-category"></i>
+            </div>
+            <div class="menu-title">Manage Services</div>
+        </a>
+        <ul class="treeview-menu">
+            @can('service.all')
+            <li>
+                <a href="{{ route('all.service') }}"><i class='bx bx-radio-circle'></i>All Services</a>
+            </li>
+            @endcan
+            @can('service.add')
+            <li>
+                <a href="{{ route('add.service') }}"><i class='bx bx-radio-circle'></i>Add Service</a>
+            </li>
+            @endcan
+        </ul>
+    </li>
+@endif
 
         @if(Auth::user()->can('bookarea.menu'))
         <li>
@@ -50,9 +75,9 @@
             <ul>
                 @if(Auth::user()->can('update.bookarea'))
                 <li> <a href="{{ route('book.area') }}"><i class='bx bx-radio-circle'></i>Update BookArea </a>
-                </li> 
+                </li>
                 @endif
-                 
+
             </ul>
         </li>
         @endif
@@ -65,14 +90,14 @@
             </a>
             <ul>
                 <li> <a href="{{ route('room.type.list') }}"><i class='bx bx-radio-circle'></i>Room Type List </a>
-                </li> 
-                 
+                </li>
+
             </ul>
         </li>
 
 
         <li class="menu-label">Booking Manage </li>
-        
+
         <li>
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-cart'></i>
@@ -84,7 +109,7 @@
                 </li>
                 <li> <a href="{{ route('add.room.list') }}"><i class='bx bx-radio-circle'></i>Add Booking </a>
                 </li>
-                
+
             </ul>
         </li>
         <li>
@@ -96,8 +121,8 @@
             <ul>
                 <li> <a href="{{ route('view.room.list') }}"><i class='bx bx-radio-circle'></i>Room List</a>
                 </li>
-                
-                 
+
+
             </ul>
         </li>
 
@@ -114,12 +139,14 @@
 
                 <li> <a href="{{ route('site.setting') }}"><i class='bx bx-radio-circle'></i>Site Setting</a>
                 </li>
-                
-                 
+                <li> <a href="{{ route('homepage.setting') }}"><i class='bx bx-radio-circle'></i>Homepage</a>
+                </li>
+
+
             </ul>
         </li>
- 
-        
+
+
         <li>
             <a class="has-arrow" href="javascript:;">
                 <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
@@ -132,8 +159,22 @@
 
                 <li> <a href="{{ route('add.testimonial') }}"><i class='bx bx-radio-circle'></i>Add Testimonial</a>
                 </li>
-                
-                 
+
+
+            </ul>
+        </li>
+
+        <li>
+            <a class="has-arrow" href="javascript:;">
+                <div class="parent-icon"><i class='bx bx-help-circle'></i>
+                </div>
+                <div class="menu-title">FAQ</div>
+            </a>
+            <ul>
+                <li> <a href="{{ route('all.faq') }}"><i class='bx bx-radio-circle'></i>All Questions</a>
+                </li>
+                <li> <a href="{{ route('add.faq') }}"><i class='bx bx-radio-circle'></i>Add Question</a>
+                </li>
             </ul>
         </li>
 
@@ -150,8 +191,8 @@
 
                 <li> <a href="{{ route('all.blog.post') }}"><i class='bx bx-radio-circle'></i>All Blog Post</a>
                 </li>
-                
-                 
+
+
             </ul>
         </li>
 
@@ -163,8 +204,8 @@
             </a>
             <ul>
                 <li> <a href="{{ route('all.comment') }}"><i class='bx bx-radio-circle'></i>All Comments </a>
-                </li> 
-                 
+                </li>
+
             </ul>
         </li>
 
@@ -177,8 +218,8 @@
             </a>
             <ul>
                 <li> <a href="{{ route('booking.report') }}"><i class='bx bx-radio-circle'></i>Booking Report </a>
-                </li> 
-                 
+                </li>
+
             </ul>
         </li>
 
@@ -190,8 +231,8 @@
             </a>
             <ul>
                 <li> <a href="{{ route('all.gallery') }}"><i class='bx bx-radio-circle'></i>All Gallery </a>
-                </li> 
-                 
+                </li>
+
             </ul>
         </li>
 
@@ -204,12 +245,12 @@
             </a>
             <ul>
                 <li> <a href="{{ route('contact.message') }}"><i class='bx bx-radio-circle'></i>Contact Message </a>
-                </li> 
-                 
+                </li>
+
             </ul>
         </li>
-         
-          
+
+
 
         <li class="menu-label">Role & Permission </li>
 
@@ -221,16 +262,16 @@
             </a>
             <ul>
                 <li> <a href="{{ route('all.permission') }}"><i class='bx bx-radio-circle'></i>All Permission </a>
-                </li> 
+                </li>
                 <li> <a href="{{ route('all.roles') }}"><i class='bx bx-radio-circle'></i>All Roles </a>
-                </li> 
+                </li>
 
                 <li> <a href="{{ route('add.roles.permission') }}"><i class='bx bx-radio-circle'></i>Role In Permission </a>
                 </li>
 
                 <li> <a href="{{ route('all.roles.permission') }}"><i class='bx bx-radio-circle'></i>All Role In Permission </a>
                 </li>
-                 
+
             </ul>
         </li>
 
@@ -243,19 +284,19 @@
             </a>
             <ul>
                 <li> <a href="{{ route('all.admin') }}"><i class='bx bx-radio-circle'></i>All Admin </a>
-                </li> 
+                </li>
                 <li> <a href="{{ route('add.admin') }}"><i class='bx bx-radio-circle'></i>Add Admin </a>
-                </li> 
+                </li>
 
-                
-                 
+
+
             </ul>
         </li>
-       
-         
+
+
         <li class="menu-label">Others</li>
-      
-      
+
+
         <li>
             <a href="#" target="_blank">
                 <div class="parent-icon"><i class="bx bx-support"></i>

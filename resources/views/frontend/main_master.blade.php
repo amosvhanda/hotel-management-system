@@ -1,11 +1,18 @@
 <!doctype html>
-<html lang="zxx">
+@php($site = App\Models\SiteSetting::current())
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <!-- Required Meta Tags -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
-        <!-- Bootstrap CSS --> 
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="author" content="Amos Vhanda">
+        <!-- jQuery first, so inline scripts inside pages can use it -->
+        <script src="{{ asset('frontend/assets/js/jquery.min.js') }}"></script>
+        <meta name="description" content="{{ $site->meta_description ?: ($site->tagline ?: 'Book your stay at ' . $site->name) }}">
+        @if ($site->meta_keywords)<meta name="keywords" content="{{ $site->meta_keywords }}">@endif
+
+        <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/bootstrap.min.css') }}">
         <!-- Animate Min CSS -->
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/animate.min.css') }}">
@@ -15,10 +22,10 @@
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/boxicons.min.css') }}">
         <!-- Magnific Popup CSS -->
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/magnific-popup.css') }}">
-        <!-- Owl Carousel Min CSS --> 
+        <!-- Owl Carousel Min CSS -->
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/owl.carousel.min.css') }}">
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/owl.theme.default.min.css') }}">
-        <!-- Nice Select Min CSS --> 
+        <!-- Nice Select Min CSS -->
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/nice-select.min.css') }}">
         <!-- Meanmenu CSS -->
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/meanmenu.css') }}">
@@ -30,15 +37,31 @@
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/responsive.css') }}">
         <!-- Theme Dark CSS -->
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/theme-dark.css') }}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('frontend/assets/css/hms.css') }}?v=10">
+        <script>
+            (function () {
+                var saved = null;
+                try { saved = localStorage.getItem('theme'); } catch (e) {}
+                var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var theme = saved === 'theme-dark' || saved === 'theme-light'
+                    ? saved
+                    : (dark ? 'theme-dark' : 'theme-light');
+                document.documentElement.className = theme;
+            })();
+        </script>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="{{ asset('frontend/assets/img/favicon.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset($site->favicon ?: 'frontend/assets/img/favicon.png') }}">
 
         	<!-- toastr CSS -->
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
+	<link rel="stylesheet" type="text/css" href="{{ asset('frontend/assets/css/toastr.css') }}" >
     <!-- toastr CSS -->
 
-        <title>Easy Hotel </title>
+        <title>@hasSection('title')@yield('title') | @endif{{ $site->meta_title ?: $site->name }}</title>
+        @if ($site->custom_css)<style>{!! $site->custom_css !!}</style>@endif
     </head>
     <body>
 
@@ -73,7 +96,6 @@
 
 
         <!-- Jquery Min JS -->
-        <script src="{{ asset('frontend/assets/js/jquery.min.js') }}"></script>
         <!-- Bootstrap Bundle Min JS -->
         <script src="{{ asset('frontend/assets/js/bootstrap.bundle.min.js') }}"></script>
         <!-- Magnific Popup Min JS -->
@@ -95,32 +117,26 @@
         <!-- Contact Form JS -->
         <script src="{{ asset('frontend/assets/js/contact-form-script.js') }}"></script>
         <!-- Custom JS -->
-        <script src="{{ asset('frontend/assets/js/custom.js') }}"></script>
-        
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="{{ asset('frontend/assets/js/custom.js') }}?v=9"></script>
+
+         <script src="{{ asset('frontend/assets/js/toastr.min.js') }}"></script>
+
 
 <script>
- @if(Session::has('message'))
- var type = "{{ Session::get('alert-type','info') }}"
- switch(type){
-    case 'info':
-    toastr.info(" {{ Session::get('message') }} ");
-    break;
-
-    case 'success':
-    toastr.success(" {{ Session::get('message') }} ");
-    break;
-
-    case 'warning':
-    toastr.warning(" {{ Session::get('message') }} ");
-    break;
-
-    case 'error':
-    toastr.error(" {{ Session::get('message') }} ");
-    break; 
- }
- @endif 
+    @if (Session::has('message'))
+        (function () {
+            var type = @json(Session::get('alert-type', 'info'));
+            var msg = @json(Session::get('message'));
+            (toastr[type] || toastr.info)(msg);
+        })();
+    @endif
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            toastr.error(@json($error));
+        @endforeach
+    @endif
 </script>
+@stack('scripts')
 
 
     </body>

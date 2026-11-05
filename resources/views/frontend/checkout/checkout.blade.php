@@ -1,317 +1,178 @@
 @extends('frontend.main_master')
+@section('title', 'Checkout')
 @section('main')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
- <!-- Inner Banner -->
- <div class="inner-banner inner-bg7">
+
+@php
+    $subtotal = $room->price * $nights * $book_data['number_of_rooms'];
+    $discount = round(($room->discount / 100) * $subtotal, 2);
+    $total = $subtotal - $discount;
+    $money = fn ($v) => '$' . number_format((float) $v, 2);
+    $user = Auth::user();
+    $countries = ['Zimbabwe', 'South Africa', 'Botswana', 'Zambia', 'Mozambique', 'Namibia', 'Malawi', 'Other'];
+    $provinces = ['Harare', 'Bulawayo', 'Manicaland', 'Mashonaland Central', 'Mashonaland East', 'Mashonaland West', 'Masvingo', 'Matabeleland North', 'Matabeleland South', 'Midlands'];
+    $method = old('payment_method', 'COD');
+@endphp
+
+<div class="inner-banner inner-bg7">
     <div class="container">
         <div class="inner-title">
             <ul>
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
+                <li><a href="{{ route('home') }}">Home</a></li>
                 <li><i class='bx bx-chevron-right'></i></li>
-                <li> Check Out</li>
+                <li><a href="{{ route('froom.all') }}">Rooms</a></li>
+                <li><i class='bx bx-chevron-right'></i></li>
+                <li>Checkout</li>
             </ul>
-            <h3> Check Out</h3>
+            <h3>Complete Your Booking</h3>
         </div>
     </div>
 </div>
-<!-- Inner Banner End -->
 
-<!-- Checkout Area -->
 <section class="checkout-area pt-100 pb-70">
     <div class="container">
-        
-        <form method="post" role="form" action="{{ route('checkout.store') }}" class="stripe_form require-validation" data-cc-on-file="false" data-stripe-publishable-key="{{ env('STRIPE_KEY') }}">
+        <form method="POST" action="{{ route('checkout.store') }}" id="checkoutForm" novalidate>
             @csrf
-
             <div class="row">
                 <div class="col-lg-8">
-                    <div class="billing-details">
-                        <h3 class="title">Billing Details</h3>
-
+                    <div class="hms-card">
+                        <h3>1. Guest details</h3>
                         <div class="row">
-        <div class="col-lg-12 col-md-12">
-            <div class="form-group">
-                <label>Country <span class="required">*</span></label>
-                <div class="select-box">
-                    <select name="country" class="form-control">
-                        <option value="Bangladesh">Bangladesh</option>
-                        <option value="India">India</option>
-                        <option value="United Arab">United Arab Emirates</option>
-                        <option value="China">China</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="Germany">Germany</option>
-                        <option value="France">France</option>
-                        <option value="Japan">Japan</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-6">
-            <div class="form-group">
-                <label>  Name <span class="required">*</span></label>
-                <input type="text" name="name" class="form-control" value="{{ \Auth::user()->name }}">
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-6">
-            <div class="form-group">
-                <label>Email <span class="required">*</span></label>
-                <input type="email" name="email" class="form-control" value="{{ \Auth::user()->email }}">
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-12">
-            <div class="form-group">
-                <label>Phone</label>
-                <input type="text" name="phone" class="form-control" value="{{ \Auth::user()->phone }}">
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-6">
-            <div class="form-group">
-                <label>Address <span class="required">*</span></label>
-                <input type="text" name="address" class="form-control" value="{{ \Auth::user()->address }}">
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-6">
-            <div class="form-group">
-                <label>State <span class="required">*</span></label>
-                <input type="text" name="state" class="form-control">
-                @if ($errors->has('state'))
-                    <div class="text-danger">{{ $errors->first('state') }}</div>
-                @endif
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-6">
-            <div class="form-group">
-                <label>ZipCode <span class="required">*</span></label>
-                <input type="text" name="zip_code" class="form-control">
-                @if ($errors->has('zip_code'))
-                    <div class="text-danger">{{ $errors->first('zip_code') }}</div>
-                @endif
-            </div>
-        </div>
- 
-
-    {{-- <p>Session Value : {{ json_encode(session('book_date')) }}</p>   --}}
- 
-                        
+                            <div class="col-md-6 mb-3">
+                                <label for="name">Full name <span class="required">*</span></label>
+                                <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror" required value="{{ old('name', $user->name) }}">
+                                @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email">Email <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" required value="{{ old('email', $user->email) }}">
+                                @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phone">Phone <span class="required">*</span></label>
+                                <input type="tel" id="phone" name="phone" class="form-control @error('phone') is-invalid @enderror" required placeholder="0771234567" value="{{ old('phone', $user->phone) }}">
+                                @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="country">Country <span class="required">*</span></label>
+                                <input type="text" id="country" name="country" list="countryList" class="form-control @error('country') is-invalid @enderror" required value="{{ old('country', 'Zimbabwe') }}">
+                                <datalist id="countryList">
+                                    @foreach ($countries as $c)<option value="{{ $c }}">@endforeach
+                                </datalist>
+                                @error('country')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label for="address">Address <span class="required">*</span></label>
+                                <input type="text" id="address" name="address" class="form-control @error('address') is-invalid @enderror" required value="{{ old('address', $user->address) }}">
+                                @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="state">Province / State <span class="required">*</span></label>
+                                <input type="text" id="state" name="state" list="provinceList" class="form-control @error('state') is-invalid @enderror" required value="{{ old('state', 'Harare') }}">
+                                <datalist id="provinceList">
+                                    @foreach ($provinces as $p)<option value="{{ $p }}">@endforeach
+                                </datalist>
+                                @error('state')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
                         </div>
                     </div>
+
+                    <div class="hms-card">
+                        <h3>2. Payment</h3>
+
+                        <label class="hms-pay-option {{ $method === 'COD' ? 'is-active' : '' }}">
+                            <input type="radio" name="payment_method" value="COD" @checked($method === 'COD')>
+                            <div>
+                                <strong>Pay at the hotel</strong>
+                                <span>Reserve now and pay in cash or by card when you check in.</span>
+                            </div>
+                        </label>
+
+                        <label class="hms-pay-option {{ $method === 'ecocash' ? 'is-active' : '' }}">
+                            <input type="radio" name="payment_method" value="ecocash" @checked($method === 'ecocash')>
+                            <div>
+                                <strong>EcoCash <small class="text-muted fw-normal">via Paynow</small></strong>
+                                <span>Pay now from your Econet EcoCash wallet (077 / 078).</span>
+                            </div>
+                        </label>
+
+                        <label class="hms-pay-option {{ $method === 'onemoney' ? 'is-active' : '' }}">
+                            <input type="radio" name="payment_method" value="onemoney" @checked($method === 'onemoney')>
+                            <div>
+                                <strong>NetOne OneMoney <small class="text-muted fw-normal">via Paynow</small></strong>
+                                <span>Pay now from your NetOne OneMoney wallet (071).</span>
+                            </div>
+                        </label>
+
+                        <div id="paynowSection" class="mt-3 {{ in_array($method, ['ecocash', 'onemoney']) ? '' : 'd-none' }}">
+                            <label for="paynow_phone"><span id="walletName">{{ $method === 'onemoney' ? 'OneMoney' : 'EcoCash' }}</span> number <span class="required">*</span></label>
+                            <input type="tel" id="paynow_phone" name="paynow_phone" class="form-control @error('paynow_phone') is-invalid @enderror" placeholder="e.g. 0771234567" value="{{ old('paynow_phone', $user->phone) }}">
+                            @error('paynow_phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <small class="text-muted">You'll get a prompt on this phone — enter your PIN to approve.</small>
+                        </div>
+
+                        <button type="submit" class="default-btn btn-bg-one border-radius-5 w-100 mt-4" id="placeOrder">
+                            Confirm Booking · {{ $money($total) }}
+                        </button>
+                        <p class="hms-secure text-center"><i class="bx bx-lock-alt"></i> Your details are only used for this reservation.</p>
+                    </div>
                 </div>
-                
-                
+
                 <div class="col-lg-4">
-                    <section class="checkout-area pb-70">
-                        <div class="card-body">
-                              <div class="billing-details">
-                                    <h3 class="title">Booking Summary</h3>
-                                    <hr>
-      
-    <div style="display: flex">
-            <img style="height:100px; width:120px;object-fit: cover" src="{{ (!empty($room->image))? url('upload/roomimg/'.$room->image):url('upload/no_image.jpg') }}" alt="Images" alt="Images">
-            <div style="padding-left: 10px;">
-                <a href=" " style="font-size: 20px; color: #595959;font-weight: bold">{{ @$room->type->name }}</a>
-                <p><b>{{ $room->price }} / Night</b></p>
-            </div>
-
-    </div>
-      
-                                    <br>
-      
-    <table class="table" style="width: 100%">
-        @php
-      $subtotal = $room->price * $nights * $book_data['number_of_rooms']; 
-      $discount =($room->discount/100)*$subtotal;  
-        @endphp
-            
-            <tr>
-                <td><p>Total Night <br> <b> ( {{ $book_data['check_in'] }} - {{ $book_data['check_out'] }})</b></p></td>
-                <td style="text-align: right"><p> {{ $nights }} Days</p></td>
-            </tr>
-            <tr>
-                <td><p>Total Room</p></td>
-                <td style="text-align: right"><p>{{ $book_data['number_of_rooms'] }}</p></td>
-            </tr>
-            <tr>
-                <td><p>Subtotal</p></td>
-                <td style="text-align: right"><p>${{ $subtotal }}</p></td>
-            </tr>
-            <tr>
-                <td><p>Discount</p></td>
-                <td style="text-align:right"> <p>${{ $discount }}</p></td>
-            </tr>
-            <tr>
-                <td><p>Total</p></td>
-                <td style="text-align:right"> <p>${{ $subtotal-$discount }}</p></td>
-            </tr>
-    </table>
-
-                              </div>
+                    <div class="hms-card" style="position: sticky; top: 100px;">
+                        <h3>Booking summary</h3>
+                        <div class="hms-summary-room">
+                            <img src="{{ $room->image ? url('upload/roomimg/' . $room->image) : url('upload/no_image.jpg') }}" alt="{{ $room->type->name ?? 'Room' }}">
+                            <div>
+                                <h4>{{ $room->type->name ?? 'Room' }}</h4>
+                                <p>{{ $money($room->price) }} / night</p>
+                            </div>
                         </div>
-                  </section>
 
-                </div>
-
-
-                <div class="col-lg-8 col-md-8">
-                    <div class="payment-box">
-                        <div class="payment-method">
-                            
-            <p>
-   <input type="radio" id="cash-on-delivery" name="payment_method" value="COD">
-                <label for="cash-on-delivery">Cash On Delivery</label>
-            </p>
-           
-           
-              <p>
-                <input type="radio" class="pay_method" id="stripe" name="payment_method" value="Stripe">
-                 <label for="stripe">Stripe</label>
-                   </p>
-         
-          <div id="stripe_pay" class="d-none">
-                 <br>
-                 <div class="form-row row">
-                       <div class="col-xs-12 form-group required">
-                             <label class="control-label">Name on Card</label>
-                             <input class="form-control" size="4" type="text" />
-                       </div>
-                 </div>
-                 <div class="form-row row">
-                       <div class="col-xs-12 form-group  required">
-                             <label class="control-label">Card Number</label>
-                             <input autocomplete="off" class="form-control card-number" size="20" type="text" />
-                       </div>
-                 </div>
-                 <div class="form-row row">
-                       <div class="col-xs-12 col-md-4 form-group cvc required"><label class="control-label">CVC</label>
-                        <input autocomplete="off" class="form-control card-cvc" placeholder="ex. 311" size="4" type="text" /></div>
-                       <div class="col-xs-12 col-md-4 form-group expiration required"><label class="control-label">Expiration Month</label>
-                        <input class="form-control card-expiry-month" placeholder="MM" size="2" type="text" /></div>
-                       <div class="col-xs-12 col-md-4 form-group expiration required"><label class="control-label">Expiration Year</label>
-                        <input class="form-control card-expiry-year" placeholder="YYYY" size="4" type="text" /></div>
-                 </div>
-                 <div class="form-row row">
-                       <div class="col-md-12 error form-group hide"><div class="alert-danger alert">Please correct the errors and try again.</div></div>
-                 </div>
-           </div>
-         
-                          
+                        <div class="hms-dates">
+                            <div><small>Check-in</small><strong>{{ \Carbon\Carbon::parse($book_data['check_in'])->format('D, d M Y') }}</strong></div>
+                            <div><small>Check-out</small><strong>{{ \Carbon\Carbon::parse($book_data['check_out'])->format('D, d M Y') }}</strong></div>
                         </div>
-       <button type="submit" class="order-btn" id="myButton" >Place to Order</button>
-                        
+
+                        <table class="hms-lines">
+                            <tr><td>{{ $nights }} night(s) × {{ $book_data['number_of_rooms'] }} room(s)</td><td>{{ $money($subtotal) }}</td></tr>
+                            <tr><td>Guests</td><td>{{ $book_data['persion'] }}</td></tr>
+                            @if ($discount > 0)
+                                <tr><td>Discount ({{ $room->discount }}%)</td><td class="text-success">- {{ $money($discount) }}</td></tr>
+                            @endif
+                            <tr class="total"><td>Total</td><td>{{ $money($total) }}</td></tr>
+                        </table>
+
+                        <a href="{{ route('search_room_details', $room->id) }}?check_in={{ $book_data['check_in'] }}&check_out={{ $book_data['check_out'] }}&persion={{ $book_data['persion'] }}" class="d-inline-block mt-3">
+                            <i class="bx bx-edit"></i> Change dates or rooms
+                        </a>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 </section>
-<!-- Checkout Area End --> 
 
-<style>
-    .hide{display:none}
-</style>
-
-
-<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-
-<script type="text/javascript">
-
-$(document).ready(function () {
-
-    $(".pay_method").on('click', function () {
-          var payment_method = $(this).val();
-          if (payment_method == 'Stripe'){
-                $("#stripe_pay").removeClass('d-none');
-          }else{
-                $("#stripe_pay").addClass('d-none');
-          }
-    });
-
-});
- 
-
-
-$(function() {
-    var $form = $(".require-validation");
-    $('form.require-validation').bind('submit', function(e) {
-
-          var pay_method = $('input[name="payment_method"]:checked').val();
-          if (pay_method == undefined){
-                alert('Please select a payment method');
-                return false;
-          }else if(pay_method == 'COD'){
-
-          }else{
-                document.getElementById('myButton').disabled = true;
-
-                var $form = $(".require-validation"),
-                        inputSelector = ['input[type=email]', 'input[type=password]',
-                              'input[type=text]', 'input[type=file]',
-                              'textarea'].join(', '),
-                        $inputs       = $form.find('.required').find(inputSelector),
-                        $errorMessage = $form.find('div.error'),
-                        valid         = true;
-                $errorMessage.addClass('hide');
-
-                $('.has-error').removeClass('has-error');
-                $inputs.each(function(i, el) {
-                      var $input = $(el);
-                      if ($input.val() === '') {
-                            $input.parent().addClass('has-error');
-                            $errorMessage.removeClass('hide');
-                            e.preventDefault();
-                      }
-                });
-
-                if (!$form.data('cc-on-file')) {
-
-                      e.preventDefault();
-                      Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-                      Stripe.createToken({
-                            number: $('.card-number').val(),
-                            cvc: $('.card-cvc').val(),
-                            exp_month: $('.card-expiry-month').val(),
-                            exp_year: $('.card-expiry-year').val()
-                      }, stripeResponseHandler);
-                }
-          }
-
-
-
-    });
-
-
-
-    function stripeResponseHandler(status, response) {
-          if (response.error) {
-
-                document.getElementById('myButton').disabled = false;
-
-                $('.error')
-                        .removeClass('hide')
-                        .find('.alert')
-                        .text(response.error.message);
-          } else {
-
-                document.getElementById('myButton').disabled = true;
-                document.getElementById('myButton').value = 'Please Wait...';
-
-                // token contains id, last4, and card type
-                var token = response['id'];
-                // insert the token into the form so it gets submitted to the server
-                $form.find('input[type=text]').empty();
-                $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
-                $form.get(0).submit();
-          }
-    }
-
-});
+@push('scripts')
+<script>
+    (function () {
+        var options = document.querySelectorAll('.hms-pay-option');
+        var section = document.getElementById('paynowSection');
+        options.forEach(function (opt) {
+            opt.querySelector('input').addEventListener('change', function () {
+                options.forEach(function (o) { o.classList.remove('is-active'); });
+                opt.classList.add('is-active');
+                var mobile = this.value === 'ecocash' || this.value === 'onemoney';
+                section.classList.toggle('d-none', !mobile);
+                document.getElementById('walletName').textContent = this.value === 'onemoney' ? 'OneMoney' : 'EcoCash';
+                document.getElementById('paynow_phone').placeholder = this.value === 'onemoney' ? 'e.g. 0712345678' : 'e.g. 0771234567';
+            });
+        });
+        document.getElementById('checkoutForm').addEventListener('submit', function () {
+            var btn = document.getElementById('placeOrder');
+            btn.disabled = true;
+            btn.textContent = 'Processing…';
+        });
+    })();
 </script>
-
+@endpush
 @endsection

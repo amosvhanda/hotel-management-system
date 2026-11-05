@@ -12,6 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        'paynow/result', // Paynow posts payment status updates server-to-server
     ];
 }

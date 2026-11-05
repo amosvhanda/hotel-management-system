@@ -29,54 +29,55 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
-                    <thead>
+                <table id="example" class="table align-middle" style="width:100%">
+                    <thead class="table-light">
                         <tr>
-                            <th>Sl</th>
-                            <th>B No</th>
-                            <th>B Date</th>
-                            <th>Customer</th>
-                            <th>Room</th>
-                            <th>Check IN/Out</th>
-                            <th>Total Room</th>
+                            <th>Booking</th>
                             <th>Guest</th>
+                            <th>Room</th>
+                            <th>Stay</th>
+                            <th class="text-end">Total</th>
                             <th>Payment</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th class="text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                       @foreach ($allData as $key=> $item ) 
-                        <tr>
-                            <td>{{ $key+1 }}</td>
-                            <td> <a href="{{ route('edit_booking',$item->id) }}"> {{ $item->code }} </a></td>
-                            <td> {{ $item->created_at->format('d/m/Y') }} </td>
-                            <td> {{ $item['user']['name'] }} </td>
-                            <td> {{ $item['room']['type']['name'] }} </td>
-                            <td> <span class="badge bg-primary">{{ $item->check_in }}</span>  /<br> <span class="badge bg-warning text-dark">{{ $item->check_out }}</span> </td>
-                            <td> {{ $item->number_of_rooms }} </td>
-                            <td> {{ $item->persion }} </td>
-                            <td> @if ($item->payment_status == '1')
-                                <span class="text-success">Complete</span>
-                                @else
-                                <span class="text-danger">Pending</span>
-                                 @endif </td>
-                            <td> @if ($item->status == '1')
-                                <span class="text-success">Active</span>
-                                @else
-                                <span class="text-danger">Pending</span>
-                                 @endif </td>
-                             
-                            <td>
- 
-    <a href="{{ route('delete.team',$item->id) }}" class="btn btn-danger px-3 radius-30" id="delete"> Delete</a>
-
-                            </td>
-                        </tr>
-                        @endforeach 
-                      
+                        @foreach ($allData as $item)
+                            <tr>
+                                <td data-order="{{ $item->id }}">
+                                    <a href="{{ route('edit_booking', $item->id) }}" class="fw-semibold">#{{ $item->code }}</a><br>
+                                    <small class="text-secondary">{{ $item->created_at?->format('d M Y') }}</small>
+                                </td>
+                                <td>{{ $item->name }}<br><small class="text-secondary">{{ $item->phone }}</small></td>
+                                <td>{{ $item->room->type->name ?? '—' }}<br><small class="text-secondary">{{ $item->number_of_rooms }} room(s) · {{ $item->persion }} guest(s)</small></td>
+                                <td data-order="{{ $item->check_in }}">
+                                    {{ \Carbon\Carbon::parse($item->check_in)->format('d M') }} – {{ \Carbon\Carbon::parse($item->check_out)->format('d M Y') }}<br>
+                                    <small class="text-secondary">{{ $item->total_night }} night(s)</small>
+                                </td>
+                                <td class="text-end fw-semibold" data-order="{{ $item->total_price }}">${{ number_format((float) $item->total_price, 2) }}</td>
+                                <td>
+                                    @if ((int) $item->payment_status === 1)
+                                        <span class="badge bg-success-subtle text-success">Paid</span>
+                                    @else
+                                        <span class="badge bg-danger-subtle text-danger">Unpaid</span>
+                                    @endif
+                                    <br><small class="text-secondary">{{ $item->payment_method === 'COD' ? 'Pay at hotel' : $item->payment_method }}</small>
+                                </td>
+                                <td>
+                                    @if ((int) $item->status === 1)
+                                        <span class="badge bg-success-subtle text-success">Confirmed</span>
+                                    @else
+                                        <span class="badge bg-warning-subtle text-warning">Pending</span>
+                                    @endif
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    <a href="{{ route('edit_booking', $item->id) }}" class="btn btn-sm btn-primary">Manage</a>
+                                    <a href="{{ route('download.invoice', $item->id) }}" class="btn btn-sm btn-light" title="Download invoice"><i class="bx bx-download"></i></a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
-                 
                 </table>
             </div>
         </div>

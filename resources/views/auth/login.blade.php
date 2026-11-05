@@ -2,8 +2,8 @@
 @section('main')
 
 
-      <!-- Inner Banner -->
-      <div class="inner-banner inner-bg9">
+    <!-- Inner Banner -->
+    <div class="inner-banner inner-bg9">
         <div class="container">
             <div class="inner-title">
                 <ul>
@@ -30,39 +30,49 @@
                                 <span class="sp-color">Sign In</span>
                                 <h2>Sign In to Your Account!</h2>
                             </div>
-                           
-                           
-                 <form method="POST" action="{{ route('login') }}">
-                 @csrf
 
-        <div class="row">
-            <div class="col-lg-12 ">
-                <div class="form-group">
-                    <input type="text" name="login" id="login" class="form-control" required data-error="Please enter your Username or Email" placeholder="Email/Name/Phone">
-                </div>
-            </div>
 
-            <div class="col-12">
-                <div class="form-group">
-                    <input class="form-control" id="password" type="password" name="password" placeholder="Password">
-                </div>
-            </div>
+                            <form method="POST" action="{{ route('login') }}">
+                                @csrf
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <input type="text" name="login" id="login"
+                                                class="form-control @error('login') is-invalid @enderror"
+                                                value="{{ old('login') }}" required
+                                                data-error="Please enter your Username or Email"
+                                                placeholder="Email/Name/Phone">
+                                            @error('login')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <input class="form-control @error('password') is-invalid @enderror"
+                                                id="password" type="password" name="password" placeholder="Password"
+                                                required>
+                                            @error('password')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
 
                                     <div class="col-lg-6 col-sm-6 form-condition">
                                         <div class="agree-label">
-                                            <input type="checkbox" id="chb1">
-                                            <label for="chb1">
-                                                Remember Me
-                                            </label>
+                                            <input type="checkbox" id="chb1" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                            <label for="chb1">Remember Me</label>
                                         </div>
                                     </div>
-        
-        <div class="col-lg-6 col-sm-6">
-            <a class="forget" href="{{ route('password.request') }}">Forgot My Password?</a>
-        </div>
-    
+
+                                    <div class="col-lg-6 col-sm-6">
+                                        <a class="forget" href="{{ route('password.request') }}">Forgot My Password?</a>
+                                    </div>
+
                                     <div class="col-lg-12 col-md-12 text-center">
-          <button type="submit" class="default-btn btn-bg-three border-radius-5">
+                                        <button type="submit" class="default-btn btn-bg-three border-radius-5">
                                             Sign In Now
                                         </button>
                                     </div>
@@ -75,6 +85,7 @@
                                     </div>
                                 </div>
                             </form>
+
 
 
 

@@ -1,40 +1,33 @@
 @php
-    $testimonial = App\Models\Testimonial::latest()->get();
+    $site = $site ?? App\Models\SiteSetting::current();
+    $testimonial = App\Models\Testimonial::latest()->limit(3)->get();
 @endphp
-<div class="testimonials-area-three pb-70">
+@if ($testimonial->isNotEmpty())
+<section class="hms-band hms-band--white">
     <div class="container">
-        <div class="section-title text-center">
-            <span class="sp-color">TESTIMONIAL</span>
-            <h2>Our Latest Testimonials and What Our Client Says</h2>
+        <div class="hms-section-head hms-section-head--left">
+            <p class="hms-kicker hms-kicker--dark">{{ $site->home('guests_kicker') }}</p>
+            <h2>{{ $site->home('guests_title') }}</h2>
         </div>
-        <div class="row align-items-center pt-45">
-            <div class="col-lg-6 col-md-6">
-                <div class="testimonials-img-two">
-                    <img src="{{ asset('frontend/assets/img/testimonials/testimonials-img5.jpg') }}" alt="Images">
-                </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6">
-                <div class="testimonials-slider-area owl-carousel owl-theme">
-                    
-                    @foreach ($testimonial as $item) 
-                    <div class="testimonials-slider-content">
-                        <i class="flaticon-left-quote"></i>
-                        <p>
-                            {{ $item->message }}
-                        </p>
-                        <ul>
-                            <li>
-                                <img src="{{ asset($item->image) }}" alt="Images">
-                                <h3>{{ $item->name }}</h3>
-                                <span>{{ $item->city }}</span>
-                            </li>
-                        </ul>
-                    </div>
-                    @endforeach
-                     
-                </div>
+        <div class="hms-quotes">
+            <figure class="hms-quotes__photo">
+                <img src="{{ asset('frontend/assets/img/hotel/lobby.jpg') }}" alt="The hotel lobby">
+            </figure>
+            <div class="hms-quotes__list">
+                @foreach ($testimonial as $item)
+                    <blockquote class="hms-quote">
+                        <p>{{ $item->message }}</p>
+                        <footer>
+                            <img src="{{ asset($item->image) }}" alt="">
+                            <span>
+                                <strong>{{ $item->name }}</strong>
+                                {{ $item->city }}
+                            </span>
+                        </footer>
+                    </blockquote>
+                @endforeach
             </div>
         </div>
     </div>
-</div>
+</section>
+@endif

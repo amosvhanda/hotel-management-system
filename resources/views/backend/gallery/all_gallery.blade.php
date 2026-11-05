@@ -38,7 +38,9 @@
                         <tr>
                             <th width="50px">Select</th>
                             <th width="50px">Sl</th>
-                            <th>Image</th> 
+                            <th>Image</th>
+                            <th>Caption</th>
+                            <th>Homepage</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -49,8 +51,9 @@
         <input type="checkbox" name="selectedItem[]" value="{{ $item->id }}">
         </td>
                             <td>{{ $key+1 }}</td>
-                            <td> <img src="{{ asset($item->photo_name) }}" alt="" style="width:70px; height:40px;" > </td>
-                          
+                            <td> <img src="{{ asset($item->photo_name) }}" alt="" style="width:70px; height:40px; object-fit:cover;" > </td>
+                            <td>{{ $item->caption }}</td>
+                            <td>{{ $item->show_on_home ? 'Yes' : '' }}</td>
                             <td>
     <a href="{{ route('edit.gallery',$item->id) }}" class="btn btn-warning px-3 radius-30"> Edit</a>
     <a href="{{ route('delete.gallery',$item->id) }}" class="btn btn-danger px-3 radius-30" id="delete"> Delete</a>

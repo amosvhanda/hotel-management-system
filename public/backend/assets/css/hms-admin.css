@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Hotel Management System — admin panel refinements
+   ========================================================================== */
+
+:root {
+    --hms-ink: #1f2937;
+    --hms-muted: #6b7280;
+    --hms-line: #e9ecef;
+}
+
+body { -webkit-font-smoothing: antialiased; }
+.page-content { padding-bottom: 2rem; }
+
+/* Cards */
+.card { border: 1px solid var(--hms-line); box-shadow: 0 4px 18px rgba(17, 24, 39, .05); }
+.card-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--hms-line); }
+.card-header h6 { font-weight: 600; }
+
+/* KPI tiles */
+.hms-stat-card {
+    display: flex; gap: 16px; align-items: flex-start; height: 100%;
+    background: #fff; border: 1px solid var(--hms-line); border-radius: 12px; padding: 20px;
+    box-shadow: 0 4px 18px rgba(17, 24, 39, .05);
+}
+.hms-stat-card p { margin: 0 0 4px; color: var(--hms-muted); font-size: 13px; font-weight: 500; }
+.hms-stat-card h3 { margin: 0; font-size: 26px; font-weight: 700; color: var(--hms-ink); }
+.hms-stat-card small { color: var(--hms-muted); }
+.hms-stat-card > div:last-child { flex: 1; min-width: 0; }
+.hms-stat-icon { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; font-size: 24px; flex-shrink: 0; }
+
+.hms-date-chip { width: 46px; text-align: center; border-radius: 10px; background: #f1f5f9; padding: 6px 0; line-height: 1.1; flex-shrink: 0; }
+.hms-date-chip strong { display: block; font-size: 17px; color: var(--hms-ink); }
+.hms-date-chip span { font-size: 11px; text-transform: uppercase; color: var(--hms-muted); }
+.min-w-0 { min-width: 0; }
+
+/* Soft badges (Bootstrap 5.3 style, for older builds) */
+.bg-success-subtle { background-color: #d1e7dd !important; }
+.bg-warning-subtle { background-color: #fff3cd !important; }
+.bg-danger-subtle  { background-color: #f8d7da !important; }
+.bg-primary-subtle { background-color: #cfe2ff !important; }
+.bg-info-subtle    { background-color: #cff4fc !important; }
+.badge { font-weight: 600; padding: .4em .7em; }
+.badge.text-warning { color: #997404 !important; }
+
+/* Tables */
+.table > :not(caption) > * > * { padding: .8rem .75rem; }
+.table thead th { font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--hms-muted); font-weight: 600; white-space: nowrap; }
+table.dataTable { margin-top: 10px !important; }
+
+/* Forms */
+.form-control, .form-select { border-radius: 8px; }
+.form-control:focus, .form-select:focus { box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .12); }
+.btn { border-radius: 8px; }
+
+/* Sidebar brand text should not wrap */
+.sidebar-header .logo-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; font-size: 18px; }
+
+/* Admin login */
+.hms-auth { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr; background: #fff; }
+.hms-auth-side { position: relative; background: #1f2937 center/cover no-repeat; color: #fff; padding: 48px; display: flex; flex-direction: column; justify-content: flex-end; }
+.hms-auth-side::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(17,24,39,.2), rgba(17,24,39,.85)); }
+.hms-auth-side > * { position: relative; }
+.hms-auth-side h1 { font-size: 34px; font-weight: 700; color: #fff; }
+.hms-auth-side p { color: #d1d5db; max-width: 440px; }
+.hms-auth-form { display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+.hms-auth-form .inner { width: 100%; max-width: 400px; }
+.hms-auth-form .form-control { height: 48px; }
+@media (max-width: 991px) {
+    .hms-auth { grid-template-columns: 1fr; }
+    .hms-auth-side { display: none; }
+}

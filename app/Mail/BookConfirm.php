@@ -2,8 +2,8 @@
 
 namespace App\Mail;
 
+use App\Models\SiteSetting;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -13,41 +13,28 @@ class BookConfirm extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /** 
-     * Create a new message instance.
-     */
-    public function __construct(private $data)
+    /** @param array $data booking details (see BookingController::UpdateBookingStatus) */
+    public function __construct(private array $data)
     {
-        //
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
+        $code = $this->data['code'] ?? null;
+
         return new Envelope(
-            subject: 'Your Booking Is Confirm',
+            subject: 'Your booking is confirmed' . ($code ? ' — #' . $code : '') . ' | ' . SiteSetting::current()->name,
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
-        $booking = $this->data;
         return new Content(
             view: 'mail.booking_mail',
-            with: ['booking' => $this->data],
+            with: ['booking' => $this->data, 'site' => SiteSetting::current()],
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
     public function attachments(): array
     {
         return [];

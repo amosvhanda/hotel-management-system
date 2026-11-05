@@ -2,39 +2,26 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use DB;
 use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Demo accounts for a fresh install. Change these passwords straight after installing.
      */
     public function run(): void
     {
-        DB::table('users')->insert([
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            ['name' => 'Admin', 'password' => Hash::make('password'), 'role' => 'admin', 'status' => 'active']
+        );
+        $admin->assignRole('Super Admin');
 
-            // Admin
-            [
-                'name' => 'Admin',
-                'email' => 'admin@gmail.com',
-                'password' => Hash::make('111'),
-                'role' => 'admin',
-                'status' => 'active',
-            ],
-
-            // User
-
-            [
-                'name' => 'User',
-                'email' => 'user@gmail.com',
-                'password' => Hash::make('111'),
-                'role' => 'user',
-                'status' => 'active',
-            ],
- 
-        ]);
+        User::firstOrCreate(
+            ['email' => 'user@gmail.com'],
+            ['name' => 'Guest User', 'password' => Hash::make('password'), 'role' => 'user', 'status' => 'active']
+        );
     }
 }

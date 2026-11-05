@@ -1,6 +1,5 @@
 @extends('admin.admin_dashboard')
-@section('admin') 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+@section('admin')
 
 <div class="page-content">
 				<!--breadcrumb-->
@@ -15,13 +14,13 @@
 							</ol>
 						</nav>
 					</div>
-					 
+
 				</div>
 				<!--end breadcrumb-->
 				<div class="container">
 					<div class="main-body">
 						<div class="row">
-						 
+
     <div class="col-lg-8">
         <div class="card">
 
@@ -55,8 +54,8 @@
                         <textarea name="message" class="form-control" id="input11"  " rows="3">{{ $testimonial->message }}</textarea>
                     </div>
                 </div>
-               
-               
+
+
                 <div class="row mb-3">
                     <div class="col-sm-3">
                         <h6 class="mb-0">Photo </h6>
@@ -75,10 +74,10 @@
                         <img id="showImage" src="{{ asset($testimonial->image) }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="80">
                     </div>
                 </div>
-               
-               
-               
-               
+
+
+
+
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9 text-secondary">
@@ -89,7 +88,7 @@
         </form>
 
         </div>
-            
+
 
 
     </div>
@@ -105,31 +104,31 @@
                         rules: {
                             name: {
                                 required : true,
-                            }, 
+                            },
                             postion: {
                                 required : true,
-                            }, 
+                            },
                             facebook: {
                                 required : true,
-                            }, 
-                            
-                            
+                            },
+
+
                         },
                         messages :{
                             name: {
                                 required : 'Please Enter Team Name',
-                            }, 
+                            },
                             postion: {
                                 required : 'Please Enter Team Postion',
-                            }, 
+                            },
                             facebook: {
                                 required : 'Please Enter Facebook Url',
                             },
-                            
-                             
-            
+
+
+
                         },
-                        errorElement : 'span', 
+                        errorElement : 'span',
                         errorPlacement: function (error,element) {
                             error.addClass('invalid-feedback');
                             element.closest('.form-group').append(error);
@@ -142,7 +141,7 @@
                         },
                     });
                 });
-                
+
             </script>
 
 
@@ -158,9 +157,9 @@
             });
         });
 
-        </script>   
-        
-        
+        </script>
+
+
 
 
 @endsection

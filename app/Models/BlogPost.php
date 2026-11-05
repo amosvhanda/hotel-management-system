@@ -18,5 +18,9 @@ class BlogPost extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-
+    /** Approved comments shown under the post. */
+    public function approvedComments()
+    {
+        return $this->hasMany(Comment::class, 'post_id', 'id')->where('status', '1');
+    }
 }

@@ -1,6 +1,5 @@
 @extends('admin.admin_dashboard')
 @section('admin') 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
 <div class="page-content">
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-5">
@@ -195,9 +194,8 @@
                         <div class="col-md-5">
                             <label for="">Payment Status</label>
         <select name="payment_status" id="input7" class="form-select">
-            <option selected="">Select Status..</option>
-            <option value="0" {{ $editData->payment_status == 0 ? 'selected':''}}> Pending </option>
-            <option value="1" {{ $editData->payment_status == 1?'selected':''}}>Complete </option> 
+            <option value="0" @selected($editData->payment_status == 0)>Unpaid</option>
+            <option value="1" @selected($editData->payment_status == 1)>Paid</option> 
         </select>
                   </div>
 
@@ -205,9 +203,8 @@
                   <div class="col-md-5">
                     <label for="">Booking Status</label>
 <select name="status" id="input7" class="form-select">
-    <option selected="">Select Status..</option>
-    <option value="0" {{ $editData->status == 0 ? 'selected':''}}> Pending </option>
-    <option value="1" {{ $editData->status == 1 ?'selected':''}}>Complete </option> 
+    <option value="0" @selected($editData->status == 0)>Pending</option>
+    <option value="1" @selected($editData->status == 1)>Confirmed (emails guest)</option> 
 </select>
           </div>
 

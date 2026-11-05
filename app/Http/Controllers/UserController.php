@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function Index(){
         return view('frontend.index');
-    }// End Method 
+    }// End Method
 
     public function UserProfile(){
 
@@ -19,9 +19,19 @@ class UserController extends Controller
         $profileData = User::find($id);
         return view('frontend.dashboard.edit_profile',compact('profileData'));
 
-    }// End Method 
+    }// End Method
 
     public function UserStore(Request $request){
+
+        $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|max:255|unique:users,email,' . Auth::id(),
+            'phone'     => 'nullable|string|max:30',
+            'address'   => 'nullable|string|max:255',
+            'instagram' => 'nullable|url|max:255',
+            'facebook'  => 'nullable|url|max:255',
+            'photo'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+        ]);
 
         $id = Auth::user()->id;
         $data = User::find($id);
@@ -29,11 +39,13 @@ class UserController extends Controller
         $data->email = $request->email;
         $data->phone = $request->phone;
         $data->address = $request->address;
+        $data->instagram = $request->instagram;
+        $data->facebook = $request->facebook;
 
         if($request->file('photo')){
             $file = $request->file('photo');
             @unlink(public_path('upload/user_images/'.$data->photo));
-            $filename = date('YmdHi').$file->getClientOriginalName();  
+            $filename = date('YmdHis') . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('upload/user_images'),$filename);
             $data['photo'] = $filename;
 
@@ -47,7 +59,7 @@ class UserController extends Controller
 
         return redirect()->back()->with($notification);
 
-    }// End Method 
+    }// End Method
 
 
     public function UserLogout(Request $request){
@@ -75,10 +87,10 @@ class UserController extends Controller
 
     public function ChangePasswordStore(Request $request){
 
-        // Validation 
+        // Validation
         $request->validate([
             'old_password' => 'required',
-            'new_password' => 'required|confirmed'
+            'new_password' => 'required|min:8|confirmed'
         ]);
 
         if(!Hash::check($request->old_password, auth::user()->password)){
@@ -87,25 +99,24 @@ class UserController extends Controller
                 'message' => 'Old Password Does not Match!',
                 'alert-type' => 'error'
             );
-    
+
             return back()->with($notification);
 
         }
 
-        /// Update The New Password 
+        /// Update The New Password
         User::whereId(auth::user()->id)->update([
             'password' => Hash::make($request->new_password)
         ]);
-        
+
         $notification = array(
             'message' => 'Password Change Successfully',
             'alert-type' => 'success'
         );
 
-        return back()->with($notification); 
+        return back()->with($notification);
 
-    }// End Method 
+    }// End Method
 
 
 }
- 

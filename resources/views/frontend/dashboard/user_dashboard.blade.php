@@ -1,93 +1,68 @@
 @extends('frontend.main_master')
+@section('title', 'My Account')
 @section('main')
 
-<!-- Inner Banner -->
 <div class="inner-banner inner-bg6">
     <div class="container">
         <div class="inner-title">
             <ul>
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
+                <li><a href="{{ route('home') }}">Home</a></li>
                 <li><i class='bx bx-chevron-right'></i></li>
-                <li>User Dashboard </li>
+                <li>My Account</li>
             </ul>
-            <h3>User Dashboard</h3>
+            <h3>Welcome back, {{ \Illuminate\Support\Str::before(Auth::user()->name, ' ') }}</h3>
         </div>
     </div>
 </div>
-<!-- Inner Banner End -->
 
-<!-- Service Details Area -->
-<div class="service-details-area pt-100 pb-70">
+<div class="pt-100 pb-70">
     <div class="container">
         <div class="row">
-             <div class="col-lg-3">
-
-           @include('frontend.dashboard.user_menu') 
-           
+            <div class="col-lg-3">
+                @include('frontend.dashboard.user_menu')
             </div>
-
 
             <div class="col-lg-9">
-                <div class="service-article">
-                    
-
-                    <div class="service-article-title">
-                        <h2>User Dashboard </h2>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="hms-kpi"><i class="bx bx-calendar"></i><div><strong>{{ $totalBookings }}</strong><span>Total bookings</span></div></div>
                     </div>
-
-                    <div class="service-article-content">
-                    <div class="row">
-
-<div class="col-md-4">
-<div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-<div class="card-header">Total Booking</div>
-<div class="card-body">
-<h1 class="card-title" style="font-size: 45px;">3 Total</h1>
-
-</div>
-</div>                   
- </div>
-
-     <div class="col-md-4">
-<div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
-<div class="card-header">Pending Booking </div>
-<div class="card-body">
-<h1 class="card-title" style="font-size: 45px;">3 Pending</h1>
-
-</div>
-</div>                   
- </div>
-
-
-     <div class="col-md-4">
-<div class="card text-white bg-success mb-3" style="max-width: 18rem;">
-<div class="card-header">Complete Booking</div>
-<div class="card-body">
-<h1 class="card-title" style="font-size: 45px;">3 Complete</h1>
-
-</div>
-</div>                   
- </div>
-
-
-
-
-                        
-                    </div>    
-                       
+                    <div class="col-md-4">
+                        <div class="hms-kpi"><i class="bx bx-time-five"></i><div><strong>{{ $pendingBookings }}</strong><span>Pending</span></div></div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="hms-kpi"><i class="bx bx-check-circle"></i><div><strong>{{ $completedBookings }}</strong><span>Confirmed</span></div></div>
+                    </div>
+                </div>
 
-                    
+                @if ($nextStay)
+                    <div class="hms-card">
+                        <h3>Your next stay</h3>
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-7">
+                                <h4 class="mb-1">{{ $nextStay->room->type->name ?? 'Room' }}</h4>
+                                <p class="text-muted mb-2">Booking #{{ $nextStay->code }} · {{ $nextStay->number_of_rooms }} room(s) · {{ $nextStay->persion }} guest(s)</p>
+                                @include('frontend.dashboard._booking_badges', ['item' => $nextStay])
+                            </div>
+                            <div class="col-md-5">
+                                <div class="hms-dates m-0">
+                                    <div><small>Check-in</small><strong>{{ \Carbon\Carbon::parse($nextStay->check_in)->format('D, d M') }}</strong></div>
+                                    <div><small>Check-out</small><strong>{{ \Carbon\Carbon::parse($nextStay->check_out)->format('D, d M') }}</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="hms-card">
+                    <h3 class="d-flex justify-content-between align-items-center">
+                        Recent bookings
+                        <a href="{{ route('user.booking') }}" class="fs-6">View all</a>
+                    </h3>
+                    @include('frontend.dashboard._booking_table', ['bookings' => $recentBookings])
                 </div>
             </div>
-
-           
         </div>
     </div>
 </div>
-<!-- Service Details Area End -->
-
-
 @endsection

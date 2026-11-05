@@ -1,41 +1,29 @@
 @php
+    $site = $site ?? App\Models\SiteSetting::current();
     $team = App\Models\Team::latest()->get();
 @endphp
 
-<div class="team-area-three pt-100 pb-70">
+@if ($team->isNotEmpty())
+<section class="hms-band hms-band--paper">
     <div class="container">
-        <div class="section-title text-center">
-            <span class="sp-color">TEAM</span>
-            <h2>Let's Meet Up With Our Special Team Members</h2>
+        <div class="hms-section-head">
+            <p class="hms-kicker hms-kicker--dark">{{ $site->home('team_kicker') }}</p>
+            <h2>{{ $site->home('team_title') }}</h2>
         </div>
-        <div class="team-slider-two owl-carousel owl-theme pt-45">
-            
-            @foreach ($team as $item) 
-            <div class="team-item">
-                <a href="team.html">
-                    <img src="{{ asset($item->image) }}" alt="Images">
-                </a>
-                <div class="content">
-                    <h3><a href="team.html">{{ $item->name }}</a></h3>
-                    <span>{{ $item->postion }}</span>
-                    <ul class="social-link">
-                        <li>
-                            <a href="{{ $item->facebook }}" target="_blank"><i class='bx bxl-facebook'></i></a>
-                        </li> 
-                        <li>
-                            <a href="#" target="_blank"><i class='bx bxl-twitter'></i></a>
-                        </li> 
-                        <li>
-                            <a href="#" target="_blank"><i class='bx bxl-instagram'></i></a>
-                        </li> 
-                        <li>
-                            <a href="#" target="_blank"><i class='bx bxl-pinterest-alt'></i></a>
-                        </li> 
-                    </ul>
-                </div>
-            </div>
+        <div class="hms-people">
+            @foreach ($team as $item)
+                <article class="hms-person">
+                    <a href="{{ route('about') }}">
+                        <img src="{{ asset($item->image) }}" alt="{{ $item->name }}">
+                    </a>
+                    <h3><a href="{{ route('about') }}">{{ $item->name }}</a></h3>
+                    <p>{{ $item->postion }}</p>
+                    @if (filled($item->facebook) && $item->facebook !== '#')
+                        <a class="hms-person__social" href="{{ $item->facebook }}" target="_blank" rel="noopener" aria-label="{{ $item->name }} on Facebook"><i class="bx bxl-facebook"></i></a>
+                    @endif
+                </article>
             @endforeach
-             
         </div>
     </div>
-</div>
+</section>
+@endif

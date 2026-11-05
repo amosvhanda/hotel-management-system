@@ -1,66 +1,131 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Hotel Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A complete hotel website and back office built with Laravel 10, designed and developed by **Amos Vhanda**.
 
-## About Laravel
+Guests can browse rooms, check live availability, book online and pay at the hotel or with **EcoCash** or **NetOne OneMoney** through Paynow. Staff get a full admin panel for bookings, rooms, payments, content and user roles.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Guest website**
+- Room listing, room details and live availability search (no overbooking)
+- Online checkout: *Pay at hotel*, *EcoCash* or *NetOne OneMoney* (Paynow express checkout)
+- Live payment-status page while the guest approves on their phone
+- Guest account: overview, upcoming stay, booking history, PDF invoices, profile and password
+- Services, gallery, blog with comments, team, testimonials, about and contact pages
+- Hotel name, logo, contact details, social links and SEO tags all managed from Site Settings
 
-## Learning Laravel
+**Admin panel**
+- Dashboard: arrivals/departures today, occupancy, monthly revenue, unpaid balance, 12-month chart
+- Bookings: edit dates, assign room numbers, confirm (emails the guest), mark paid, PDF invoice
+- Rooms, room types, room numbers, services (with images), team, testimonials, gallery, blog, comments
+- Booking reports by date, contact messages, notifications
+- Roles & permissions (Super Admin, Admin, Manager, Receptionist) and staff accounts
+- SMTP and site settings
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Requirements
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.1+ with `pdo_mysql`, `gd`, `mbstring`, `xml`, `zip`
+- MySQL 5.7+ / MariaDB 10.3+
+- Composer
 
-## Laravel Sponsors
+## Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+# set DB_DATABASE / DB_USERNAME / DB_PASSWORD in .env
+php artisan migrate --seed
+php artisan serve
+```
 
-### Premium Partners
+Seeded accounts (change these passwords immediately):
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+| Role        | Email             | Password   |
+|-------------|-------------------|------------|
+| Super Admin | admin@gmail.com   | `password` |
+| Guest       | user@gmail.com    | `password` |
 
-## Contributing
+Staff sign in at `/admin/login`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Upgrading an existing database
 
-## Code of Conduct
+```bash
+php artisan migrate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+This adds the services table and images, service permissions, Paynow tracking fields and the permission `group_name` column if they are missing. Existing data is kept.
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Paynow (EcoCash / NetOne OneMoney)
 
-## License
+1. Create an integration in your Paynow merchant dashboard.
+2. Add the credentials to `.env`:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   ```
+   PAYNOW_INTEGRATION_ID=your-id
+   PAYNOW_INTEGRATION_KEY=your-key
+   ```
+
+3. Run `php artisan config:clear`.
+4. Your site must be reachable from the internet so Paynow can post results to `https://your-domain/paynow/result`.
+
+How it works: the booking is saved first, then a payment prompt is sent to the guest's phone. When Paynow confirms, the booking is marked **Paid** and admins are notified. Cancelled or failed payments release the room dates automatically. Until the keys are set, the mobile-money options show a friendly "not available" message and guests can still book with *Pay at hotel*.
+
+## Email
+
+Booking confirmations use the SMTP details saved in **Admin → Settings → SMTP**. If those are empty, the `MAIL_*` values in `.env` are used.
+
+---
+
+## Demo data (Zimbabwe)
+
+```bash
+php artisan db:seed --class=ZimbabweDemoSeeder
+```
+
+Fills the site with **fictional** sample content: *Mopane Heights Hotel* in Harare, rooms priced in USD, Zimbabwean staff names, guest reviews, blog posts and services. Safe to run more than once; it never changes logins or passwords. **Replace the sample hotel details, team and reviews with your real ones before going live.**
+
+---
+
+## Automated tests
+
+```bash
+php artisan test
+```
+
+85 tests (in-memory SQLite, nothing touches your real data) covering: public pages and links, availability and overbooking, the booking and checkout flow, EcoCash/OneMoney Paynow callbacks (paid, forged, underpaid, cancelled), access control, admin actions, emails and the demo seeder. Run them before every deployment.
+
+---
+
+## Deploying to production
+
+1. **Server:** PHP 8.1+ (`pdo_mysql`, `gd`, `mbstring`, `xml`, `zip`, `fileinfo`), MySQL/MariaDB, HTTPS certificate.
+2. **Upload the code** (without `vendor/`, `node_modules/`, `.env`) and run `composer install --no-dev --optimize-autoloader`.
+3. **Point the web root at `public/`** (never at the project folder).
+4. **Create `.env`** from `.env.example` and set:
+   ```
+   APP_ENV=production
+   APP_DEBUG=false
+   APP_URL=https://your-domain.co.zw
+   DB_CONNECTION=mysql   # plus DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+   PAYNOW_INTEGRATION_ID=...
+   PAYNOW_INTEGRATION_KEY=...
+   ```
+   then `php artisan key:generate` (new installs only).
+5. **Database:** `php artisan migrate --force` (add `--seed` on a brand-new database), or import your existing data first.
+6. **Permissions:** `storage/`, `bootstrap/cache/` and `public/upload/` must be writable by the web server.
+7. **Cache for speed:** `php artisan optimize` (run `php artisan optimize:clear` whenever you change `.env` or deploy new code).
+8. **Paynow:** in the Paynow dashboard, make sure your site is reachable at `https://your-domain/paynow/result`.
+9. **Email:** enter real SMTP details in **Admin → Settings → SMTP** and send yourself a test booking confirmation.
+10. **Backups:** schedule a daily database backup (e.g. `mysqldump`) and keep a copy of `public/upload/`.
+11. **After going live:** change the seeded passwords, remove sample accounts you don't use, and check `storage/logs/laravel.log` for errors.
+
+---
+
+© Amos Vhanda. All rights reserved.

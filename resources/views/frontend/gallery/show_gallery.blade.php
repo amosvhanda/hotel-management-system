@@ -1,60 +1,32 @@
 @extends('frontend.main_master')
+@section('title', 'Gallery')
 @section('main')
 
-  <!-- Inner Banner -->
-  <div class="inner-banner inner-bg3">
-    <div class="container">
-        <div class="inner-title">
-            <ul>
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
-                <li><i class='bx bx-chevron-right'></i></li>
-                <li>Gallery</li>
-            </ul>
-            <h3>Gallery</h3>
-        </div>
-    </div>
-</div>
-<!-- Inner Banner End -->
+@php($site = App\Models\SiteSetting::current())
+@include('frontend.body.page_head', [
+    'kicker' => $site->home('gallery_kicker'),
+    'title' => $site->home('gallery_title'),
+])
 
-<!-- Gallery Area -->
-<div class="gallery-area pt-100 pb-70">
+<section class="hms-band hms-band--paper">
     <div class="container">
-        <div class="tab gallery-tab">
-            
-
-            <div class="tab_content current active pt-45">
-                <div class="tabs_item current">
-                    <div class="gallery-tab-item">
-                        <div class="gallery-view">
-                            <div class="row">
-                                
-                @foreach ($gallery as $item) 
-                <div class="col-lg-4 col-sm-6">
-                    <div class="single-gallery">
-                        <img src="{{ asset($item->photo_name) }}" alt="Images">
-                        <a href="{{ asset($item->photo_name) }}" class="gallery-icon">
-                            <i class='bx bx-plus'></i>
+        @if ($gallery->isEmpty())
+            <p class="hms-empty">Photographs will appear here once they are added.</p>
+        @else
+            <div class="hms-gallery gallery-view">
+                @foreach ($gallery as $item)
+                    <figure class="hms-gallery__item">
+                        <a href="{{ asset($item->photo_name) }}?v=3" class="gallery-icon">
+                            <img src="{{ asset($item->photo_name) }}?v=3" alt="{{ $item->caption ?: $site->name }}">
                         </a>
-                    </div>
-                </div> 
-                @endforeach 
-
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-              
-
-
+                        @if ($item->caption)
+                            <figcaption>{{ $item->caption }}</figcaption>
+                        @endif
+                    </figure>
+                @endforeach
             </div>
-        </div>
+        @endif
     </div>
-</div>
-<!-- Gallery Area End -->
- 
+</section>
 
 @endsection

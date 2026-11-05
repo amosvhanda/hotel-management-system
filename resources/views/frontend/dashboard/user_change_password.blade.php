@@ -1,7 +1,6 @@
 @extends('frontend.main_master')
 @section('main')
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
   <!-- Inner Banner -->
   <div class="inner-banner inner-bg6">
@@ -9,7 +8,7 @@
         <div class="inner-title">
             <ul>
                 <li>
-                    <a href="index.html">Home</a>
+                    <a href="{{ route('home') }}">Home</a>
                 </li>
                 <li><i class='bx bx-chevron-right'></i></li>
                 <li>User Change Password </li>

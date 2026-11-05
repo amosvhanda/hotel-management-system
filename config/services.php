@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'paynow' => [
+        'integration_id' => env('PAYNOW_INTEGRATION_ID'),
+        'integration_key' => env('PAYNOW_INTEGRATION_KEY'),
+    ],
+
 ];

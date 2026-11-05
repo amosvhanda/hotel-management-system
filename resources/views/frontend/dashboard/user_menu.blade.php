@@ -1,38 +1,20 @@
 @php
-$id = Auth::user()->id;
-$profileData = App\Models\User::find($id);
+    $me = Auth::user();
+    $link = fn ($route) => request()->routeIs($route) ? 'active' : '';
 @endphp
 
-<div class="service-side-bar"> 
-    <div class="services-bar-widget">
-        <h3 class="title">User Sidebar </h3>
-        <div class="side-bar-categories">
-<img src="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/no_image.jpg') }}" class="rounded mx-auto d-block" alt="Image" style="width:100px; height:100px;">
-<center>
-<b> {{ $profileData->name }}</b><br> 
-<b>{{ $profileData->email }}</b>
-</center>
-<br>
-<ul> 
-
-<li>
-<a href="{{ route('dashboard') }}">User Dashboard</a>
-</li>
-<li>
-<a href="{{ route('user.profile') }}">User Profile </a>
-</li>
-<li>
-<a href="{{ route('user.change.password') }}">Change Password</a>
-</li>
-<li>
-<a href="{{ route('user.booking') }}">Booking Details </a>
-</li>
-<li>
-<a href="{{ route('user.logout') }}">Logout </a>
-</li>
-</ul>
-        </div>
+<div class="hms-card">
+    <div class="hms-account-head">
+        <img src="{{ $me->photo ? url('upload/user_images/' . $me->photo) : url('upload/no_image.jpg') }}" alt="{{ $me->name }}">
+        <h4>{{ $me->name }}</h4>
+        <p>{{ $me->email }}</p>
     </div>
 
-   
+    <ul class="hms-account-nav">
+        <li><a href="{{ route('dashboard') }}" class="{{ $link('dashboard') }}"><i class="bx bx-grid-alt"></i> Overview</a></li>
+        <li><a href="{{ route('user.booking') }}" class="{{ $link('user.booking') }}"><i class="bx bx-calendar-check"></i> My Bookings</a></li>
+        <li><a href="{{ route('user.profile') }}" class="{{ $link('user.profile') }}"><i class="bx bx-user"></i> My Profile</a></li>
+        <li><a href="{{ route('user.change.password') }}" class="{{ $link('user.change.password') }}"><i class="bx bx-lock-alt"></i> Change Password</a></li>
+        <li><a href="{{ route('user.logout') }}"><i class="bx bx-log-out"></i> Sign Out</a></li>
+    </ul>
 </div>

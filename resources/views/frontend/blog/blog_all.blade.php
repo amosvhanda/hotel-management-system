@@ -1,25 +1,13 @@
 @extends('frontend.main_master')
 @section('main')
 
-    <!-- Inner Banner -->
-    <div class="inner-banner inner-bg4">
-        <div class="container">
-            <div class="inner-title">
-                <ul>
-                    <li>
-                        <a href="index.html">Home</a>
-                    </li>
-                    <li><i class='bx bx-chevron-right'></i></li>
-                    <li>Blog</li>
-                </ul>
-                <h3>Blog</h3>
-            </div>
-        </div>
-    </div>
-    <!-- Inner Banner End -->
+@php($site = App\Models\SiteSetting::current())
+@include('frontend.body.page_head', [
+    'kicker' => $site->home('journal_kicker'),
+    'title' => $site->home('journal_title'),
+])
 
-    <!-- Blog Style Area -->
-    <div class="blog-style-area pt-100 pb-70">
+    <div class="blog-style-area hms-band hms-band--paper">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
@@ -44,8 +32,8 @@
                             <a href="{{ url('blog/details/'.$item->post_slug) }}">{{ $item->post_titile }}</a>
                         </h3>
                         <p>{{ $item->short_descp }}</p>
-                        <a href="{{ url('blog/details/'.$item->post_slug) }}" class="read-btn">
-                            Read More
+                        <a href="{{ url('blog/details/'.$item->post_slug) }}" class="hms-text-link">
+                            Read more
                         </a>
                     </div>
                 </div>
@@ -66,14 +54,6 @@
 
                 <div class="col-lg-4">
                     <div class="side-bar-wrap">
-                        <div class="search-widget">
-                            <form class="search-form">
-                                <input type="search" class="form-control" placeholder="Search...">
-                                <button type="submit">
-                                    <i class="bx bx-search"></i>
-                                </button>
-                            </form>
-                        </div>
                         <div class="services-bar-widget">
                             <h3 class="title">Blog Category</h3>
                             <div class="side-bar-categories">
@@ -91,25 +71,14 @@
                             <div class="widget-popular-post">
                                 @foreach ($lpost as $post)   
                             <article class="item">
-                                <a href="blog-details.html" class="thumb">
-                <img src="{{ asset($post->post_image) }}" alt="Images" style="width: 80px; height:80px;">      
+                                <a href="{{ url('blog/details/'.$post->post_slug) }}" class="thumb">
+                                    <img src="{{ asset($post->post_image) }}" alt="{{ $post->post_titile }}" style="width: 80px; height:80px;">
                                 </a>
                                 <div class="info">
                                     <h4 class="title-text">
-                                        <a href="blog-details.html">
-                                            {{ $post->post_titile }}
-                                        </a>
+                                        <a href="{{ url('blog/details/'.$post->post_slug) }}">{{ $post->post_titile }}</a>
                                     </h4>
-                                    <ul>
-                                        <li>
-                                            <i class='bx bx-user'></i>
-                                            29K
-                                        </li>
-                                        <li>
-                                            <i class='bx bx-message-square-detail'></i>
-                                            15K
-                                        </li>
-                                    </ul>
+                                    <p>{{ $post->created_at?->format('M d, Y') }}</p>
                                 </div>
                             </article>
                             @endforeach

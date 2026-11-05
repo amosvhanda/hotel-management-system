@@ -9,4 +9,8 @@ class Gallery extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    protected $casts = [
+        'show_on_home' => 'boolean',
+    ];
 }

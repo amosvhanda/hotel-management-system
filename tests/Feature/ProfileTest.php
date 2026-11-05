@@ -4,96 +4,69 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
+/** The guest account pages (My Profile, Change Password). */
 class ProfileTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_profile_page_is_displayed(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this
-            ->actingAs($user)
-            ->get('/profile');
-
-        $response->assertOk();
+        $this->actingAs(User::factory()->create())
+            ->get('/profile')
+            ->assertOk()
+            ->assertSee('My Profile');
     }
 
     public function test_profile_information_can_be_updated(): void
     {
         $user = User::factory()->create();
 
-        $response = $this
-            ->actingAs($user)
-            ->patch('/profile', [
-                'name' => 'Test User',
-                'email' => 'test@example.com',
-            ]);
-
-        $response
+        $this->actingAs($user)
+            ->post('/profile/store', ['name' => 'Tendai Moyo', 'email' => 'tendai@example.com', 'phone' => '0771234567'])
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/profile');
+            ->assertRedirect();
 
         $user->refresh();
-
-        $this->assertSame('Test User', $user->name);
-        $this->assertSame('test@example.com', $user->email);
-        $this->assertNull($user->email_verified_at);
+        $this->assertSame('Tendai Moyo', $user->name);
+        $this->assertSame('tendai@example.com', $user->email);
     }
 
-    public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void
+    public function test_email_must_be_unique(): void
+    {
+        User::factory()->create(['email' => 'taken@example.com']);
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post('/profile/store', ['name' => 'X', 'email' => 'taken@example.com'])
+            ->assertSessionHasErrors('email');
+    }
+
+    public function test_password_can_be_changed(): void
     {
         $user = User::factory()->create();
 
-        $response = $this
-            ->actingAs($user)
-            ->patch('/profile', [
-                'name' => 'Test User',
-                'email' => $user->email,
-            ]);
+        $this->actingAs($user)->post('/password/change/password', [
+            'old_password' => 'password',
+            'new_password' => 'NewSecret123',
+            'new_password_confirmation' => 'NewSecret123',
+        ])->assertSessionHasNoErrors();
 
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect('/profile');
-
-        $this->assertNotNull($user->refresh()->email_verified_at);
+        $this->assertTrue(Hash::check('NewSecret123', $user->refresh()->password));
     }
 
-    public function test_user_can_delete_their_account(): void
+    public function test_wrong_current_password_is_refused(): void
     {
         $user = User::factory()->create();
 
-        $response = $this
-            ->actingAs($user)
-            ->delete('/profile', [
-                'password' => 'password',
-            ]);
+        $this->actingAs($user)->post('/password/change/password', [
+            'old_password' => 'not-my-password',
+            'new_password' => 'NewSecret123',
+            'new_password_confirmation' => 'NewSecret123',
+        ]);
 
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect('/');
-
-        $this->assertGuest();
-        $this->assertNull($user->fresh());
-    }
-
-    public function test_correct_password_must_be_provided_to_delete_account(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this
-            ->actingAs($user)
-            ->from('/profile')
-            ->delete('/profile', [
-                'password' => 'wrong-password',
-            ]);
-
-        $response
-            ->assertSessionHasErrorsIn('userDeletion', 'password')
-            ->assertRedirect('/profile');
-
-        $this->assertNotNull($user->fresh());
+        $this->assertTrue(Hash::check('password', $user->refresh()->password));
     }
 }

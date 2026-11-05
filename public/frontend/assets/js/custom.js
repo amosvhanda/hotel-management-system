@@ -362,44 +362,41 @@
         $("#validator-newsletter").removeClass().addClass(msgClasses).text(msg);
     }
         
-    // AJAX MailChimp
-    $(".newsletter-form").ajaxChimp({
-        url: "https://envyTheme.us20.list-manage.com/subscribe/post?u=60e1ffe2e8a68ce1204cd39a5&amp;id=42d6d188d9", // Your url MailChimp
-        callback: callbackFunction
-    });
+    // Newsletter: the theme's demo Mailchimp list has been removed so subscriber
+    // emails are never sent to a third party. Add your own Mailchimp URL here to enable it.
+    var MAILCHIMP_URL = "";
+    if (MAILCHIMP_URL && $.fn.ajaxChimp) {
+        $(".newsletter-form").ajaxChimp({ url: MAILCHIMP_URL, callback: callbackFunction });
+    }
 
     // Preloader JS
     jQuery(window).on('load',function(){
         jQuery(".preloader").fadeOut(500);
     });
 
-     // Switch Btn
-     $('body').append("<div class='switch-box'><label id='switch' class='switch'><input type='checkbox' onchange='toggleTheme()' id='slider'><span class='slider round'></span></label></div>");
-
 })(jQuery);
 
-// function to set a given theme/color-scheme
-function setTheme(themeName) {
-    localStorage.setItem('theme', themeName);
-    document.documentElement.className = themeName;
+function hmsPaintTheme() {
+    var dark = document.documentElement.classList.contains('theme-dark');
+    document.querySelectorAll('.hms-theme').forEach(function (btn) {
+        btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+        var icon = btn.querySelector('i');
+        if (icon) {
+            icon.className = dark ? 'bx bx-sun' : 'bx bx-moon';
+        }
+    });
 }
 
-// function to toggle between light and dark theme
-function toggleTheme() {
-    if (localStorage.getItem('theme') === 'theme-dark') {
-        setTheme('theme-light');
-    } else {
-        setTheme('theme-dark');
+document.addEventListener('click', function (event) {
+    var btn = event.target.closest('.hms-theme');
+    if (!btn) {
+        return;
     }
-}
+    var next = document.documentElement.classList.contains('theme-dark') ? 'theme-light' : 'theme-dark';
+    document.documentElement.className = next;
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    hmsPaintTheme();
+});
 
-// Immediately invoked function to set the theme on initial load
-(function () {
-    if (localStorage.getItem('theme') === 'theme-dark') {
-        setTheme('theme-dark');
-        document.getElementById('slider').checked = false;
-    } else {
-        setTheme('theme-light');
-      document.getElementById('slider').checked = true;
-    }
-})();
+document.addEventListener('DOMContentLoaded', hmsPaintTheme);
