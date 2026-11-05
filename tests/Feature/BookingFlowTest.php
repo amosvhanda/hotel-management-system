@@ -57,7 +57,7 @@ class BookingFlowTest extends TestCase
         $room = $this->makeRoom(2); // $100/night, 10% discount
 
         $this->startBooking($guest, $room, 1, 10, 12)->assertRedirect(route('checkout'));
-        $this->get('/checkout')->assertOk()->assertSee('Complete Your Booking');
+        $this->get('/checkout')->assertOk()->assertSee('Complete your booking');
 
         $this->post('/checkout/store/', $this->guestDetails())->assertRedirect(route('user.booking'));
 

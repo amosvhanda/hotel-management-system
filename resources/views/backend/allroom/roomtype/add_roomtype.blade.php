@@ -30,10 +30,10 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0"> Room Type Name</h6>
+                        <label class="form-label mb-0" for="f-name">Room Type Name</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input type="text" name="name" class="form-control"  />
+                        <input id="f-name" type="text" name="name" class="form-control"  />
                     </div>
                 </div>
                 
@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+                        <input type="submit" class="btn btn-primary px-4" value="Add room type" />
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                         },
                         messages :{
                             name: {
-                                required : 'Please Enter Team Name',
+                                required : 'Please enter a name',
                             }, 
                              
                              

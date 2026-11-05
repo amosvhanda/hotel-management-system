@@ -36,8 +36,8 @@
                  
     
     <div class="col-md-6">
-        <label for="input1" class="form-label">Xlsx File Import</label>
-        <input type="file" name="import_file" class="form-control"   >
+        <label for="f-import_file" class="form-label">Xlsx File Import</label>
+        <input id="f-import_file" type="file" name="import_file" class="form-control"   >
          
     </div>
  

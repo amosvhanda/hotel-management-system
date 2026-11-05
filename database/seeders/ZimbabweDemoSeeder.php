@@ -6,6 +6,7 @@ use App\Models\BlogCategory;
 use App\Models\BlogPost;
 use App\Models\BookArea;
 use App\Models\Booking;
+use App\Models\Facility;
 use App\Models\Faq;
 use App\Models\Gallery;
 use App\Models\Room;
@@ -97,16 +98,20 @@ class ZimbabweDemoSeeder extends Seeder
         $profiles = [
             ['name' => 'Standard Single Room', 'price' => 65, 'discount' => 0, 'capacity' => 1, 'adult' => 1, 'child' => 0, 'size' => 180, 'view' => 'City View', 'bed' => 'Queen Bed',
              'short' => 'A bright, quiet room for business travellers and solo guests, with a work desk, free Wi-Fi and a rain shower.',
-             'long'  => 'Our Standard Single Rooms are ideal for a short business trip or a city break in Harare. Each room has a comfortable queen bed, a work desk, smart TV, free high-speed Wi-Fi, tea and coffee station and an en-suite bathroom with a rain shower. Breakfast is available in our restaurant every morning.'],
+             'long'  => 'Our Standard Single Rooms are ideal for a short business trip or a city break in Harare. Each room has a comfortable queen bed, a work desk, smart TV, free high-speed Wi-Fi, tea and coffee station and an en-suite bathroom with a rain shower. Breakfast is available in our restaurant every morning.',
+             'features' => ['Free Wi-Fi', 'Air conditioning', 'Smart TV', 'Work desk', 'Tea & coffee station', 'Hair dryer', 'Safety box', 'Electronic door lock', 'Smoke alarms', 'Wake-up service', 'Slippers', 'Rain shower']],
             ['name' => 'Deluxe Double Room', 'price' => 95, 'discount' => 10, 'capacity' => 2, 'adult' => 2, 'child' => 1, 'size' => 240, 'view' => 'Garden View', 'bed' => 'King Bed',
              'short' => 'Spacious room with a king bed and garden views — perfect for couples visiting Harare.',
-             'long'  => 'Relax in our Deluxe Double Rooms overlooking the hotel gardens. Enjoy a king-size bed, sitting area, smart TV, air conditioning, minibar, free Wi-Fi and a modern bathroom. A great choice for couples and weekend getaways.'],
+             'long'  => 'Relax in our Deluxe Double Rooms overlooking the hotel gardens. Enjoy a king-size bed, sitting area, smart TV, air conditioning, minibar, free Wi-Fi and a modern bathroom. A great choice for couples and weekend getaways.',
+             'features' => ['Free Wi-Fi', 'Air conditioning', 'Smart TV', 'Work desk', 'Tea & coffee station', 'Hair dryer', 'Safety box', 'Electronic door lock', 'Smoke alarms', 'Wake-up service', 'Slippers', 'Rain shower', 'Minibar', 'Sitting area', 'Laundry & dry cleaning']],
             ['name' => 'Twin Room', 'price' => 110, 'discount' => 0, 'capacity' => 2, 'adult' => 2, 'child' => 1, 'size' => 260, 'view' => 'Pool View', 'bed' => 'Twin Beds',
              'short' => 'Two comfortable single beds and a view of the pool — great for colleagues, friends or family.',
-             'long'  => 'Our Twin Rooms have two single beds, plenty of storage, a work desk, smart TV, air conditioning and free Wi-Fi. Ideal for colleagues attending a conference in Harare, friends travelling together or a parent with a child.'],
+             'long'  => 'Our Twin Rooms have two single beds, plenty of storage, a work desk, smart TV, air conditioning and free Wi-Fi. Ideal for colleagues attending a conference in Harare, friends travelling together or a parent with a child.',
+             'features' => ['Free Wi-Fi', 'Air conditioning', 'Smart TV', 'Work desk', 'Tea & coffee station', 'Hair dryer', 'Safety box', 'Electronic door lock', 'Smoke alarms', 'Wake-up service', 'Slippers', 'Rain shower', 'Minibar', 'Laundry & dry cleaning', 'Pool access']],
             ['name' => 'Executive Suite', 'price' => 180, 'discount' => 10, 'capacity' => 3, 'adult' => 2, 'child' => 2, 'size' => 420, 'view' => 'City View', 'bed' => 'King Bed',
              'short' => 'Our most spacious suite with a separate lounge, king bed and panoramic views over the city.',
-             'long'  => 'The Executive Suite offers a separate lounge and bedroom, king-size bed, dining area, Nespresso machine, minibar, bathtub and walk-in shower. Includes complimentary breakfast and airport transfer from Robert Gabriel Mugabe International Airport.'],
+             'long'  => 'The Executive Suite offers a separate lounge and bedroom, king-size bed, dining area, Nespresso machine, minibar, bathtub and walk-in shower. Includes complimentary breakfast and airport transfer from Robert Gabriel Mugabe International Airport.',
+             'features' => ['Free Wi-Fi', 'Air conditioning', 'Smart TV', 'Work desk', 'Tea & coffee station', 'Hair dryer', 'Safety box', 'Electronic door lock', 'Smoke alarms', 'Wake-up service', 'Slippers', 'Walk-in shower', 'Bathtub', 'Minibar', 'Nespresso machine', 'Separate lounge', 'Dining area', 'Complimentary breakfast', 'Airport transfer', '24-hour room service', 'Laundry & dry cleaning', 'Pool access']],
         ];
 
         foreach (Room::orderBy('id')->get()->values() as $i => $room) {
@@ -124,6 +129,12 @@ class ZimbabweDemoSeeder extends Seeder
                 'short_desc'    => $p['short'],
                 'description'   => $p['long'],
             ]);
+
+            // Replace the room's features so every filter chip on /rooms has real data behind it.
+            Facility::where('rooms_id', $room->id)->delete();
+            foreach ($p['features'] as $feature) {
+                Facility::create(['rooms_id' => $room->id, 'facility_name' => $feature]);
+            }
         }
     }
 

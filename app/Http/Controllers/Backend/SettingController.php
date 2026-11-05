@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SmtpSetting;
 use App\Models\SiteSetting;
+use Illuminate\Support\Facades\Schema;
 use Intervention\Image\Facades\Image;
 
 class SettingController extends Controller
@@ -26,6 +27,46 @@ class SettingController extends Controller
             'message' => 'SMTP settings updated successfully',
             'alert-type' => 'success'
         ]);
+    }
+
+    public function Theme()
+    {
+        $site = SiteSetting::orderBy('id')->first() ?? SiteSetting::create(['site_name' => config('app.name')]);
+        $ready = Schema::hasColumn('site_settings', 'theme');
+
+        return view('backend.setting.theme', [
+            'site' => $site,
+            'colors' => $site->themeColors(),
+            'defaults' => SiteSetting::THEME_DEFAULTS,
+            'ready' => $ready,
+        ]);
+    }
+
+    public function ThemeUpdate(Request $request)
+    {
+        if (! Schema::hasColumn('site_settings', 'theme')) {
+            return back()->with(['message' => 'Run "php artisan migrate" first, then save again.', 'alert-type' => 'error']);
+        }
+
+        $rules = [];
+        foreach (array_keys(SiteSetting::THEME_DEFAULTS) as $key) {
+            $rules[$key] = ['required', 'regex:/^#[0-9a-fA-F]{6}$/'];
+        }
+        $data = $request->validate($rules, ['*.regex' => 'Use a colour like #1f3a2b.']);
+
+        $site = SiteSetting::orderBy('id')->firstOrFail();
+        $site->update(['theme' => array_map('strtolower', $data)]);
+
+        return back()->with(['message' => 'Brand colours saved. They now apply to the website, sign-in pages and admin.', 'alert-type' => 'success']);
+    }
+
+    public function ThemeReset()
+    {
+        if (Schema::hasColumn('site_settings', 'theme')) {
+            SiteSetting::orderBy('id')->first()?->update(['theme' => null]);
+        }
+
+        return redirect()->route('theme.setting')->with(['message' => 'Brand colours reset to the original palette.', 'alert-type' => 'success']);
     }
 
     public function SiteSetting()

@@ -31,7 +31,7 @@
         @csrf
         
         <div class="col-md-4">
-            <label for="roomtype_id" class="form-label">Room Type</label>
+            <label for="room_id" class="form-label">Room Type</label>
             <select name="room_id" id="room_id" class="form-select">
                 <option selected="">Select Room Type </option>
                 @foreach ($roomtype as $item) 
@@ -40,20 +40,20 @@
             </select>
         </div>
         <div class="col-md-4">
-            <label for="input2" class="form-label">Checkin</label>
+            <label for="check_in" class="form-label">Check-in</label>
      <input type="date" name="check_in" class="form-control" id="check_in"  >
         </div>
 
         <div class="col-md-4">
-            <label for="input2" class="form-label">CheckOut</label>
+            <label for="check_out" class="form-label">Check-out</label>
             <input type="date" name="check_out"  class="form-control" id="check_out" >
         </div>
 
 
 
         <div class="col-md-4">
-            <label for="input3" class="form-label">Room</label>
-            <input type="number" name="number_of_rooms" class="form-control" >
+            <label for="f-number_of_rooms" class="form-label">Room</label>
+            <input id="f-number_of_rooms" type="number" name="number_of_rooms" class="form-control" >
 
             <input type="hidden" name="available_room" id="available_room" class="form-control" >
             <div class="mt-2">
@@ -64,7 +64,7 @@
 
 
         <div class="col-md-4">
-            <label for="input4" class="form-label">Guest</label>
+            <label for="number_of_person" class="form-label">Guest</label>
             <input type="text" name="number_of_person" class="form-control" id="number_of_person"  >
         </div>
 
@@ -76,40 +76,40 @@
         </div>
 
         <div class="col-md-4">
-            <label for="input5" class="form-label">Email</label>
-            <input type="email" name="email" class="form-control"   value="{{ old('email') }}"  >
+            <label for="f-email" class="form-label">Email</label>
+            <input id="f-email" type="email" name="email" class="form-control"   value="{{ old('email') }}"  >
         </div>
 
         <div class="col-md-4">
-            <label for="input5" class="form-label">Phone</label>
-            <input type="text" name="phone" class="form-control" value="{{ old('phone') }}"  >
+            <label for="f-phone" class="form-label">Phone</label>
+            <input id="f-phone" type="text" name="phone" class="form-control" value="{{ old('phone') }}"  >
         </div>
 
         <div class="col-md-4">
-            <label for="input5" class="form-label">Country</label>
-            <input type="text" name="country" class="form-control" value="{{ old('country') }}"  >
+            <label for="f-country" class="form-label">Country</label>
+            <input id="f-country" type="text" name="country" class="form-control" value="{{ old('country') }}"  >
         </div>
 
         <div class="col-md-4">
-            <label for="input5" class="form-label">Zip Code</label>
-            <input type="text" name="zip_code" class="form-control" value="{{ old('zip_code') }}"  >
+            <label for="f-zip_code" class="form-label">Zip Code</label>
+            <input id="f-zip_code" type="text" name="zip_code" class="form-control" value="{{ old('zip_code') }}"  >
         </div>
 
         <div class="col-md-4">
-            <label for="input5" class="form-label">State</label>
-            <input type="text" name="state" class="form-control" value="{{ old('state') }}"  >
+            <label for="f-state" class="form-label">State</label>
+            <input id="f-state" type="text" name="state" class="form-control" value="{{ old('state') }}"  >
         </div>
          
        
        
         <div class="col-md-12">
-            <label for="input11" class="form-label">Address</label>
-            <textarea name="address" class="form-control"  rows="3">{{ old('address') }}</textarea>
+            <label for="f-address" class="form-label">Address</label>
+            <textarea id="f-address" name="address" class="form-control"  rows="3">{{ old('address') }}</textarea>
         </div>
          
         <div class="col-md-12">
             <div class="d-md-flex d-grid align-items-center gap-3">
-                <button type="submit" class="btn btn-primary px-4">Submit</button> 
+                <button type="submit" class="btn btn-primary px-4">Create booking</button> 
             </div>
         </div>
     </form>

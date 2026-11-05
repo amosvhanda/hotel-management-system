@@ -5,7 +5,8 @@
 	<!--breadcrumb-->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
          
-        <div class="ps-3">
+        <div class="breadcrumb-title pe-3">All Booking</div>
+<div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
                     <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
@@ -14,7 +15,7 @@
 
     <li class="breadcrumb-item active" aria-current="page">Search Date </li>
 
-    <li class="breadcrumb-item active" aria-current="page"> <span class="badge bg-success">{{ $startDate }}</span> to <span class="badge bg-danger">{{ $endDate }}</span>  </li>
+    <li class="breadcrumb-item active" aria-current="page"> <span class="badge bg-success-subtle text-success">{{ $startDate }}</span> to <span class="badge bg-primary-subtle text-primary">{{ $endDate }}</span>  </li>
 
 
                 </ol>
@@ -35,10 +36,10 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                <table id="example" class="table align-middle hms-table" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Sl</th>
+                            <th class="hms-col-num">#</th>
                             <th>Code</th>
                             <th>Name</th>
                             <th>Email</th>
@@ -57,7 +58,7 @@
                             <td>{{ $item->payment_method }}</td>
                             <td>${{ $item->total_price }}</td>
                             <td>
-    <a href="{{ route('download.invoice',$item->id) }}" class="btn btn-warning px-3 radius-10"><i class="lni lni-download"></i> Download Invoice</a>
+    <a href="{{ route('download.invoice',$item->id) }}" class="btn btn-sm btn-light"><i class="bx bx-download"></i> Invoice</a>
 
                             </td>
                         </tr>

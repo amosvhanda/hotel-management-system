@@ -33,38 +33,38 @@
                  
     
     <div class="col-md-6">
-        <label for="input1" class="form-label">Admin User Name </label>
-        <input type="text" name="name" class="form-control"   >
+        <label for="f-name" class="form-label">Admin User Name </label>
+        <input id="f-name" type="text" name="name" class="form-control"   >
          
     </div>
 
     <div class="col-md-6">
-        <label for="input1" class="form-label">Admin User Email </label>
-        <input type="email" name="email" class="form-control"   >
+        <label for="f-email" class="form-label">Admin User Email </label>
+        <input id="f-email" type="email" name="email" class="form-control"   >
          
     </div>
 
     <div class="col-md-6">
-        <label for="input1" class="form-label">Admin User Phone </label>
-        <input type="text" name="phone" class="form-control"   >
+        <label for="f-phone" class="form-label">Admin User Phone </label>
+        <input id="f-phone" type="text" name="phone" class="form-control"   >
          
     </div>
     <div class="col-md-6">
-        <label for="input1" class="form-label">Admin User Address </label>
-        <input type="text" name="address" class="form-control"   >
+        <label for="f-address" class="form-label">Admin User Address </label>
+        <input id="f-address" type="text" name="address" class="form-control"   >
          
     </div>
 
 
     <div class="col-md-6">
-        <label for="input1" class="form-label">Admin Password </label>
-        <input type="password" name="password" class="form-control"   >
+        <label for="f-password" class="form-label">Admin Password </label>
+        <input id="f-password" type="password" name="password" class="form-control"   >
          
     </div>
 
     <div class="col-md-6">
-        <label for="input1" class="form-label">Role Name </label>
-        <select name="roles" class="form-select mb-3" aria-label="Default select example">
+        <label for="f-roles" class="form-label">Role Name </label>
+        <select id="f-roles" name="roles" class="form-select mb-3" aria-label="Default select example">
             <option selected="">Select Role </option>
             @foreach ($roles as $role)
             <option value="{{ $role->id }}">{{ $role->name }} </option> 
@@ -78,7 +78,7 @@
                  
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">
-                            <button type="submit" class="btn btn-primary px-4">Save Changes </button>
+                            <button type="submit" class="btn btn-primary px-4">Add admin</button>
                             
                         </div>
                     </div>

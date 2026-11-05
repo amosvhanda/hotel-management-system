@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Concerns\CreatesHotelData;
 use Tests\TestCase;
 
@@ -19,13 +20,13 @@ class AccessControlTest extends TestCase
         ]);
     }
 
-    /** @dataProvider adminPages */
+    #[DataProvider('adminPages')]
     public function test_visitors_are_sent_to_login_for_admin_pages(string $url): void
     {
         $this->get($url)->assertRedirect('/login');
     }
 
-    /** @dataProvider adminPages */
+    #[DataProvider('adminPages')]
     public function test_guests_cannot_open_admin_pages(string $url): void
     {
         $this->actingAs(User::factory()->create())->get($url)->assertRedirect('dashboard');

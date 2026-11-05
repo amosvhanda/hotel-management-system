@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\CommentController;
 use App\Http\Controllers\Backend\FaqController;
 use App\Http\Controllers\Backend\GalleryController;
+use App\Http\Controllers\Backend\NotificationController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\RoomListController;
 use App\Http\Controllers\Backend\RoomTypeController;
@@ -100,6 +101,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'roles:admin'])->group(function () {
 
     Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
+    Route::get('/admin/notifications', [NotificationController::class, 'index'])->name('admin.notifications');
+    Route::get('/admin/notifications/{id}/open', [NotificationController::class, 'open'])->name('admin.notifications.open');
+    Route::post('/admin/notifications/read-all', [NotificationController::class, 'readAll'])->name('admin.notifications.read_all');
     Route::get('/admin/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');
     Route::get('/admin/profile', [AdminController::class, 'AdminProfile'])->name('admin.profile');
     Route::post('/admin/profile/store', [AdminController::class, 'AdminProfileStore'])->name('admin.profile.store');
@@ -174,6 +178,9 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/smtp/update', 'SmtpUpdate')->name('smtp.update');
         Route::get('/site/setting', 'SiteSetting')->name('site.setting');
         Route::post('/site/update', 'SiteUpdate')->name('site.update');
+        Route::get('/theme/setting', 'Theme')->name('theme.setting');
+        Route::post('/theme/update', 'ThemeUpdate')->name('theme.update');
+        Route::post('/theme/reset', 'ThemeReset')->name('theme.reset');
         Route::get('/homepage/setting', 'Homepage')->name('homepage.setting');
         Route::post('/homepage/update', 'HomepageUpdate')->name('homepage.update');
     });

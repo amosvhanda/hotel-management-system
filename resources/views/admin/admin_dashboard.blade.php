@@ -13,7 +13,7 @@
 
 	
 	<!--favicon-->
-	<link rel="icon" href="{{asset('backend/assets/images/favicon-32x32.png')}}" type="image/png"/>
+	<link rel="icon" href="{{ asset(App\Models\SiteSetting::current()->favicon ?: 'backend/assets/images/favicon-32x32.png') }}" type="image/png"/>
 	<!--plugins--> 
 	<link href="{{asset('backend/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css')}}" rel="stylesheet"/>
 	<link href="{{asset('backend/assets/plugins/simplebar/css/simplebar.css')}}" rel="stylesheet" />
@@ -41,8 +41,10 @@
    <link href="{{asset('backend/assets/plugins/datatable/css/dataTables.bootstrap5.min.css')}}" rel="stylesheet" />	
    <!-- dataTables CSS --> 
 
-	<link href="{{ asset('backend/assets/css/hms-admin.css') }}?v=1" rel="stylesheet" />
-	<link href="{{ asset('backend/assets/css/hms-admin-premium.css') }}?v=1" rel="stylesheet" />
+	<link href="{{ asset('hms-tokens.css') }}?v=2" rel="stylesheet" />
+	<link href="{{ asset('backend/assets/css/hms-admin.css') }}?v=2" rel="stylesheet" />
+	<link href="{{ asset('backend/assets/css/hms-admin-premium.css') }}?v=11" rel="stylesheet" />
+	@include('partials.theme-vars')
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<!-- jQuery first, so inline scripts inside pages can use it -->
 	<script src="{{asset('backend/assets/js/jquery.min.js')}}"></script>
@@ -97,6 +99,29 @@
 	<script src="{{asset('backend/assets/js/app.js')}}"></script>
 	<script>
 		if (document.querySelector('.app-container')) { new PerfectScrollbar('.app-container'); }
+		// Remember the collapsed sidebar across pages and label icons while it is collapsed
+		$(function () {
+			var KEY = 'hms.sidebar', wide = function () { return window.innerWidth >= 1025; };
+			$('.sidebar-wrapper .metismenu > li > a').each(function () {
+				var t = $.trim($(this).find('.menu-title').text());
+				if (t) $(this).attr('title', t);
+			});
+			try {
+				if (wide() && localStorage.getItem(KEY) === 'collapsed') { $('.sidebar-header .toggle-icon').trigger('click'); }
+			} catch (e) {}
+			var label = function () {
+				var open = !$('.wrapper').hasClass('toggled'), phone = !wide();
+				var t = phone ? 'Close menu' : (open ? 'Collapse menu' : 'Expand menu');
+				$('.hms-collapse').attr({ title: t, 'aria-label': t });
+			};
+			$(document).on('click', '.toggle-icon', function () {
+				label();
+				if (!wide()) return;
+				try { localStorage.setItem(KEY, $('.wrapper').hasClass('toggled') ? 'collapsed' : 'open'); } catch (e) {}
+			});
+			$(window).on('resize', label);
+			label();
+		});
 	</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -123,9 +148,34 @@
 <script src="{{asset('backend/assets/plugins/datatable/js/jquery.dataTables.min.js')}}"></script>
 	<script src="{{asset('backend/assets/plugins/datatable/js/dataTables.bootstrap5.min.js')}}"></script>
 	<script>
-		$(document).ready(function() {
-			$('#example').DataTable({ order: [], pageLength: 25 });
-		  } );
+		$(document).ready(function () {
+			$('table.hms-table, table#example').each(function () {
+				var $t = $(this), noSort = [];
+				$t.find('thead th').each(function (i) {
+					var $cells = $t.find('tbody tr').map(function () { return $(this).children().eq(i)[0]; });
+					var all = $cells.length && $cells.filter(function () { return $(this).find('.btn, input[type=checkbox]').length; }).length === $cells.length;
+					if (all) {
+						noSort.push(i);
+						if ($cells.first().find('.btn').length) { $(this).addClass('hms-col-actions'); $cells.addClass('hms-col-actions'); }
+					}
+				});
+				$t.DataTable({
+					order: [], pageLength: 25, autoWidth: false,
+					columnDefs: [{ orderable: false, targets: noSort }],
+					dom: "<'hms-dt-top'lf>t<'hms-dt-bottom'ip>",
+					language: {
+						search: '', searchPlaceholder: 'Search this list',
+						lengthMenu: 'Show _MENU_',
+						info: 'Showing _START_ to _END_ of _TOTAL_',
+						infoEmpty: 'Nothing to show',
+						infoFiltered: '(filtered from _MAX_)',
+						emptyTable: 'Nothing here yet.',
+						zeroRecords: 'No matches. Try a different search.',
+						paginate: { previous: 'Previous', next: 'Next' }
+					}
+				});
+			});
+		});
 	</script>
 <!--datatable JS-->
 

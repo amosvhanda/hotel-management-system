@@ -33,14 +33,14 @@
          <input type="hidden" name="id" value="{{ $gallery->id }}">        
     
     <div class="col-md-6">
-        <label for="input1" class="form-label">Gallery Image </label>
-        <input type="file" name="photo_name" class="form-control" accept="image/*">
+        <label for="f-photo_name" class="form-label">Gallery Image </label>
+        <input id="f-photo_name" type="file" name="photo_name" class="form-control" accept="image/*">
         <img src="{{ asset($gallery->photo_name) }}" alt="" class="mt-3" style="width: 140px; height:90px; object-fit:cover;">
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Caption</label>
-        <input type="text" name="caption" class="form-control" maxlength="180" value="{{ old('caption', $gallery->caption) }}">
+        <label for="f-caption" class="form-label">Caption</label>
+        <input id="f-caption" type="text" name="caption" class="form-control" maxlength="180" value="{{ old('caption', $gallery->caption) }}">
         <div class="form-check mt-3">
             <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="show_on_home" {{ old('show_on_home', $gallery->show_on_home) ? 'checked' : '' }}>
             <label class="form-check-label" for="show_on_home">Show on homepage</label>
@@ -51,7 +51,7 @@
                  
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">
-                            <button type="submit" class="btn btn-primary px-4">Save Changes </button>
+                            <button type="submit" class="btn btn-primary px-4">Save changes</button>
                             
                         </div>
                     </div>

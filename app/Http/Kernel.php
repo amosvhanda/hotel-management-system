@@ -56,9 +56,8 @@ class Kernel extends HttpKernel
         'auth' => \App\Http\Middleware\Authenticate::class,
         'roles' => \App\Http\Middleware\AdminRole::class,
         
-        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+        // 'role', 'permission' and 'role_or_permission' are added in __construct()
+        // (Spatie renamed its Middlewares namespace to Middleware in v6).
 
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
@@ -70,4 +69,22 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
+
+    /**
+     * Register the Spatie permission aliases under whichever namespace the installed version uses.
+     */
+    public function __construct(\Illuminate\Contracts\Foundation\Application $app, \Illuminate\Routing\Router $router)
+    {
+        $namespace = class_exists(\Spatie\Permission\Middleware\RoleMiddleware::class)
+            ? 'Spatie\\Permission\\Middleware'
+            : 'Spatie\\Permission\\Middlewares';
+
+        $this->middlewareAliases += [
+            'role' => $namespace.'\\RoleMiddleware',
+            'permission' => $namespace.'\\PermissionMiddleware',
+            'role_or_permission' => $namespace.'\\RoleOrPermissionMiddleware',
+        ];
+
+        parent::__construct($app, $router);
+    }
 }

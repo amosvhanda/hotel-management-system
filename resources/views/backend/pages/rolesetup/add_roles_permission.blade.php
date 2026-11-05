@@ -39,8 +39,8 @@
                  
     
     <div class="col-md-6">
-        <label for="input1" class="form-label">Roles Name </label>
-        <select name="role_id" class="form-select mb-3" aria-label="Default select example">
+        <label for="f-role_id" class="form-label">Roles Name </label>
+        <select id="f-role_id" name="role_id" class="form-select mb-3" aria-label="Default select example">
             <option selected="" disabled>Select Role</option>
             @foreach ($roles as $role) 
             <option value="{{ $role->id }}">{{ $role->name }}</option>
@@ -91,7 +91,7 @@
                  
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">
-                            <button type="submit" class="btn btn-primary px-4">Save Changes </button>
+                            <button type="submit" class="btn btn-primary px-4">Save role permissions</button>
                             
                         </div>
                     </div>

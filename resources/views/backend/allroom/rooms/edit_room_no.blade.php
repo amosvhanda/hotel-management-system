@@ -31,16 +31,16 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Room Number </h6>
+                        <label class="form-label mb-0" for="f-room_no">Room Number</label>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="text" name="room_no" class="form-control" value="{{ $editroomno->room_no }}"  />
+                        <input id="f-room_no" type="text" name="room_no" class="form-control" value="{{ $editroomno->room_no }}"  />
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Room Status </h6>
+                        <label class="form-label mb-0" for="input7">Room Status</label>
                     </div>
                     <div class="col-sm-9 text-secondary">
                         <select name="status" id="input7" class="form-select">
@@ -56,7 +56,7 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+                        <input type="submit" class="btn btn-primary px-4" value="Save changes" />
                     </div>
                 </div>
             </div>

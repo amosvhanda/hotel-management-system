@@ -1,100 +1,29 @@
-@extends('frontend.main_master')
-@section('main')
+@extends('auth.layout')
+@section('title', 'Sign in')
+@section('content')
+    <h1>Welcome back</h1>
+    <p class="lead">Sign in to manage your stays.</p>
 
-
-    <!-- Inner Banner -->
-    <div class="inner-banner inner-bg9">
-        <div class="container">
-            <div class="inner-title">
-                <ul>
-                    <li>
-                        <a href="index.html">Home</a>
-                    </li>
-                    <li><i class='bx bx-chevron-right'></i></li>
-                    <li>Sign In</li>
-                </ul>
-                <h3>Sign In</h3>
-            </div>
+    <form method="POST" action="{{ route('login') }}" novalidate>
+        @csrf
+        <div class="field">
+            <label for="login">Email, username or phone</label>
+            <input type="text" name="login" id="login" value="{{ old('login') }}" required autofocus autocomplete="username" @error('login') aria-invalid="true" @enderror>
+            @error('login')<div class="err">{{ $message }}</div>@enderror
         </div>
-    </div>
-    <!-- Inner Banner End -->
-
-    <!-- Sign In Area -->
-    <div class="sign-in-area pt-100 pb-70">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="user-all-form">
-                        <div class="contact-form">
-                            <div class="section-title text-center">
-                                <span class="sp-color">Sign In</span>
-                                <h2>Sign In to Your Account!</h2>
-                            </div>
-
-
-                            <form method="POST" action="{{ route('login') }}">
-                                @csrf
-
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <input type="text" name="login" id="login"
-                                                class="form-control @error('login') is-invalid @enderror"
-                                                value="{{ old('login') }}" required
-                                                data-error="Please enter your Username or Email"
-                                                placeholder="Email/Name/Phone">
-                                            @error('login')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <input class="form-control @error('password') is-invalid @enderror"
-                                                id="password" type="password" name="password" placeholder="Password"
-                                                required>
-                                            @error('password')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-6 form-condition">
-                                        <div class="agree-label">
-                                            <input type="checkbox" id="chb1" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                                            <label for="chb1">Remember Me</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-6">
-                                        <a class="forget" href="{{ route('password.request') }}">Forgot My Password?</a>
-                                    </div>
-
-                                    <div class="col-lg-12 col-md-12 text-center">
-                                        <button type="submit" class="default-btn btn-bg-three border-radius-5">
-                                            Sign In Now
-                                        </button>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <p class="account-desc">
-                                            Not a Member?
-                                            <a href="{{ route('register') }}">Sign Up</a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </form>
-
-
-
-
-                        </div>
-                    </div>
-                </div>
+        <div class="field">
+            <label for="password">Password</label>
+            <div class="pw">
+                <input type="password" name="password" id="password" required autocomplete="current-password" @error('password') aria-invalid="true" @enderror>
+                <button type="button" aria-pressed="false">Show</button>
             </div>
+            @error('password')<div class="err">{{ $message }}</div>@enderror
         </div>
-    </div>
-    <!-- Sign In Area End -->
-
+        <div class="row-split">
+            <label class="check"><input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Keep me signed in</label>
+            <a href="{{ route('password.request') }}">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn">Sign in</button>
+    </form>
+    <p class="alt">New here? <a href="{{ route('register') }}">Create an account</a></p>
 @endsection

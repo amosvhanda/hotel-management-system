@@ -5,7 +5,8 @@
 	<!--breadcrumb-->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
          
-        <div class="ps-3">
+        <div class="breadcrumb-title pe-3">All Gallery Photo</div>
+<div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
                     <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
@@ -33,11 +34,11 @@
    <form action="{{ route('delete.gallery.multiple') }}" method="POST">
     @csrf
            
-                <table  class="table table-striped table-bordered" style="width:100%">
+                <table class="table align-middle hms-table" style="width:100%">
                     <thead>
                         <tr>
                             <th width="50px">Select</th>
-                            <th width="50px">Sl</th>
+                            <th class="hms-col-num">#</th>
                             <th>Image</th>
                             <th>Caption</th>
                             <th>Homepage</th>
@@ -51,12 +52,12 @@
         <input type="checkbox" name="selectedItem[]" value="{{ $item->id }}">
         </td>
                             <td>{{ $key+1 }}</td>
-                            <td> <img src="{{ asset($item->photo_name) }}" alt="" style="width:70px; height:40px; object-fit:cover;" > </td>
+                            <td> <img src="{{ asset($item->photo_name) }}" alt="" class="hms-thumb" > </td>
                             <td>{{ $item->caption }}</td>
                             <td>{{ $item->show_on_home ? 'Yes' : '' }}</td>
                             <td>
-    <a href="{{ route('edit.gallery',$item->id) }}" class="btn btn-warning px-3 radius-30"> Edit</a>
-    <a href="{{ route('delete.gallery',$item->id) }}" class="btn btn-danger px-3 radius-30" id="delete"> Delete</a>
+    <a href="{{ route('edit.gallery',$item->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+    <a href="{{ route('delete.gallery',$item->id) }}" class="btn btn-sm btn-outline-danger" id="delete">Delete</a>
 
                             </td>
                         </tr>
@@ -65,7 +66,7 @@
                     </tbody>
                  
                 </table>
-        <button type="submit" class="btn btn-danger">Delete Selected</button>
+        <button type="submit" class="btn btn-outline-danger">Delete selected</button>
             </form>     
             </div>
         </div>

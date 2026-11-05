@@ -55,18 +55,18 @@
 
                     
                     <div class="col-md-12">
-                        <label for="input11" class="form-label">Post Description</label>
+                        <label for="myeditorinstance" class="form-label">Post Description</label>
                         <textarea name="long_descp" class="form-control" id="myeditorinstance" ></textarea>
                     </div>
 
                     <div class="col-md-6">
-                        <label for="input1" class="form-label">Post Title</label>
-                        <input class="form-control" name="post_image" type="file" id="image">
+                        <label for="image" class="form-label">Post Image</label>
+                        <input class="form-control" name="post_image" accept="image/*" type="file" id="image">
                     </div>
 
                     <div class="col-md-6">
-                        <label for="input1" class="form-label"> </label>
-                        <img id="showImage" src="{{ url('upload/no_image.jpg') }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="80">
+                        <label class="form-label">Preview</label>
+                        <div><img id="showImage" src="{{ url('upload/no_image.jpg') }}" alt="Post image preview" class="hms-preview"></div>
                     </div>
 
 
@@ -74,7 +74,7 @@
                  
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">
-                            <button type="submit" class="btn btn-primary px-4">Submit</button>
+                            <button type="submit" class="btn btn-primary px-4">Publish post</button>
                             
                         </div>
                     </div>

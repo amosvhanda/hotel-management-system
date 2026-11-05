@@ -33,14 +33,14 @@
                  
     
     <div class="col-md-6">
-        <label for="input1" class="form-label">Gallery Image </label>
+        <label for="multiImg" class="form-label">Gallery Image </label>
         <input type="file" name="photo_name[]" class="form-control" id="multiImg" multiple accept="image/*">
         <div class="row" id="preview_img"></div>
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Caption</label>
-        <input type="text" name="caption" class="form-control" maxlength="180" value="{{ old('caption') }}" placeholder="Shown under the photo on the homepage">
+        <label for="f-caption" class="form-label">Caption</label>
+        <input id="f-caption" type="text" name="caption" class="form-control" maxlength="180" value="{{ old('caption') }}" placeholder="Shown under the photo on the homepage">
         <div class="form-check mt-3">
             <input class="form-check-input" type="checkbox" name="show_on_home" value="1" id="show_on_home" {{ old('show_on_home') ? 'checked' : '' }}>
             <label class="form-check-label" for="show_on_home">Show on homepage</label>
@@ -51,7 +51,7 @@
                  
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">
-                            <button type="submit" class="btn btn-primary px-4">Save Changes </button>
+                            <button type="submit" class="btn btn-primary px-4">Upload photos</button>
                             
                         </div>
                     </div>

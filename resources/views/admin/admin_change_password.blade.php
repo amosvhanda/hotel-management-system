@@ -69,7 +69,7 @@
 
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0"> Old Password </h6>
+                        <label class="form-label mb-0" for="old_password">Old Password</label>
                     </div>
                     <div class="col-sm-9 text-secondary">
                         <input type="password" name="old_password" class="form-control @error('old_password') is-invalid @enderror" id="old_password"  />
@@ -81,7 +81,7 @@
 
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0"> New Password </h6>
+                        <label class="form-label mb-0" for="new_password">New Password</label>
                     </div>
                     <div class="col-sm-9 text-secondary">
                         <input type="password" name="new_password" class="form-control @error('new_password') is-invalid @enderror" id="new_password"  />
@@ -94,7 +94,7 @@
 
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0"> Confirm New Password </h6>
+                        <label class="form-label mb-0" for="new_password_confirmation">Confirm New Password</label>
                     </div>
                     <div class="col-sm-9 text-secondary">
                         <input type="password" name="new_password_confirmation" class="form-control" id="new_password_confirmation"  />
@@ -106,7 +106,7 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+                        <input type="submit" class="btn btn-primary px-4" value="Save changes" />
                     </div>
                 </div>
             </div>

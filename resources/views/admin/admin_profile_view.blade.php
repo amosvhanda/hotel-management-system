@@ -68,96 +68,92 @@
     <div class="card-body">
         <div class="row mb-3">
             <div class="col-sm-3">
-                <h6 class="mb-0">Name</h6>
+                <label class="form-label mb-0" for="f-name">Name</label>
             </div>
             <div class="col-sm-9 text-secondary">
-                <input type="text" name="name" class="form-control" value="{{ $profileData->name }}" />
+                <input id="f-name" type="text" name="name" class="form-control" value="{{ $profileData->name }}" />
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-sm-3">
-                <h6 class="mb-0">Email</h6>
+                <label class="form-label mb-0" for="f-email">Email</label>
             </div>
             <div class="col-sm-9 text-secondary">
-                <input type="email" name="email" class="form-control" value="{{ $profileData->email }}" />
+                <input id="f-email" type="email" name="email" class="form-control" value="{{ $profileData->email }}" />
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-sm-3">
-                <h6 class="mb-0">Phone</h6>
+                <label class="form-label mb-0" for="f-phone">Phone</label>
             </div>
             <div class="col-sm-9 text-secondary">
-                <input type="text" name="phone" class="form-control" value="{{ $profileData->phone }}" />
+                <input id="f-phone" type="text" name="phone" class="form-control" value="{{ $profileData->phone }}" />
             </div>
         </div>
 
         <!-- Instagram -->
         <div class="row mb-3 align-items-center">
             <div class="col-sm-3 d-flex align-items-center">
-                <h6 class="mb-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                <label class="form-label mb-0" for="f-instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-instagram me-2 icon-inline text-danger">
                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                     </svg>
-                    Instagram
-                </h6>
+                    Instagram</label>
             </div>
             <div class="col-sm-9 text-secondary">
-                <input type="text" name="instagram" class="form-control" value="{{ $profileData->instagram }}" />
+                <input id="f-instagram" type="text" name="instagram" class="form-control" value="{{ $profileData->instagram }}" />
             </div>
         </div>
 
         <!-- Facebook -->
         <div class="row mb-3 align-items-center">
             <div class="col-sm-3 d-flex align-items-center">
-                <h6 class="mb-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                <label class="form-label mb-0" for="f-facebook"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-facebook me-2 icon-inline text-primary">
                          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                     </svg>
-                    Facebook
-                </h6>
+                    Facebook</label>
             </div>
             <div class="col-sm-9 text-secondary">
-                <input type="text" name="facebook" class="form-control" value="{{ $profileData->facebook }}" />
+                <input id="f-facebook" type="text" name="facebook" class="form-control" value="{{ $profileData->facebook }}" />
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-sm-3">
-                <h6 class="mb-0">Address</h6>
+                <label class="form-label mb-0" for="f-address">Address</label>
             </div>
             <div class="col-sm-9 text-secondary">
-                <input type="text" name="address" class="form-control" value="{{ $profileData->address }}" />
+                <input id="f-address" type="text" name="address" class="form-control" value="{{ $profileData->address }}" />
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-sm-3">
-                <h6 class="mb-0">Photo</h6>
+                <label class="form-label mb-0" for="image">Photo</label>
             </div>
             <div class="col-sm-9 text-secondary">
-                <input class="form-control" name="photo" type="file" id="image">
+                <input class="form-control" name="photo" type="file" id="image" accept="image/*">
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-sm-3"></div>
             <div class="col-sm-9 text-secondary">
-                <img id="showImage" src="{{ (!empty($profileData->photo)) ? url('upload/admin_images/'.$profileData->photo) : url('upload/no_image.jpg') }}" alt="Profile Photo" class="rounded-circle p-1 bg-primary" width="80">
+                <img id="showImage" src="{{ (!empty($profileData->photo)) ? url('upload/admin_images/'.$profileData->photo) : url('upload/no_image.jpg') }}" alt="Profile Photo" class="hms-preview">
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-3"></div>
             <div class="col-sm-9 text-secondary">
-                <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+                <input type="submit" class="btn btn-primary px-4" value="Save changes" />
             </div>
         </div>
     </div>

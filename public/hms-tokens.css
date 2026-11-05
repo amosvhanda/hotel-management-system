@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Mopane Heights — THE colour controller.
+   One file drives the public site, the sign-in pages and the admin panel.
+   Change a value here and every surface follows. Dark mode (admin) only
+   swaps these same variables; no component carries its own colour.
+   ========================================================================== */
+:root {
+    /* brand */
+    --hms-forest: #14241b;      --hms-forest-rgb: 20, 36, 27;
+    --hms-forest-2: #1b3125;
+    --hms-canopy: #1f3a2b;      --hms-canopy-rgb: 31, 58, 43;
+    --hms-leaf: #3f6b4a;        --hms-leaf-rgb: 63, 107, 74;
+    --hms-sand: #c9b88a;        --hms-sand-rgb: 201, 184, 138;
+
+    /* actions: buttons, links, focus, active states */
+    --hms-primary: var(--hms-canopy);       --hms-primary-rgb: var(--hms-canopy-rgb);
+    --hms-primary-hover: var(--hms-leaf);
+    --hms-primary-text: #f4f3ec;
+    --hms-link: var(--hms-canopy);
+    --hms-focus: rgba(var(--hms-leaf-rgb), .18);
+
+    /* surfaces */
+    --hms-paper: #f4f3ec;       --hms-paper-rgb: 244, 243, 236;
+    --hms-card: #fbfbf6;
+    --hms-field: #ffffff;
+    --hms-soft: #ecebdf;
+    --hms-soft-2: #e1e0d2;
+    --hms-line: #dcdacb;
+    --hms-line-strong: #c3c2ae;
+
+    /* text */
+    --hms-ink: #15201a;
+    --hms-muted: #5d695f;
+    --hms-muted-2: #98a299;
+    --hms-on-dark: #f4f3ec;     --hms-on-dark-rgb: 244, 243, 236;
+    --hms-on-dark-2: #cfd8ca;
+    --hms-on-dark-3: #8fa690;
+
+    /* status: text / soft background / border / solid fill */
+    --hms-ok:   #24492f;  --hms-ok-bg:   #e1eddc;  --hms-ok-line:   #cfe0c9;  --hms-ok-fill:   #3f6b4a;
+    --hms-warn: #6b5316;  --hms-warn-bg: #f1ead2;  --hms-warn-line: #e5dbb5;  --hms-warn-fill: #c9a24a;
+    --hms-bad:  #84301f;  --hms-bad-bg:  #f3ddd8;  --hms-bad-line:  #e8c7bf;  --hms-bad-fill:  #84301f;
+    --hms-bad-dark: #6c2618;
+    --hms-info: #2f5d3f;  --hms-info-bg: #e1e8e0;  --hms-info-line: #cfdcc9;  --hms-info-fill: #2f5d3f;
+
+    /* type */
+    --hms-display: "Fraunces", Georgia, serif;
+    --hms-text: "Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Admin dark mode: same names, darker values. */
+html.dark-theme {
+    --hms-primary: var(--hms-leaf);
+    --hms-primary-rgb: var(--hms-leaf-rgb);
+    --hms-primary-hover: #4f8160;
+    --hms-link: #8fb89a;
+    --hms-paper: #0e1711;       --hms-paper-rgb: 14, 23, 17;
+    --hms-card: #15221a;
+    --hms-field: #101a14;
+    --hms-soft: #1f3225;
+    --hms-soft-2: #27402f;
+    --hms-line: #2a382e;
+    --hms-line-strong: #3a4b3f;
+    --hms-ink: #eef0e6;
+    --hms-muted: #aebaa9;
+    --hms-muted-2: #7f8d80;
+    --hms-ok: #a8d4b2;   --hms-ok-bg: #1f3a2b;   --hms-ok-line: #2f5d3f;
+    --hms-warn: #e4cf8a; --hms-warn-bg: #3a321a; --hms-warn-line: #5a4a22;
+    --hms-bad: #f0a99a;  --hms-bad-bg: #3a1f1a;  --hms-bad-line: #5a2f27;
+    --hms-info: #a8cdb2; --hms-info-bg: #1f3225; --hms-info-line: #2f4a38;
+}

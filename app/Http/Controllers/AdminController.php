@@ -16,24 +16,39 @@ class AdminController extends Controller
     {
         $today = today();
         $monthStart = $today->copy()->startOfMonth();
+        $lastMonthStart = $monthStart->copy()->subMonth();
 
         $totalRooms = \App\Models\RoomNumber::where('status', 'Active')->count();
         $occupiedToday = \App\Models\Booking::whereDate('check_in', '<=', $today)
             ->whereDate('check_out', '>', $today)
             ->sum('number_of_rooms');
 
+        $revenueMonth = (float) Booking::where('payment_status', 1)->where('created_at', '>=', $monthStart)->sum('total_price');
+        $revenueLast = (float) Booking::where('payment_status', 1)
+            ->where('created_at', '>=', $lastMonthStart)->where('created_at', '<', $monthStart)->sum('total_price');
+
+        // Room-nights sold by paid bookings made this month, for ADR / RevPAR
+        $paidMonth = Booking::where('payment_status', 1)->where('created_at', '>=', $monthStart)
+            ->get(['number_of_rooms', 'total_night']);
+        $roomNights = $paidMonth->sum(fn ($b) => max(1, (int) $b->number_of_rooms) * max(1, (int) $b->total_night));
+        $daysSoFar = max(1, $today->day);
+
         $stats = [
             'total_bookings'   => Booking::count(),
             'pending_bookings' => Booking::where('status', Booking::STATUS_PENDING)->count(),
             'arrivals_today'   => Booking::whereDate('check_in', $today)->count(),
             'departures_today' => Booking::whereDate('check_out', $today)->count(),
-            'revenue_month'    => Booking::where('payment_status', 1)->where('created_at', '>=', $monthStart)->sum('total_price'),
+            'revenue_month'    => $revenueMonth,
+            'revenue_last'     => $revenueLast,
+            'revenue_change'   => $revenueLast > 0 ? round(($revenueMonth - $revenueLast) / $revenueLast * 100) : null,
             'revenue_total'    => Booking::where('payment_status', 1)->sum('total_price'),
             'unpaid_amount'    => Booking::where('payment_status', 0)->whereDate('check_out', '>=', $today)->sum('total_price'),
             'bookings_today'   => Booking::whereDate('created_at', $today)->count(),
             'total_rooms'      => $totalRooms,
             'occupied_today'   => (int) $occupiedToday,
             'occupancy'        => $totalRooms ? min(100, round($occupiedToday / $totalRooms * 100)) : 0,
+            'adr'              => $roomNights ? round($revenueMonth / $roomNights, 2) : 0,
+            'revpar'           => $totalRooms ? round($revenueMonth / ($totalRooms * $daysSoFar), 2) : 0,
         ];
 
         // Last 12 months: bookings and paid revenue per month
@@ -48,15 +63,52 @@ class AdminController extends Controller
             'revenue'  => $months->map(fn ($m) => isset($rows[$m->format('Y-m')]) ? round($rows[$m->format('Y-m')]->where('payment_status', 1)->sum('total_price'), 2) : 0)->values(),
         ];
 
+        // Next 14 nights: rooms taken per night
+        $horizon = $today->copy()->addDays(14);
+        $upcoming = Booking::whereDate('check_out', '>', $today)->whereDate('check_in', '<', $horizon)
+            ->get(['check_in', 'check_out', 'number_of_rooms']);
+        $forecast = collect(range(0, 13))->map(function ($i) use ($today, $upcoming, $totalRooms) {
+            $day = $today->copy()->addDays($i);
+            $taken = $upcoming->filter(fn ($b) => \Carbon\Carbon::parse($b->check_in)->startOfDay()->lte($day)
+                && \Carbon\Carbon::parse($b->check_out)->startOfDay()->gt($day))->sum(fn ($b) => max(1, (int) $b->number_of_rooms));
+
+            return [
+                'date'  => $day,
+                'taken' => (int) $taken,
+                'pct'   => $totalRooms ? min(100, (int) round($taken / $totalRooms * 100)) : 0,
+            ];
+        });
+
+        // Last 90 days: which room types earn, and how guests pay
+        $window = Booking::with('room.type')->where('created_at', '>=', $today->copy()->subDays(90))->get();
+        $byType = $window->groupBy(fn ($b) => $b->room->type->name ?? 'Other')->map(fn ($g, $name) => [
+            'name'     => $name,
+            'bookings' => $g->count(),
+            'revenue'  => (float) $g->where('payment_status', 1)->sum('total_price'),
+        ])->sortByDesc('revenue')->values()->take(5);
+        $byMethod = $window->where('payment_status', 1)
+            ->groupBy(fn ($b) => $b->payment_method === 'COD' ? 'Pay at hotel' : ($b->payment_method ?: 'Other'))
+            ->map(fn ($g, $name) => ['name' => $name, 'count' => $g->count(), 'revenue' => (float) $g->sum('total_price')])
+            ->sortByDesc('revenue')->values();
+
+        // Work that needs a person today
+        $attention = [
+            'pending'   => Booking::with('room.type')->where('status', Booking::STATUS_PENDING)->latest('id')->limit(5)->get(),
+            'unpaid_soon' => Booking::with('room.type')->where('payment_status', 0)
+                ->whereDate('check_in', '>=', $today)->whereDate('check_in', '<=', $today->copy()->addDays(3))
+                ->orderBy('check_in')->limit(5)->get(),
+        ];
+
         $arrivals = Booking::with('room.type')
             ->whereDate('check_in', '>=', $today)
             ->orderBy('check_in')
             ->limit(6)
             ->get();
+        $departures = Booking::with('room.type')->whereDate('check_out', $today)->limit(6)->get();
 
         $recent = Booking::with('room.type')->latest('id')->limit(8)->get();
 
-        return view('admin.index', compact('stats', 'chart', 'arrivals', 'recent'));
+        return view('admin.index', compact('stats', 'chart', 'forecast', 'byType', 'byMethod', 'attention', 'arrivals', 'departures', 'recent'));
     }
 
     public function AdminLogout(Request $request){

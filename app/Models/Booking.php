@@ -39,6 +39,18 @@ class Booking extends Model
     }
 
     /**
+     * Whole nights between two dates. Always a positive integer, on Carbon 2 and Carbon 3 alike
+     * (Carbon 3 made diffInDays() return a signed float).
+     */
+    public static function stayNights($checkIn, $checkOut): int
+    {
+        $start = Carbon::parse($checkIn)->startOfDay();
+        $end = Carbon::parse($checkOut)->startOfDay();
+
+        return (int) round(abs($start->diffInDays($end)));
+    }
+
+    /**
      * Every night between check-in (inclusive) and check-out (exclusive), as Y-m-d strings.
      */
     public static function nightsBetween(string $checkIn, string $checkOut): array
@@ -78,6 +90,48 @@ class Booking extends Model
         $reserved = static::whereIn('id', $overlappingIds)->sum('number_of_rooms');
 
         return max(0, (int) $room->room_numbers_count - (int) $reserved);
+    }
+
+    /**
+     * Availability for many room types at once (three queries in total, however many rooms).
+     * Same rule as availableRooms(): active room numbers minus rooms reserved by overlapping bookings.
+     *
+     * @param  array<int,int>  $roomIds
+     * @return array<int,int>  room id => rooms still free for the whole stay
+     */
+    public static function availabilityMap(array $roomIds, string $checkIn, string $checkOut): array
+    {
+        if ($roomIds === []) {
+            return [];
+        }
+
+        $nights = static::nightsBetween($checkIn, $checkOut);
+
+        $totals = Room::withCount(['room_numbers' => fn ($q) => $q->where('status', 'Active')])
+            ->whereIn('id', $roomIds)
+            ->get()
+            ->pluck('room_numbers_count', 'id');
+
+        $pairs = RoomBookedDate::whereIn('room_id', $roomIds)
+            ->whereIn('book_date', $nights)
+            ->select('room_id', 'booking_id')
+            ->distinct()
+            ->get();
+
+        $roomsPerBooking = static::whereIn('id', $pairs->pluck('booking_id')->unique())
+            ->pluck('number_of_rooms', 'id');
+
+        $reserved = [];
+        foreach ($pairs as $pair) {
+            $reserved[$pair->room_id] = ($reserved[$pair->room_id] ?? 0) + (int) ($roomsPerBooking[$pair->booking_id] ?? 0);
+        }
+
+        $map = [];
+        foreach ($roomIds as $id) {
+            $map[$id] = max(0, (int) ($totals[$id] ?? 0) - (int) ($reserved[$id] ?? 0));
+        }
+
+        return $map;
     }
 
     /**

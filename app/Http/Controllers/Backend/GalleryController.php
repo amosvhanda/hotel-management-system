@@ -122,7 +122,8 @@ class GalleryController extends Controller
     /** The homepage photo strip keeps the three newest flagged pictures. */
     private function limitHomepagePhotos(): void
     {
-        $drop = Gallery::where('show_on_home', true)->orderByDesc('id')->skip(3)->pluck('id');
+        // Slice in PHP: SQLite rejects OFFSET without LIMIT.
+        $drop = Gallery::where('show_on_home', true)->orderByDesc('id')->pluck('id')->slice(3)->values();
         if ($drop->isNotEmpty()) {
             Gallery::whereIn('id', $drop)->update(['show_on_home' => false]);
         }

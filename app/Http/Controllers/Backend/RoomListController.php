@@ -88,7 +88,7 @@ class RoomListController extends Controller
             
            $toDate = Carbon::parse($request['check_in']);
            $fromDate = Carbon::parse($request['check_out']);
-           $total_nights = $toDate->diffInDays($fromDate); 
+           $total_nights = \App\Models\Booking::stayNights($request['check_in'], $request['check_out']);
            
            $subtotal = $room->price * $total_nights * $request->number_of_rooms;
            $discount = ($room->discount/100)*$subtotal;

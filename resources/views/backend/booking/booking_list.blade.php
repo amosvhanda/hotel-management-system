@@ -4,7 +4,7 @@
 <div class="page-content"> 
 	<!--breadcrumb-->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-         
+        <div class="breadcrumb-title pe-3">Bookings</div>
         <div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
@@ -16,7 +16,7 @@
         </div>
         <div class="ms-auto">
             <div class="btn-group">
-                <a href="{{ route('add.team') }}" class="btn btn-primary px-5">Add Booking </a>
+                <a href="{{ route('add.room.list') }}" class="btn btn-primary px-5">Add Booking </a>
                 
             </div>
         </div>
@@ -29,7 +29,7 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example" class="table align-middle" style="width:100%">
+                <table id="example" class="table align-middle hms-table" style="width:100%">
                     <thead class="table-light">
                         <tr>
                             <th>Booking</th>

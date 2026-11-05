@@ -2,53 +2,39 @@
 
 namespace App\Notifications;
 
+use App\Models\Booking;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class BookingComplete extends Notification
 {
     use Queueable;
 
-    /** 
-     * Create a new notification instance.
-     */
-    public function __construct($name)
+    public function __construct(public Booking $booking)
     {
-        $this->name = $name;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['database'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
+    /** Stored with everything the bell needs, so it never has to look the booking up again. */
     public function toArray(object $notifiable): array
     {
+        $b = $this->booking;
+        $paid = (int) $b->payment_status === 1;
+
         return [
-            'message' => 'New Booking Added in Hotel'
+            'type' => $paid ? 'booking_paid' : 'booking_new',
+            'message' => ($paid ? 'Paid booking' : 'New booking') . " #{$b->code} from {$b->name}",
+            'booking_id' => $b->id,
+            'code' => $b->code,
+            'guest' => $b->name,
+            'total' => (float) $b->total_price,
+            'check_in' => $b->check_in,
+            'check_out' => $b->check_out,
+            'paid' => $paid,
         ];
     }
 }

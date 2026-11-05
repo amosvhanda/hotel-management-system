@@ -5,7 +5,8 @@
 	<!--breadcrumb-->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
          
-        <div class="ps-3">
+        <div class="breadcrumb-title pe-3">All Blog Category</div>
+<div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
                     <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
@@ -30,10 +31,10 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                <table id="example" class="table align-middle hms-table" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Sl</th>
+                            <th class="hms-col-num">#</th>
                             <th>Category Name </th>
                             <th>Category Slug</th> 
                             <th>Action</th>
@@ -47,9 +48,9 @@
                             <td>{{ $item->category_slug }}</td> 
                             <td>
    
-    <button type="button" class="btn btn-warning px-3 radius-30" data-bs-toggle="modal" data-bs-target="#category" id="{{ $item->id }}" onclick="categoryEdit(this.id)" >Edit</button>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#category" id="{{ $item->id }}" onclick="categoryEdit(this.id)" >Edit</button>
 
-    <a href="{{ route('delete.blog.category',$item->id) }}" class="btn btn-danger px-3 radius-30" id="delete"> Delete</a>
+    <a href="{{ route('delete.blog.category',$item->id) }}" class="btn btn-sm btn-outline-danger" id="delete">Delete</a>
 
                             </td>
                         </tr>
@@ -81,8 +82,8 @@
                 @csrf
 
                 <div class="form-group mb-3">
-                    <label for="" class="form-label">Blog Category Name</label>
-                    <input type="text" name="category_name" class="form-control">
+                    <label for="f-category_name" class="form-label">Blog Category Name</label>
+                    <input id="f-category_name" type="text" name="category_name" class="form-control">
                 </div>
             
 
@@ -114,7 +115,7 @@
                 <input type="hidden" name="cat_id" id="cat_id" >
 
                 <div class="form-group mb-3">
-                    <label for="" class="form-label">Blog Category Name</label>
+                    <label for="cat" class="form-label">Blog Category Name</label>
        <input type="text" name="category_name" class="form-control" id="cat" >
                 </div>
             

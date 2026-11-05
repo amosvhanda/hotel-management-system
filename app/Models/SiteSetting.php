@@ -13,6 +13,7 @@ class SiteSetting extends Model
 
     protected $casts = [
         'homepage' => 'array',
+        'theme' => 'array',
         'maintenance_mode' => 'boolean',
         'social_sharing_enabled' => 'boolean',
     ];
@@ -119,6 +120,106 @@ class SiteSetting extends Model
     protected static function booted(): void
     {
         static::saved(fn () => static::flushCurrent());
+    }
+
+    /** Colours the hotel can change from Admin > Setting > Brand colours. Must match public/hms-tokens.css. */
+    public const THEME_DEFAULTS = [
+        'forest' => '#14241b',
+        'canopy' => '#1f3a2b',
+        'leaf'   => '#3f6b4a',
+        'sand'   => '#c9b88a',
+        'paper'  => '#f4f3ec',
+        'card'   => '#fbfbf6',
+        'ink'    => '#15201a',
+        'muted'  => '#5d695f',
+    ];
+
+    /** Saved colours merged over the defaults. Invalid values are ignored. */
+    public function themeColors(): array
+    {
+        $saved = is_array($this->theme ?? null) ? $this->theme : [];
+        $out = self::THEME_DEFAULTS;
+        foreach ($saved as $key => $value) {
+            if (array_key_exists($key, $out) && is_string($value) && preg_match('/^#[0-9a-f]{6}$/i', $value)) {
+                $out[$key] = strtolower($value);
+            }
+        }
+
+        return $out;
+    }
+
+    public function themeIsCustom(): bool
+    {
+        return $this->themeColors() !== self::THEME_DEFAULTS;
+    }
+
+    /** CSS variables that override /hms-tokens.css, or '' when nothing was changed. */
+    public function themeCss(): string
+    {
+        $c = $this->themeColors();
+        $d = self::THEME_DEFAULTS;
+        $changed = fn (string ...$keys) => count(array_filter($keys, fn ($k) => $c[$k] !== $d[$k])) > 0;
+        $rgb = fn (string $hex) => implode(', ', sscanf($hex, '#%02x%02x%02x'));
+        $mix = function (string $a, string $b, float $t) {
+            [$r1, $g1, $b1] = sscanf($a, '#%02x%02x%02x');
+            [$r2, $g2, $b2] = sscanf($b, '#%02x%02x%02x');
+
+            return sprintf('#%02x%02x%02x', round($r1 + ($r2 - $r1) * $t), round($g1 + ($g2 - $g1) * $t), round($b1 + ($b2 - $b1) * $t));
+        };
+
+        $v = [];
+        if ($changed('forest')) {
+            $v['--hms-forest'] = $c['forest'];
+            $v['--hms-forest-rgb'] = $rgb($c['forest']);
+            $v['--hms-forest-2'] = $mix($c['forest'], '#ffffff', 0.06);
+        }
+        if ($changed('canopy')) {
+            $v['--hms-canopy'] = $c['canopy'];
+            $v['--hms-canopy-rgb'] = $rgb($c['canopy']);
+            $v['--hms-brand-dark'] = $c['canopy'];
+        }
+        if ($changed('leaf')) {
+            $v['--hms-leaf'] = $c['leaf'];
+            $v['--hms-leaf-rgb'] = $rgb($c['leaf']);
+        }
+        if ($changed('canopy', 'leaf')) {
+            $v['--hms-brand'] = $mix($c['canopy'], $c['leaf'], 0.5);
+        }
+        if ($changed('sand')) {
+            $v['--hms-sand'] = $c['sand'];
+            $v['--hms-sand-rgb'] = $rgb($c['sand']);
+        }
+        if ($changed('paper')) {
+            $v['--hms-paper'] = $c['paper'];
+            $v['--hms-paper-rgb'] = $rgb($c['paper']);
+            $v['--hms-on-dark'] = $mix($c['paper'], '#ffffff', 0.0);
+        }
+        if ($changed('card')) {
+            $v['--hms-card'] = $c['card'];
+        }
+        if ($changed('ink')) {
+            $v['--hms-ink'] = $c['ink'];
+        }
+        if ($changed('muted')) {
+            $v['--hms-muted'] = $c['muted'];
+        }
+        if ($changed('paper', 'ink')) {
+            $v['--hms-soft'] = $mix($c['paper'], $c['ink'], 0.05);
+            $v['--hms-soft-2'] = $mix($c['paper'], $c['ink'], 0.10);
+            $v['--hms-line'] = $mix($c['paper'], $c['ink'], 0.13);
+            $v['--hms-line-strong'] = $mix($c['paper'], $c['ink'], 0.22);
+        }
+
+        if (! $v) {
+            return '';
+        }
+
+        $css = '';
+        foreach ($v as $name => $value) {
+            $css .= $name . ':' . $value . ';';
+        }
+
+        return ':root{' . $css . '}';
     }
 
     /** Hotel name shown across the site. */

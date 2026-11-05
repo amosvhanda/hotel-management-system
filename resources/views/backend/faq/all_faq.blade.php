@@ -3,7 +3,8 @@
 
 <div class="page-content">
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="ps-3">
+        <div class="breadcrumb-title pe-3">FAQ</div>
+<div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
                     <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
@@ -20,7 +21,7 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered" style="width:100%">
+                <table class="table align-middle hms-table" style="width:100%">
                     <thead>
                         <tr>
                             <th>Order</th>
@@ -36,8 +37,8 @@
                                 <td>{{ $item->question }}</td>
                                 <td>{{ \Illuminate\Support\Str::limit($item->answer, 120) }}</td>
                                 <td>
-                                    <a href="{{ route('edit.faq', $item->id) }}" class="btn btn-warning px-3 radius-30">Edit</a>
-                                    <a href="{{ route('delete.faq', $item->id) }}" class="btn btn-danger px-3 radius-30" id="delete">Delete</a>
+                                    <a href="{{ route('edit.faq', $item->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="{{ route('delete.faq', $item->id) }}" class="btn btn-sm btn-outline-danger" id="delete">Delete</a>
                                 </td>
                             </tr>
                         @endforeach

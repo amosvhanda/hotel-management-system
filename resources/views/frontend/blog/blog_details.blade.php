@@ -1,6 +1,8 @@
 @extends('frontend.main_master')
 @section('main')
-@php($site = App\Models\SiteSetting::current())
+@php
+    $site = App\Models\SiteSetting::current();
+@endphp
 @include('frontend.body.page_head', [
     'kicker' => $site->home('journal_kicker'),
     'title' => $blog->post_titile,

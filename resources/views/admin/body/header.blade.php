@@ -24,52 +24,43 @@
 
 
 
+                    @php
+                        $me = Auth::user();
+                        $ncount = $me->unreadNotifications()->count();
+                        $latest = $me->notifications()->latest()->limit(8)->get();
+                    @endphp
                     <li class="nav-item dropdown dropdown-large">
-     <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" data-bs-toggle="dropdown">
-        @php
-            $ncount = Auth::user()->unreadNotifications()->count();
-        @endphp
-        <span class="alert-count" id="notification-count">{{ $ncount }}</span>
+                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" data-bs-toggle="dropdown" aria-label="Notifications, {{ $ncount }} unread">
+                            @if ($ncount)<span class="alert-count" id="notification-count">{{ $ncount > 9 ? '9+' : $ncount }}</span>@endif
                             <i class='bx bx-bell'></i>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <a href="javascript:;">
-                                <div class="msg-header">
-                                    <p class="msg-header-title">Notifications</p>
-                                    <p class="msg-header-badge"> </p>
-                                </div>
-                            </a>
+                        <div class="dropdown-menu dropdown-menu-end hms-notes">
+                            <div class="msg-header">
+                                <p class="msg-header-title">Notifications</p>
+                                @if ($ncount)
+                                    <form method="POST" action="{{ route('admin.notifications.read_all') }}" class="ms-auto">@csrf
+                                        <button class="hms-note-all" type="submit">Mark all as read</button>
+                                    </form>
+                                @endif
+                            </div>
                             <div class="header-message-list d-none"></div>{{-- required by theme app.js --}}
                             <div class="header-notifications-list">
-
-    @php
-       $user = Auth::user();
-    @endphp
-
-    @forelse ($user->notifications as $notification)
-
-    <a class="dropdown-item" href="javascript:;"
-     onclick="markNotificationAsRead('{{ $notification->id }}')" >
-        <div class="d-flex align-items-center">
-            <div class="notify bg-light-success text-success"><i class='bx bx-check-square'></i>
-            </div>
-            <div class="flex-grow-1">
-                <h6 class="msg-name">{{ $notification->data['message'] }}<span class="msg-time float-end"> {{ Carbon\Carbon::parse($notification->created_at)->diffForHumans() }} </span></h6>
-                <p class="msg-info">New Booking </p>
-            </div>
-        </div>
-    </a>
-    @empty
-
-    @endforelse
-
-
+                                @forelse ($latest as $notification)
+                                    <a class="dropdown-item {{ $notification->read_at ? 'is-read' : 'is-unread' }}" href="{{ route('admin.notifications.open', $notification->id) }}">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="hms-note-icon {{ ($notification->data['paid'] ?? false) ? 'is-paid' : '' }}"><i class="bx {{ ($notification->data['paid'] ?? false) ? 'bx-check-circle' : 'bx-calendar-plus' }}"></i></div>
+                                            <div class="flex-grow-1 min-w-0">
+                                                <p class="msg-name mb-0 text-wrap">{{ $notification->data['message'] ?? 'Notification' }}</p>
+                                                <small class="text-secondary">{{ $notification->created_at->diffForHumans() }}</small>
+                                            </div>
+                                            @unless ($notification->read_at)<span class="hms-dot" aria-label="Unread"></span>@endunless
+                                        </div>
+                                    </a>
+                                @empty
+                                    <p class="hms-empty text-center mb-0">No notifications yet. New bookings will show up here.</p>
+                                @endforelse
                             </div>
-                            <a href="javascript:;">
-                                <div class="text-center msg-footer">
-                                    <button class="btn btn-primary w-100">View All Notifications</button>
-                                </div>
-                            </a>
+                            <a href="{{ route('admin.notifications') }}" class="hms-note-footer">See all notifications</a>
                         </div>
                     </li>
                 </ul>
@@ -105,24 +96,3 @@
         </nav>
     </div>
 </header>
-
-<script>
-    function markNotificationAsRead(notificationId){
-
-        fetch('/mark-notification-as-read/'+ notificationId,{
-            method: 'POST',
-            headers: {
-                'Content-Type' : 'application/json',
-                'X-CSRF-TOKEN' : '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({})
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('notification-count').textContent = data.count;
-        })
-        .catch(error => {
-            console.log('Error',error);
-        });
-    }
-</script>

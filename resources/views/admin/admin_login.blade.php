@@ -14,8 +14,10 @@
 	<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="{{ asset('backend/assets/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('backend/assets/css/icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('backend/assets/css/hms-admin.css') }}?v=1" rel="stylesheet">
-	<link href="{{ asset('backend/assets/css/hms-admin-premium.css') }}?v=1" rel="stylesheet" />
+    <link href="{{ asset('hms-tokens.css') }}?v=2" rel="stylesheet">
+    <link href="{{ asset('backend/assets/css/hms-admin.css') }}?v=2" rel="stylesheet">
+	<link href="{{ asset('backend/assets/css/hms-admin-premium.css') }}?v=5" rel="stylesheet" />
+	@include('partials.theme-vars')
     <title>Staff Sign In | {{ $site->name }}</title>
 </head>
 
