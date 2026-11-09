@@ -11,7 +11,7 @@ use Paynow\Util\Hash;
 use Tests\Concerns\CreatesHotelData;
 use Tests\TestCase;
 
-/** Paynow (EcoCash / OneMoney) result callbacks. Keys come from phpunit.xml. */
+/** Paynow (web page and EcoCash) result callbacks. Keys come from phpunit.xml. */
 class PaynowPaymentTest extends TestCase
 {
     use RefreshDatabase, CreatesHotelData;

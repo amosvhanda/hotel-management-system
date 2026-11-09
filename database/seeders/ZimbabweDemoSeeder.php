@@ -58,12 +58,12 @@ class ZimbabweDemoSeeder extends Seeder
         $site->fill([
             'site_name'        => 'Mopane Heights Hotel',
             'tagline'          => 'Your Peaceful Stay in the Heart of Harare',
-            'site_description' => 'Mopane Heights Hotel is a modern city hotel in Harare with comfortable rooms, a restaurant serving local and international dishes, free Wi-Fi and easy online booking with EcoCash, OneMoney or pay at the hotel.',
+            'site_description' => 'Mopane Heights Hotel is a modern city hotel in Harare with comfortable rooms, a restaurant serving local and international dishes, free Wi-Fi and easy online booking — pay with Paynow, EcoCash, or in cash when you arrive.',
             'address'          => '45 Samora Machel Avenue, Harare, Zimbabwe',
             'phone'            => '+263 77 000 0000',
             'email'            => 'reservations@example.com',
             'meta_title'       => 'Mopane Heights Hotel | Book a Hotel Room in Harare',
-            'meta_description' => 'Book comfortable rooms in central Harare. Free Wi-Fi, restaurant, airport transfers. Pay with EcoCash, OneMoney or at the hotel.',
+            'meta_description' => 'Book comfortable rooms in central Harare. Free Wi-Fi, restaurant, airport transfers. Pay with Paynow, EcoCash or in cash on arrival.',
             'meta_keywords'    => 'Harare hotel, Zimbabwe hotel, hotel booking Harare, EcoCash hotel booking',
             'timezone'         => 'Africa/Harare',
             'default_currency' => 'USD',
@@ -89,7 +89,7 @@ class ZimbabweDemoSeeder extends Seeder
             $area->update([
                 'short_title' => 'Your stay',
                 'main_title'  => 'Comfortable rooms in Harare, ready when you are',
-                'short_desc'  => 'Check live availability, choose the room that suits you and confirm online. Pay at the hotel, or with EcoCash or OneMoney.',
+                'short_desc'  => 'Check live availability, choose the room that suits you and confirm online. Pay with Paynow or EcoCash, or in cash when you arrive.',
                 'link_url'    => null,
             ]);
         }
@@ -181,7 +181,7 @@ class ZimbabweDemoSeeder extends Seeder
     {
         $rows = [
             ['How do I book a room?', 'Choose your dates on the homepage, open a room, and complete checkout. You will need an account so we can keep your booking and invoice together.', 1],
-            ['How can I pay?', 'Pay when you arrive, or settle now with EcoCash or NetOne OneMoney. You approve the payment on your phone, and the booking is marked paid as soon as it clears.', 2],
+            ['How can I pay?', 'Pay online with Paynow or EcoCash, or pay in cash when you arrive at the hotel. Paynow opens a secure payment page; EcoCash sends a prompt to your phone. Either way, the booking is marked paid as soon as the payment clears.', 2],
             ['What if the dates I want are taken?', 'The search only shows rooms that are free for your stay. If a payment is cancelled, those dates open again.', 3],
             ['Where do I find my confirmation?', 'Sign in and open My Bookings. You can review the stay and download a PDF invoice from the same account.', 4],
         ];
@@ -304,9 +304,9 @@ class ZimbabweDemoSeeder extends Seeder
             ['Planning a Trip to Victoria Falls from Harare', 1,
              'Flying, driving or taking the bus — how to plan a trip to Victoria Falls with a stopover in Harare.',
              "Many guests combine a few nights in Harare with a trip to Victoria Falls. Domestic flights take about an hour, while the drive is a full day with stops in Kadoma, Kwekwe and Bulawayo or via Hwange.\n\nTip: visit between February and May to see the falls at their fullest, or September to December for clearer views. Our front desk can arrange an airport transfer for your connecting flight."],
-            ['How to Pay for Your Booking with EcoCash or OneMoney', 3,
-             'Paying online for your room is quick and secure. Here is exactly how mobile money payments work on our website.',
-             "When you reach checkout, choose EcoCash (Econet numbers starting 077 or 078) or OneMoney (NetOne numbers starting 071) and enter your mobile number.\n\nYou will get a prompt on your phone — enter your PIN to approve. The booking page updates automatically once the payment is confirmed and your booking shows as Paid under My Bookings. Prefer to pay later? Choose Pay at the hotel instead."],
+            ['How to Pay for Your Booking with EcoCash', 3,
+             'Paying online for your room is quick and secure. Here is exactly how EcoCash payments work on our website.',
+             "When you reach checkout, choose EcoCash (Econet numbers starting 077 or 078) and enter your mobile number.\n\nYou will get a prompt on your phone — enter your PIN to approve. The booking page updates automatically once the payment is confirmed and your booking shows as Paid under My Bookings. Prefer to pay later? Choose Cash and pay when you arrive at the hotel."],
             ['A Taste of Zimbabwe: Dishes to Try at Our Restaurant', 2,
              'Sadza, nyama, muriwo and more — our chef shares the local favourites every visitor should try.',
              "Our kitchen celebrates Zimbabwean food. Try sadza with beef stew or road runner chicken, muriwo une dovi (greens in peanut butter), and mazhanje when it's in season.\n\nWe also serve international dishes and vegetarian options every day. Breakfast runs from 6:30am, and the bar is open until late."],

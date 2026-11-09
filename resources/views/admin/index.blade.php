@@ -11,9 +11,11 @@
     $paidBadge = fn ($b) => (int) $b->payment_status === 1
         ? '<span class="badge bg-success-subtle text-success">Paid</span>'
         : '<span class="badge bg-danger-subtle text-danger">Unpaid</span>';
-    $statusBadge = fn ($b) => (int) $b->status === 1
-        ? '<span class="badge bg-success-subtle text-success">Confirmed</span>'
-        : '<span class="badge bg-warning-subtle text-warning">Pending</span>';
+    $statusBadge = fn ($b) => match ((int) $b->status) {
+        1 => '<span class="badge bg-success-subtle text-success">Confirmed</span>',
+        2 => '<span class="badge bg-secondary-subtle text-secondary">Cancelled</span>',
+        default => '<span class="badge bg-warning-subtle text-warning">Pending</span>',
+    };
     $maxType = max(1, (float) $byType->max('revenue'));
     $methodTotal = max(1, (float) $byMethod->sum('revenue'));
 @endphp

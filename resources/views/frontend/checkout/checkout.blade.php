@@ -10,7 +10,8 @@
     $user = Auth::user();
     $countries = ['Zimbabwe', 'South Africa', 'Botswana', 'Zambia', 'Mozambique', 'Namibia', 'Malawi', 'Other'];
     $provinces = ['Harare', 'Bulawayo', 'Manicaland', 'Mashonaland Central', 'Mashonaland East', 'Mashonaland West', 'Masvingo', 'Matabeleland North', 'Matabeleland South', 'Midlands'];
-    $method = old('payment_method', 'COD');
+    $ecocashReady = app(\App\Services\PaynowGateway::class)->configured();
+    $method = $ecocashReady ? old('payment_method', 'ecocash') : 'COD';
 @endphp
 
 @include('frontend.body.page_head', ['title' => 'Complete your booking', 'class' => 'hms-page-head--booking'])
@@ -66,36 +67,50 @@
                     <div class="hms-card">
                         <h3>2. Payment</h3>
 
-                        <label class="hms-pay-option {{ $method === 'COD' ? 'is-active' : '' }}">
-                            <input type="radio" name="payment_method" value="COD" @checked($method === 'COD')>
+                        @if ($ecocashReady)
+                        <label class="hms-pay-option {{ $method === 'paynow' ? 'is-active' : '' }}">
+                            <input type="radio" name="payment_method" value="paynow" @checked($method === 'paynow')>
                             <div>
-                                <strong>Pay at the hotel</strong>
-                                <span>Reserve now and pay in cash or by card when you check in.</span>
+                                <strong>Paynow <small class="text-muted fw-normal">pay now</small></strong>
+                                <span>Pay on Paynow's secure page — Visa/Mastercard, ZIPIT and other Paynow options.</span>
                             </div>
                         </label>
 
                         <label class="hms-pay-option {{ $method === 'ecocash' ? 'is-active' : '' }}">
                             <input type="radio" name="payment_method" value="ecocash" @checked($method === 'ecocash')>
                             <div>
-                                <strong>EcoCash <small class="text-muted fw-normal">via Paynow</small></strong>
-                                <span>Pay now from your Econet EcoCash wallet (077 / 078).</span>
+                                <strong>EcoCash <small class="text-muted fw-normal">pay now</small></strong>
+                                <span>Pay from your EcoCash wallet (077 / 078). You approve it on your phone with your PIN.</span>
                             </div>
                         </label>
-
-                        <label class="hms-pay-option {{ $method === 'onemoney' ? 'is-active' : '' }}">
-                            <input type="radio" name="payment_method" value="onemoney" @checked($method === 'onemoney')>
+                        @else
+                        @foreach (['Paynow' => 'Card and other Paynow payments', 'EcoCash' => 'EcoCash wallet payments'] as $label => $what)
+                        <label class="hms-pay-option is-disabled" aria-disabled="true" style="opacity:.55;cursor:not-allowed">
+                            <input type="radio" name="payment_method" disabled>
                             <div>
-                                <strong>NetOne OneMoney <small class="text-muted fw-normal">via Paynow</small></strong>
-                                <span>Pay now from your NetOne OneMoney wallet (071).</span>
+                                <strong>{{ $label }} <small class="text-muted fw-normal">coming soon</small></strong>
+                                <span>{{ $what }} aren't switched on yet. Please choose cash for now.</span>
+                            </div>
+                        </label>
+                        @endforeach
+                        @endif
+
+                        <label class="hms-pay-option {{ $method === 'COD' ? 'is-active' : '' }}">
+                            <input type="radio" name="payment_method" value="COD" @checked($method === 'COD')>
+                            <div>
+                                <strong>Cash <small class="text-muted fw-normal">pay on arrival</small></strong>
+                                <span>Reserve now and pay in cash when you arrive at the hotel.</span>
                             </div>
                         </label>
 
-                        <div id="paynowSection" class="mt-3 {{ in_array($method, ['ecocash', 'onemoney']) ? '' : 'd-none' }}">
-                            <label for="paynow_phone"><span id="walletName">{{ $method === 'onemoney' ? 'OneMoney' : 'EcoCash' }}</span> number <span class="required">*</span></label>
+                        @if ($ecocashReady)
+                        <div id="paynowSection" class="mt-3 {{ $method === 'ecocash' ? '' : 'd-none' }}">
+                            <label for="paynow_phone">EcoCash number <span class="required">*</span></label>
                             <input type="tel" id="paynow_phone" name="paynow_phone" class="form-control @error('paynow_phone') is-invalid @enderror" placeholder="e.g. 0771234567" value="{{ old('paynow_phone', $user->phone) }}">
                             @error('paynow_phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            <small class="text-muted">You'll get a prompt on this phone — enter your PIN to approve.</small>
+                            <small class="text-muted">You'll get a prompt on this phone — enter your EcoCash PIN to approve.</small>
                         </div>
+                        @endif
 
                         <button type="submit" class="default-btn btn-bg-one border-radius-5 w-100 mt-4" id="placeOrder">
                             Confirm Booking · {{ $money($total) }}
@@ -148,10 +163,8 @@
             opt.querySelector('input').addEventListener('change', function () {
                 options.forEach(function (o) { o.classList.remove('is-active'); });
                 opt.classList.add('is-active');
-                var mobile = this.value === 'ecocash' || this.value === 'onemoney';
-                section.classList.toggle('d-none', !mobile);
-                document.getElementById('walletName').textContent = this.value === 'onemoney' ? 'OneMoney' : 'EcoCash';
-                document.getElementById('paynow_phone').placeholder = this.value === 'onemoney' ? 'e.g. 0712345678' : 'e.g. 0771234567';
+                if (!section) return; // EcoCash not switched on yet
+                section.classList.toggle('d-none', this.value !== 'ecocash');
             });
         });
         document.getElementById('checkoutForm').addEventListener('submit', function () {

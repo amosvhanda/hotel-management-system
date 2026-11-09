@@ -46,6 +46,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        // Back to checkout when they signed up mid-booking.
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 }

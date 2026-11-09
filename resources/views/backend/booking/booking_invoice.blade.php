@@ -54,7 +54,7 @@
                 <div class="title">INVOICE</div>
                 <strong>Booking #{{ $editData->code }}</strong><br>
                 Date: {{ \Carbon\Carbon::parse($editData->created_at)->format('d M Y') }}<br>
-                Payment: {{ $editData->payment_method === 'COD' ? 'Pay at hotel' : $editData->payment_method }}<br>
+                Payment: {{ $editData->payment_method === 'COD' ? 'Cash on arrival' : $editData->payment_method }}<br>
                 <span class="badge {{ $editData->payment_status == 1 ? 'paid' : 'unpaid' }}">
                     {{ $editData->payment_status == 1 ? 'PAID' : 'UNPAID' }}
                 </span>

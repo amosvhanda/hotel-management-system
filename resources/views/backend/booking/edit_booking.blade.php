@@ -85,7 +85,9 @@
                        <p class="mb-0 text-secondary">Booking Status</p>
                        <h6 class="my-1 text-warning">
                         @if ($editData->status == '1')
-                        <span class="text-success">Complete</span>
+                        <span class="text-success">Confirmed</span>
+                        @elseif ($editData->status == '2')
+                        <span class="text-secondary">Cancelled</span>
                         @else
                         <span class="text-danger">Pending</span>
                          @endif </h6>
@@ -204,7 +206,8 @@
                     <label for="">Booking Status</label>
 <select name="status" id="input7" class="form-select">
     <option value="0" @selected($editData->status == 0)>Pending</option>
-    <option value="1" @selected($editData->status == 1)>Confirmed (emails guest)</option> 
+    <option value="1" @selected($editData->status == 1)>Confirmed (emails guest)</option>
+    <option value="2" @selected($editData->status == 2)>Cancelled (frees the room)</option>
 </select>
           </div>
 

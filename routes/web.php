@@ -55,6 +55,10 @@ Route::controller(GalleryController::class)->group(function () {
 });
 
 // Paynow server-to-server status update. Must be public and CSRF-exempt (see VerifyCsrfToken).
+// Saving the chosen stay works signed out too: checkout then asks the guest to
+// log in or register and brings them straight back to checkout with it.
+Route::post('/booking/store/', [BookingController::class, 'BookingStore'])->name('user_booking_store')->middleware('throttle:30,1');
+
 Route::post('/paynow/result', [PaynowController::class, 'result'])->name('paynow.result');
 
 require __DIR__.'/auth.php';
@@ -79,11 +83,11 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(BookingController::class)->group(function () {
         Route::get('/checkout/', 'Checkout')->name('checkout');
-        Route::post('/booking/store/', 'BookingStore')->name('user_booking_store');
         Route::post('/checkout/store/', 'CheckoutStore')->name('checkout.store')->middleware('throttle:10,1');
 
         Route::get('/user/booking', 'UserBooking')->name('user.booking');
         Route::get('/user/invoice/{id}', 'UserInvoice')->name('user.invoice');
+        Route::post('/user/booking/{id}/cancel', 'UserCancel')->name('user.booking.cancel');
 
         Route::post('/mark-notification-as-read/{notification}', 'MarkAsRead')->name('notification.read');
     });

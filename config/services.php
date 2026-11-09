@@ -34,6 +34,8 @@ return [
     'paynow' => [
         'integration_id' => env('PAYNOW_INTEGRATION_ID'),
         'integration_key' => env('PAYNOW_INTEGRATION_KEY'),
+        // Paynow test mode only accepts the merchant's own login email. Leave empty in live mode.
+        'auth_email' => env('PAYNOW_AUTH_EMAIL'),
     ],
 
 ];

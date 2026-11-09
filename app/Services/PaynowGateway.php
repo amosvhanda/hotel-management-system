@@ -28,7 +28,7 @@ class PaynowGateway
     }
 
     /**
-     * Start a payment. With a phone number it uses EcoCash or NetOne OneMoney express checkout,
+     * Start a payment. With a phone number it uses EcoCash express checkout,
      * otherwise it returns a Paynow web page to redirect the customer to.
      *
      * @return array{ok: bool, redirect: ?string, error: ?string}
@@ -37,11 +37,11 @@ class PaynowGateway
     {
         try {
             $paynow = $this->client($booking);
-            $payment = $paynow->createPayment($this->reference($booking), $booking->email);
+            $payment = $paynow->createPayment($this->reference($booking), config('services.paynow.auth_email') ?: $booking->email);
             $payment->add('Room booking #' . $booking->code, (float) $booking->total_price);
 
             if ($phone) {
-                $response = $paynow->sendMobile($payment, $this->localNumber($phone), $method === 'onemoney' ? 'onemoney' : 'ecocash');
+                $response = $paynow->sendMobile($payment, $this->localNumber($phone), 'ecocash');
             } else {
                 $response = $paynow->send($payment);
             }
@@ -127,7 +127,7 @@ class PaynowGateway
 
         // Cancelled/failed payments release the room dates.
         if (! $paid && in_array(strtolower((string) $status), ['cancelled', 'failed'], true)) {
-            $booking->bookedDates()->delete();
+            $booking->cancelAndRelease();
         }
     }
 

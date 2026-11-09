@@ -27,6 +27,15 @@ env_set APP_URL "https://${DOMAIN}"
 env_set ASSET_URL "https://${DOMAIN}"
 env_set SESSION_SECURE_COOKIE true
 
+# Paynow / EcoCash keys from GitHub Actions secrets (only when provided).
+for key in PAYNOW_INTEGRATION_ID PAYNOW_INTEGRATION_KEY PAYNOW_AUTH_EMAIL; do
+  val="${!key:-}"
+  if [ -n "$val" ]; then
+    env_set "$key" "$val"
+    echo "    ${key} set from deploy secrets"
+  fi
+done
+
 echo "==> Updating stack in place (same names: mysql/app/nginx/scheduler)"
 # Rebuild changed images; recreate only containers whose config/image changed.
 # Do not force-recreate healthy unchanged services.

@@ -5,7 +5,8 @@
 @php
     $paid = (int) $booking->payment_status === 1;
     $failed = ! $paid && in_array(strtolower((string) $booking->paynow_status), ['cancelled', 'failed'], true);
-    $wallet = $booking->payment_method === 'OneMoney' ? 'NetOne OneMoney' : 'EcoCash';
+    $wallet = $booking->payment_method === 'Paynow' ? 'Paynow' : 'EcoCash';
+    $viaPhone = $booking->payment_method !== 'Paynow';
 @endphp
 
 @include('frontend.body.page_head', ['title' => 'Booking #'.$booking->code, 'class' => 'hms-page-head--booking'])
@@ -25,11 +26,19 @@
                 <p class="text-muted">No money was taken and the room has been released. You can book again and choose another payment method.</p>
             @else
                 <div class="icon wait"><i class="bx bx-mobile-alt"></i></div>
+                @if ($viaPhone)
                 <h2>Approve the payment on your phone</h2>
                 <p class="text-muted">
-                    A {{ $wallet }} prompt for <strong>{{ \App\Models\SiteSetting::current()->formatMoney($booking->total_price, 2) }}</strong> has been sent to your phone.
+                    An EcoCash prompt for <strong>{{ \App\Models\SiteSetting::current()->formatMoney($booking->total_price, 2) }}</strong> has been sent to your phone.
                     Enter your PIN to complete the booking.
                 </p>
+                @else
+                <h2>Confirming your Paynow payment</h2>
+                <p class="text-muted">
+                    We're waiting for Paynow to confirm your payment of <strong>{{ \App\Models\SiteSetting::current()->formatMoney($booking->total_price, 2) }}</strong>.
+                    This usually takes a few seconds.
+                </p>
+                @endif
                 <p><span class="hms-spinner"></span> <span id="statusText">Waiting for confirmation…</span></p>
             @endif
 

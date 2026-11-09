@@ -67,6 +67,13 @@ class BookingController extends Controller
         // Never trust the availability number sent by the browser.
         $available = Booking::availableRooms((int) $data['room_id'], $checkIn, $checkOut);
 
+        $room = Room::findOrFail($data['room_id']);
+        $perRoom = max(1, (int) ($room->room_capacity ?: $room->total_adult));
+        if ($data['persion'] > $perRoom * $data['number_of_rooms']) {
+            return back()->withInput()->with($this->alert(
+                "One room sleeps up to {$perRoom} guest(s). Add another room for {$data['persion']} guests.", 'error'));
+        }
+
         if ($available < $data['number_of_rooms']) {
             $msg = $available > 0
                 ? "Only {$available} room(s) of this type are free for those dates."
@@ -82,6 +89,14 @@ class BookingController extends Controller
             'persion'         => (int) $data['persion'],
             'number_of_rooms' => (int) $data['number_of_rooms'],
         ]);
+
+        // Signed-out guests log in / register first, then land on checkout.
+        if (! Auth::check()) {
+            session()->put('url.intended', route('checkout'));
+
+            return redirect()->route('login')
+                ->with($this->alert('Your room is held in this session. Log in or create an account to finish booking.', 'info'));
+        }
 
         return redirect()->route('checkout');
     }
@@ -103,20 +118,20 @@ class BookingController extends Controller
             'address'        => 'required|string|max:255',
             'state'          => 'required|string|max:100',
             'zip_code'       => 'nullable|string|max:20',
-            'payment_method' => 'required|in:COD,ecocash,onemoney',
-            // Only checked for mobile money. EcoCash = Econet 077/078, OneMoney = NetOne 071
-            'paynow_phone'   => in_array($request->payment_method, ['ecocash', 'onemoney'], true)
-                ? ['required', $request->payment_method === 'onemoney' ? 'regex:/^(\+?263|0)?71\d{7}$/' : 'regex:/^(\+?263|0)?7[78]\d{7}$/']
+            'payment_method' => 'required|in:paynow,ecocash,COD',
+            // EcoCash = Econet numbers 077 / 078
+            'paynow_phone'   => $request->payment_method === 'ecocash'
+                ? ['required', 'regex:/^(\+?263|0)?7[78]\d{7}$/']
                 : ['nullable'],
         ], [
-            'payment_method.in'        => 'Please choose a payment method.',
-            'paynow_phone.required'    => 'Enter the mobile money number to charge.',
-            'paynow_phone.regex'       => $request->payment_method === 'onemoney'
-                ? 'Enter a valid NetOne number starting with 071, e.g. 0712345678.'
-                : 'Enter a valid Econet number starting with 077 or 078, e.g. 0771234567.',
+            'payment_method.required' => 'Please choose Paynow, EcoCash or cash.',
+            'payment_method.in'       => 'Please choose Paynow, EcoCash or cash.',
+            'paynow_phone.required'   => 'Enter the EcoCash number to charge.',
+            'paynow_phone.regex'      => 'Enter a valid EcoCash (Econet) number starting with 077 or 078, e.g. 0771234567.',
         ]);
 
-        $isMobileMoney = in_array($request->payment_method, ['ecocash', 'onemoney'], true);
+        // Paynow (web page) and EcoCash (phone prompt) are both paid online through Paynow.
+        $payOnline = in_array($request->payment_method, ['paynow', 'ecocash'], true);
 
         $room = Room::findOrFail($book_data['room_id']);
 
@@ -127,9 +142,9 @@ class BookingController extends Controller
                 ->with($this->alert('Those rooms were just booked by someone else. Please pick other dates.', 'error'));
         }
 
-        if ($isMobileMoney && ! $paynow->configured()) {
+        if ($payOnline && ! $paynow->configured()) {
             return back()->withInput()
-                ->with($this->alert('Online payment is not available right now. Please choose Pay at Hotel.', 'error'));
+                ->with($this->alert('Online payment is not available right now. Please choose cash and pay when you arrive.', 'error'));
         }
 
         $nights = \App\Models\Booking::stayNights($book_data['check_in'], $book_data['check_out']);
@@ -151,7 +166,7 @@ class BookingController extends Controller
                 'subtotal'        => $subtotal,
                 'discount'        => $discount,
                 'total_price'     => $total,
-                'payment_method'  => $request->payment_method === 'COD' ? 'COD' : ($request->payment_method === 'onemoney' ? 'OneMoney' : 'EcoCash'),
+                'payment_method'  => ['COD' => 'COD', 'ecocash' => 'EcoCash', 'paynow' => 'Paynow'][$request->payment_method],
                 'transation_id'   => '',
                 'payment_status'  => 0,
                 'name'            => $request->name,
@@ -172,8 +187,10 @@ class BookingController extends Controller
 
         Session::forget('book_date');
 
-        if ($isMobileMoney) {
-            $result = $paynow->start($booking, $request->paynow_phone, $request->payment_method);
+        if ($payOnline) {
+            // EcoCash sends a prompt to the phone; Paynow opens Paynow's own payment page.
+            $phone = $request->payment_method === 'ecocash' ? $request->paynow_phone : null;
+            $result = $paynow->start($booking, $phone, $request->payment_method);
 
             if (! $result['ok']) {
                 // Release the dates so the failed attempt doesn't block the room.
@@ -188,15 +205,15 @@ class BookingController extends Controller
                 return redirect()->away($result['redirect']);
             }
 
-            // Mobile (EcoCash/OneMoney) payment: the customer approves on their phone.
+            // EcoCash: the customer approves on their phone.
             return redirect()->route('paynow.return', $booking->id)
-                ->with($this->alert('Check your phone and enter your PIN to approve the payment.', 'info'));
+                ->with($this->alert('Check your phone and enter your EcoCash PIN to approve the payment.', 'info'));
         }
 
         $this->notifyAdmins($booking);
 
         return redirect()->route('user.booking')
-            ->with($this->alert("Booking #{$booking->code} received. Pay on arrival at the hotel."));
+            ->with($this->alert("Booking #{$booking->code} received. Please pay in cash when you arrive at the hotel."));
     }
 
     public function UserBooking()
@@ -204,6 +221,19 @@ class BookingController extends Controller
         $allData = Booking::with('room.type')->where('user_id', Auth::id())->latest('id')->get();
 
         return view('frontend.dashboard.user_booking', compact('allData'));
+    }
+
+    public function UserCancel($id)
+    {
+        $booking = Booking::where('user_id', Auth::id())->findOrFail($id);
+
+        if (! $booking->guestCanCancel()) {
+            return back()->with($this->alert('This booking can no longer be cancelled online. Please call the hotel.', 'error'));
+        }
+
+        $booking->cancelAndRelease();
+
+        return back()->with($this->alert("Booking #{$booking->code} cancelled."));
     }
 
     public function UserInvoice($id)
@@ -236,15 +266,34 @@ class BookingController extends Controller
     {
         $request->validate([
             'payment_status' => 'required|in:0,1',
-            'status'         => 'required|in:0,1',
+            'status'         => 'required|in:0,1,2',
         ]);
 
         $booking = Booking::findOrFail($id);
         $wasConfirmed = (int) $booking->status === Booking::STATUS_COMPLETE;
+        $newStatus = (int) $request->status;
+
+        if ($newStatus === Booking::STATUS_CANCELLED) {
+            $booking->update(['payment_status' => $request->payment_status]);
+            if (! $booking->isCancelled()) {
+                $booking->cancelAndRelease();
+            }
+
+            return back()->with($this->alert('Booking cancelled. The room is free again for those dates.'));
+        }
+
+        // Re-opening a cancelled booking: block its dates again, if still free.
+        if ($booking->isCancelled()) {
+            $free = Booking::availableRooms($booking->rooms_id, $booking->check_in, $booking->check_out, $booking->id);
+            if ($free < $booking->number_of_rooms) {
+                return back()->with($this->alert("Can't re-open: only {$free} room(s) are free for those dates now.", 'error'));
+            }
+            $booking->syncBookedDates();
+        }
 
         $booking->update([
             'payment_status' => $request->payment_status,
-            'status'         => $request->status,
+            'status'         => $newStatus,
         ]);
 
         $message = 'Booking updated successfully.';
@@ -263,7 +312,7 @@ class BookingController extends Controller
                     'rooms'     => (int) $booking->number_of_rooms,
                     'guests'    => (int) $booking->persion,
                     'total'     => $booking->total_price,
-                    'payment'   => (int) $booking->payment_status === 1 ? 'Paid' : ($booking->payment_method === 'COD' ? 'Pay at the hotel' : 'Awaiting payment'),
+                    'payment'   => (int) $booking->payment_status === 1 ? 'Paid' : ($booking->payment_method === 'COD' ? 'Cash on arrival' : 'Awaiting ' . $booking->payment_method . ' payment'),
                     'name'      => $booking->name,
                     'email'     => $booking->email,
                     'phone'     => $booking->phone,
@@ -346,6 +395,10 @@ class BookingController extends Controller
     {
         $booking = Booking::findOrFail($booking_id);
         $roomNumber = RoomNumber::where('rooms_id', $booking->rooms_id)->findOrFail($room_number_id);
+
+        if ($booking->isCancelled()) {
+            return back()->with($this->alert('This booking is cancelled. Re-open it before assigning rooms.', 'error'));
+        }
 
         if (BookingRoomList::where('booking_id', $booking_id)->count() >= $booking->number_of_rooms) {
             return back()->with($this->alert('All rooms for this booking are already assigned.', 'error'));

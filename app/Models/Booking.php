@@ -13,10 +13,40 @@ class Booking extends Model
 
     protected $guarded = [];
 
-    // status: 0 = pending, 1 = complete/confirmed
+    // status: 0 = pending, 1 = complete/confirmed, 2 = cancelled
     // payment_status: 0 = unpaid, 1 = paid
     public const STATUS_PENDING = 0;
     public const STATUS_COMPLETE = 1;
+    public const STATUS_CANCELLED = 2;
+
+    /** Bookings that still count: everything except cancelled. */
+    public function scopeActive($query)
+    {
+        return $query->where('status', '!=', self::STATUS_CANCELLED);
+    }
+
+    public function isCancelled(): bool
+    {
+        return (int) $this->status === self::STATUS_CANCELLED;
+    }
+
+    /** A guest may cancel their own booking until check-in day, unless it is already paid. */
+    public function guestCanCancel(): bool
+    {
+        return (int) $this->status === self::STATUS_PENDING
+            && (int) $this->payment_status !== 1
+            && Carbon::parse($this->check_in)->startOfDay()->isAfter(today());
+    }
+
+    /** Cancel and free the room: blocked nights and room-number assignments are removed. */
+    public function cancelAndRelease(): void
+    {
+        \Illuminate\Support\Facades\DB::transaction(function () {
+            $this->update(['status' => self::STATUS_CANCELLED]);
+            $this->bookedDates()->delete();
+            $this->assign_rooms()->delete();
+        });
+    }
 
     public function assign_rooms()
     {

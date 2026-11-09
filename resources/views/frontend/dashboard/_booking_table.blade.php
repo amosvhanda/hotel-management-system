@@ -29,6 +29,13 @@
                             @if ($item->paynow_poll_url && (int) $item->payment_status !== 1 && ! in_array(strtolower((string) $item->paynow_status), ['cancelled', 'failed']))
                                 <a href="{{ route('paynow.return', $item->id) }}" class="btn btn-sm btn-outline-secondary">Check payment</a>
                             @endif
+                            @if ($item->guestCanCancel())
+                                <form method="POST" action="{{ route('user.booking.cancel', $item->id) }}" class="d-inline"
+                                      onsubmit="return confirm('Cancel booking #{{ $item->code }}? The room will be released.');">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancel booking</button>
+                                </form>
+                            @endif
                             <a href="{{ route('user.invoice', $item->id) }}" class="btn btn-sm btn-outline-dark" title="Download invoice"><i class="bx bx-download"></i> Invoice</a>
                         </td>
                     </tr>

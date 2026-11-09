@@ -62,11 +62,13 @@
                                     @else
                                         <span class="badge bg-danger-subtle text-danger">Unpaid</span>
                                     @endif
-                                    <br><small class="text-secondary">{{ $item->payment_method === 'COD' ? 'Pay at hotel' : $item->payment_method }}</small>
+                                    <br><small class="text-secondary">{{ $item->payment_method === 'COD' ? 'Cash on arrival' : $item->payment_method }}</small>
                                 </td>
                                 <td>
                                     @if ((int) $item->status === 1)
                                         <span class="badge bg-success-subtle text-success">Confirmed</span>
+                                    @elseif ((int) $item->status === 2)
+                                        <span class="badge bg-secondary-subtle text-secondary">Cancelled</span>
                                     @else
                                         <span class="badge bg-warning-subtle text-warning">Pending</span>
                                     @endif

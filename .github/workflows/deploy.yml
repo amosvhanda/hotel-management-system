@@ -5,6 +5,7 @@
 #
 # Secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, SSH_PATH (/opt/apps/hotel), DOMAIN
 # Optional: SSH_PORT, ADMIN_EMAIL, ADMIN_PASSWORD
+# Payments: PAYNOW_INTEGRATION_ID, PAYNOW_INTEGRATION_KEY (+ PAYNOW_AUTH_EMAIL in Paynow test mode)
 name: Deploy to server
 
 on:
@@ -173,10 +174,16 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' || !inputs.first_install }}
         env:
           SSH_PATH: ${{ secrets.SSH_PATH }}
+          PAYNOW_INTEGRATION_ID: ${{ secrets.PAYNOW_INTEGRATION_ID }}
+          PAYNOW_INTEGRATION_KEY: ${{ secrets.PAYNOW_INTEGRATION_KEY }}
+          PAYNOW_AUTH_EMAIL: ${{ secrets.PAYNOW_AUTH_EMAIL }}
         run: |
           ssh deploy-target bash -s <<EOF
           set -euo pipefail
           cd '${SSH_PATH}'
+          export PAYNOW_INTEGRATION_ID='${PAYNOW_INTEGRATION_ID}'
+          export PAYNOW_INTEGRATION_KEY='${PAYNOW_INTEGRATION_KEY}'
+          export PAYNOW_AUTH_EMAIL='${PAYNOW_AUTH_EMAIL}'
           chmod +x deploy/*.sh docker/app-entrypoint.sh || true
           if [ ! -f .env ] || ! command -v docker >/dev/null 2>&1; then
             echo "Hotel app not bootstrapped yet. Skipping update deploy."

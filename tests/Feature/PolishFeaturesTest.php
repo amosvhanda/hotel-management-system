@@ -170,7 +170,7 @@ class PolishFeaturesTest extends TestCase
         $this->makeBooking($this->makeRoom(2), User::factory()->create(), $this->date(0), $this->date(2), ['payment_status' => 1]);
 
         $this->actingAs($admin)->get('/admin/dashboard')->assertOk()
-            ->assertSee('Top room types')->assertSee('How guests pay')->assertSee('Pay at hotel');
+            ->assertSee('Top room types')->assertSee('How guests pay')->assertSee('Cash on arrival');
     }
 
     public function test_the_dashboard_forecast_counts_rooms_for_each_night(): void

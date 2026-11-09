@@ -23,7 +23,7 @@ class ReportController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
-        $bookings = Booking::where('check_in', '>=', $startDate)->where('check_out', '<=', $endDate)->get();
+        $bookings = Booking::active()->where('check_in', '>=', $startDate)->where('check_out', '<=', $endDate)->get();
 
         return view('backend.report.booking_search_date',compact('startDate','endDate','bookings'));
 

@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
         $username = $profileData->name;
 
         $notification = array(
-            'message' => 'User '.$username.' Login Successfully',
+            'message' => 'Welcome back, '.$username.'.',
             'alert-type' => 'info'
         );
 
