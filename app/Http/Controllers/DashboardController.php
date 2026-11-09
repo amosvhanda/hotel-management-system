@@ -14,7 +14,7 @@ class DashboardController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        $bookings = Booking::with('room.type')->where('user_id', Auth::id());
+        $bookings = Booking::with('room.type', 'review')->where('user_id', Auth::id());
 
         $totalBookings = (clone $bookings)->count();
         $pendingBookings = (clone $bookings)->where('status', Booking::STATUS_PENDING)->count();

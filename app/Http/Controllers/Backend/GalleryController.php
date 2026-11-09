@@ -204,6 +204,13 @@ class GalleryController extends Controller
             'message' => $request->message,
         ]);
 
+        \App\Support\StaffAlerts::send(
+            'contact_new',
+            'New message from ' . $request->name . ': ' . \Illuminate\Support\Str::limit($request->subject, 50),
+            route('contact.message'),
+            'bx-envelope'
+        );
+
         $notification = array(
             'message' => 'Thank you! Your message has been sent. We will get back to you shortly.',
             'alert-type' => 'success'

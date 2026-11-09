@@ -48,7 +48,7 @@
                                 @forelse ($latest as $notification)
                                     <a class="dropdown-item {{ $notification->read_at ? 'is-read' : 'is-unread' }}" href="{{ route('admin.notifications.open', $notification->id) }}">
                                         <div class="d-flex align-items-center gap-3">
-                                            <div class="hms-note-icon {{ ($notification->data['paid'] ?? false) ? 'is-paid' : '' }}"><i class="bx {{ ($notification->data['paid'] ?? false) ? 'bx-check-circle' : 'bx-calendar-plus' }}"></i></div>
+                                            <div class="hms-note-icon {{ ($notification->data['paid'] ?? false) ? 'is-paid' : '' }}"><i class="bx {{ $notification->data['icon'] ?? (($notification->data['paid'] ?? false) ? 'bx-check-circle' : 'bx-calendar-plus') }}"></i></div>
                                             <div class="flex-grow-1 min-w-0">
                                                 <p class="msg-name mb-0 text-wrap">{{ $notification->data['message'] ?? 'Notification' }}</p>
                                                 <small class="text-secondary">{{ $notification->created_at->diffForHumans() }}</small>
@@ -57,7 +57,7 @@
                                         </div>
                                     </a>
                                 @empty
-                                    <p class="hms-empty text-center mb-0">No notifications yet. New bookings will show up here.</p>
+                                    <p class="hms-empty text-center mb-0">No notifications yet. New bookings, reviews, comments and messages show up here.</p>
                                 @endforelse
                             </div>
                             <a href="{{ route('admin.notifications') }}" class="hms-note-footer">See all notifications</a>

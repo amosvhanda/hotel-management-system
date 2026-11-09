@@ -40,10 +40,11 @@
                         </p>
                     </div>
 @php
-    $comment = App\Models\Comment::where('post_id',$blog->id)->where('status','1')->limit(5)->get();
+    $comment = App\Models\Comment::with('user')->where('post_id',$blog->id)->where('status','1')->latest()->limit(20)->get();
 @endphp
                     <div class="comments-wrap">
-                        <h3 class="title">Comments</h3>
+                        <h3 class="title">Comments{{ $comment->count() ? ' (' . $comment->count() . ')' : '' }}</h3>
+                        @if ($comment->isEmpty())<p class="text-muted">No comments yet — be the first.</p>@endif
                         <ul>
                             @foreach ($comment as $com) 
                             <li>
@@ -60,7 +61,7 @@
                         </ul>
                     </div>
 
-                    <div class="comments-form">
+                    <div class="comments-form" id="comments">
                         <div class="contact-form">
       
                             <h2>Leave A Comment</h2>
@@ -103,7 +104,7 @@
 
     @else
 
-    <p>Plz <a href="{{ route('login') }}">Login</a> First for Add Comment </p>
+    <p><a href="{{ route('login') }}">Log in</a> or <a href="{{ route('register') }}">create an account</a> to leave a comment. You'll come straight back to this post.</p>
 
     @endauth   
                         </div>

@@ -22,5 +22,10 @@ class Room extends Model
         return $this->hasMany(RoomNumber::class, 'rooms_id')->where('status','Active');
     }
 
+    /** Published guest reviews, newest first. */
+    public function reviews(){
+        return $this->hasMany(Review::class, 'rooms_id')->where('status', Review::APPROVED)->latest('approved_at');
+    }
+
 
 }

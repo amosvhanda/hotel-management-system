@@ -29,6 +29,11 @@
                             @if ($item->paynow_poll_url && (int) $item->payment_status !== 1 && ! in_array(strtolower((string) $item->paynow_status), ['cancelled', 'failed']))
                                 <a href="{{ route('paynow.return', $item->id) }}" class="btn btn-sm btn-outline-secondary">Check payment</a>
                             @endif
+                            @if ($item->review)
+                                <span class="hms-badge ok" title="{{ $item->review->statusLabel() }}">Reviewed {{ $item->review->rating }}★</span>
+                            @elseif ($item->guestCanReview())
+                                <a href="{{ route('user.review.create', $item->id) }}" class="btn btn-sm btn-outline-success"><i class="bx bx-star"></i> Rate your stay</a>
+                            @endif
                             @if ($item->guestCanCancel())
                                 <form method="POST" action="{{ route('user.booking.cancel', $item->id) }}" class="d-inline"
                                       onsubmit="return confirm('Cancel booking #{{ $item->code }}? The room will be released.');">

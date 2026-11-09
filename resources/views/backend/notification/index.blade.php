@@ -33,7 +33,7 @@
             <ul class="list-group list-group-flush">
                 @forelse ($notifications as $n)
                     <li class="list-group-item hms-row {{ $n->read_at ? '' : 'hms-unread' }}">
-                        <div class="hms-note-icon {{ ($n->data['paid'] ?? false) ? 'is-paid' : '' }}"><i class="bx {{ ($n->data['paid'] ?? false) ? 'bx-check-circle' : 'bx-calendar-plus' }}"></i></div>
+                        <div class="hms-note-icon {{ ($n->data['paid'] ?? false) ? 'is-paid' : '' }}"><i class="bx {{ $n->data['icon'] ?? (($n->data['paid'] ?? false) ? 'bx-check-circle' : 'bx-calendar-plus') }}"></i></div>
                         <div class="hms-row-main">
                             <a href="{{ route('admin.notifications.open', $n->id) }}" class="fw-semibold text-dark d-block">{{ $n->data['message'] ?? 'Notification' }}</a>
                             <small class="text-secondary">

@@ -29,6 +29,14 @@ class CommentController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
+        $post = \App\Models\BlogPost::find($request->post_id);
+        \App\Support\StaffAlerts::send(
+            'comment_new',
+            'New blog comment from ' . \Illuminate\Support\Facades\Auth::user()->name . ' on "' . \Illuminate\Support\Str::limit($post->post_titile ?? 'a post', 40) . '"',
+            route('all.comment'),
+            'bx-comment-detail'
+        );
+
         $notification = array(
             'message' => 'Thank you! Your comment will appear once it has been approved.',
             'alert-type' => 'success'

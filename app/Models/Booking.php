@@ -63,6 +63,19 @@ class Booking extends Model
         return $this->belongsTo(Room::class, 'rooms_id', 'id');
     }
 
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
+
+    /** Guests can review a stay once check-out day has come, unless it was cancelled. One review per booking. */
+    public function guestCanReview(): bool
+    {
+        return ! $this->isCancelled()
+            && Carbon::parse($this->check_out)->startOfDay()->lte(today())
+            && ! ($this->relationLoaded('review') ? $this->review : $this->review()->exists());
+    }
+
     public function bookedDates()
     {
         return $this->hasMany(RoomBookedDate::class, 'booking_id');

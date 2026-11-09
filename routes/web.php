@@ -12,6 +12,8 @@ use App\Http\Controllers\Backend\RoomController;
 use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\CommentController;
+use App\Http\Controllers\Backend\ReviewController as AdminReviewController;
+use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Backend\FaqController;
 use App\Http\Controllers\Backend\GalleryController;
 use App\Http\Controllers\Backend\NotificationController;
@@ -90,6 +92,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/user/booking/{id}/cancel', 'UserCancel')->name('user.booking.cancel');
 
         Route::post('/mark-notification-as-read/{notification}', 'MarkAsRead')->name('notification.read');
+    });
+
+    // Guests rate their stay (from check-out day, one review per booking)
+    Route::controller(ReviewController::class)->group(function () {
+        Route::get('/user/booking/{id}/review', 'create')->name('user.review.create');
+        Route::post('/user/booking/{id}/review', 'store')->name('user.review.store')->middleware('throttle:10,1');
     });
 
     // Customer comes back here from Paynow
@@ -228,6 +236,13 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::controller(CommentController::class)->group(function () {
         Route::get('/all/comment/', 'AllComment')->name('all.comment');
         Route::post('/update/comment/status', 'UpdateCommentStatus')->name('update.comment.status');
+    });
+
+    // Guest reviews
+    Route::controller(AdminReviewController::class)->group(function () {
+        Route::get('/all/reviews', 'index')->name('all.reviews');
+        Route::post('/review/{id}/status', 'updateStatus')->name('review.status');
+        Route::post('/review/{id}/delete', 'destroy')->name('review.delete');
     });
 
     // Reports

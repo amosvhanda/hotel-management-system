@@ -20,12 +20,16 @@ class NotificationController extends Controller
         ]);
     }
 
-    /** Mark one as read, then go to the booking it is about. */
+    /** Mark one as read, then go to what it is about (booking, review, comment or message). */
     public function open(string $id)
     {
         $n = Auth::user()->notifications()->where('id', $id)->first();
         abort_if(! $n, 404);
         $n->markAsRead();
+
+        if (! empty($n->data['url'])) {
+            return redirect($n->data['url']); // review / comment / contact message
+        }
 
         $bookingId = $n->data['booking_id'] ?? null;
 

@@ -208,10 +208,14 @@
             <a class="has-arrow" href="javascript:;">
                 <div class="parent-icon"><i class="bx bx-comment-detail"></i>
                 </div>
-                <div class="menu-title">Manage Comment</div>
+                <div class="menu-title">Comments &amp; Reviews</div>
             </a>
             <ul>
                 <li> <a href="{{ route('all.comment') }}"><i class='bx bx-radio-circle'></i>All Comments </a>
+                </li>
+                @php($pendingReviews = \App\Models\Review::where('status', 0)->count())
+                <li> <a href="{{ route('all.reviews', $pendingReviews ? ['status' => 'pending'] : []) }}"><i class='bx bx-radio-circle'></i>Guest Reviews
+                    @if ($pendingReviews)<span class="badge bg-warning text-dark ms-1">{{ $pendingReviews }}</span>@endif</a>
                 </li>
 
             </ul>

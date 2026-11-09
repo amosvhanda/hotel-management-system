@@ -1,6 +1,9 @@
 @php
     $site = $site ?? App\Models\SiteSetting::current();
-    $testimonial = App\Models\Testimonial::latest()->limit(3)->get();
+    // Published guest reviews (4–5 stars) first, then staff-added testimonials, 3 in total.
+    $guestReviews = App\Models\Review::approved()->with('user', 'booking')->where('rating', '>=', 4)->latest('approved_at')->limit(3)->get()
+        ->map(fn ($r) => (object) ['message' => $r->comment, 'name' => $r->guestDisplayName(), 'city' => str_repeat('★', $r->rating), 'image' => null]);
+    $testimonial = $guestReviews->concat(App\Models\Testimonial::latest()->limit(3 - $guestReviews->count())->get())->take(3);
 @endphp
 @if ($testimonial->isNotEmpty())
 <section class="hms-band hms-band--white">

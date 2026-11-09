@@ -211,6 +211,11 @@ class BlogController extends Controller
         $bcategory = BlogCategory::latest()->get();
         $lpost = BlogPost::latest()->limit(3)->get();
 
+        // Signed-out readers who log in / register come back to this post to comment.
+        if (! auth()->check()) {
+            redirect()->setIntendedUrl(url()->current() . '#comments');
+        }
+
         return view('frontend.blog.blog_details',compact('blog','bcategory','lpost'));
 
      }// End Method 

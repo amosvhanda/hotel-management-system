@@ -218,7 +218,7 @@ class BookingController extends Controller
 
     public function UserBooking()
     {
-        $allData = Booking::with('room.type')->where('user_id', Auth::id())->latest('id')->get();
+        $allData = Booking::with('room.type', 'review')->where('user_id', Auth::id())->latest('id')->get();
 
         return view('frontend.dashboard.user_booking', compact('allData'));
     }

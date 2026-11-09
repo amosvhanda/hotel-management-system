@@ -164,6 +164,8 @@
                         <li><i class="bx bx-bed"></i> {{ $roomdetails->bed_style }}</li>
                     </ul>
 
+                    @include('frontend.room._reviews')
+
                     <div class="hms-room-note">
                         <h2>{{ $site->home('about_cta_title') }}</h2>
                         <p>{{ $site->home('booking_note') }}</p>
