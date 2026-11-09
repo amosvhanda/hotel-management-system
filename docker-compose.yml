@@ -84,11 +84,13 @@ services:
       - traefik.enable=true
       - traefik.docker.network=edge
       # Gzip text in nginx only. Do NOT compress at Traefik.
-      - traefik.http.routers.hotel.rule=Host(`${DOMAIN:-hotel.synccode.co.zw}`) || Host(`www.${DOMAIN:-hotel.synccode.co.zw}`) || Host(`${SERVER_IP:?Set SERVER_IP in .env}`)
+      # HTTPS Host rules must be domain-only — Let's Encrypt rejects IP SANs.
+      - traefik.http.routers.hotel.rule=Host(`${DOMAIN:-hotel.synccode.co.zw}`)
       - traefik.http.routers.hotel.entrypoints=websecure
       - traefik.http.routers.hotel.tls=true
       - traefik.http.routers.hotel.tls.certresolver=letsencrypt
-      - traefik.http.routers.hotel-http.rule=Host(`${DOMAIN:-hotel.synccode.co.zw}`) || Host(`www.${DOMAIN:-hotel.synccode.co.zw}`) || Host(`${SERVER_IP:?Set SERVER_IP in .env}`)
+      # HTTP (ACME challenge + optional IP access until DNS-only).
+      - traefik.http.routers.hotel-http.rule=Host(`${DOMAIN:-hotel.synccode.co.zw}`) || Host(`${SERVER_IP:?Set SERVER_IP in .env}`)
       - traefik.http.routers.hotel-http.entrypoints=web
       - traefik.http.routers.hotel-http.service=hotel
       - traefik.http.services.hotel.loadbalancer.server.port=80
