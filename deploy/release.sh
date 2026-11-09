@@ -52,6 +52,11 @@ done
 echo "==> Migrate + optimize"
 docker compose exec -T app bash deploy/docker-after-deploy.sh
 
+# Host-side belt-and-suspenders: keep mounted ./storage owned by www-data (uid 33).
+if [ "$(id -u)" = "0" ] && [ -d storage ]; then
+  chown -R 33:33 storage || true
+fi
+
 echo "==> Removing unused dangling images (keeps running images)"
 docker image prune -f
 

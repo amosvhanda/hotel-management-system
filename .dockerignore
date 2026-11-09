@@ -6,7 +6,9 @@
 .fleet
 .nova
 node_modules
-vendor
+# Only Composer deps at repo root — do NOT use bare "vendor" or it also
+# excludes resources/views/vendor (pagination templates) from the image.
+/vendor
 storage/logs/*
 storage/framework/cache/*
 storage/framework/sessions/*

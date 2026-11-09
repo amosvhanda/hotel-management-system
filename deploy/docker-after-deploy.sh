@@ -12,6 +12,19 @@ mkdir -p \
   storage/app/public \
   bootstrap/cache
 
+# PHP-FPM runs as www-data; keep the mounted storage volume writable for it.
+# (docker compose exec runs this script as root and would otherwise leave
+# sessions/logs/views owned by root → site-wide 500s.)
+fix_storage() {
+  if [ "$(id -u)" = "0" ]; then
+    chown -R www-data:www-data storage bootstrap/cache || true
+    find storage -type d -exec chmod ug+rwx {} \; || true
+    find storage -type f -exec chmod ug+rw {} \; || true
+    chmod -R ug+rwx bootstrap/cache || true
+  fi
+}
+fix_storage
+
 echo "Checking database connection..."
 # db:show needs doctrine/dbal (not installed). Probe via Laravel DB facade.
 php -r '
@@ -45,6 +58,8 @@ php artisan storage:link || true
 php artisan config:cache
 php artisan view:cache
 php artisan event:cache || true
+
+fix_storage
 
 php artisan up
 echo "Docker release commands finished."
