@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
+    use \App\Models\Concerns\Auditable;
+
     use HasFactory;
 
     protected $guarded = [];
@@ -23,6 +25,39 @@ class Booking extends Model
     public function scopeActive($query)
     {
         return $query->where('status', '!=', self::STATUS_CANCELLED);
+    }
+
+    /** Name and colour per status, in one place (views use these instead of repeating @if blocks). */
+    public const STATUS_INFO = [
+        self::STATUS_PENDING   => ['label' => 'Pending',   'tone' => 'wait'],
+        self::STATUS_COMPLETE  => ['label' => 'Confirmed', 'tone' => 'ok'],
+        self::STATUS_CANCELLED => ['label' => 'Cancelled', 'tone' => 'muted'],
+    ];
+
+    public function statusLabel(): string
+    {
+        return self::STATUS_INFO[(int) $this->status]['label'] ?? 'Unknown';
+    }
+
+    /** ok | wait | bad | info | muted */
+    public function statusTone(): string
+    {
+        return self::STATUS_INFO[(int) $this->status]['tone'] ?? 'muted';
+    }
+
+    /** Bootstrap badge classes for the admin side. */
+    public function statusBadgeClass(): string
+    {
+        return [
+            'ok' => 'bg-success-subtle text-success', 'wait' => 'bg-warning-subtle text-warning',
+            'bad' => 'bg-danger-subtle text-danger', 'info' => 'bg-info-subtle text-info',
+            'muted' => 'bg-secondary-subtle text-secondary',
+        ][$this->statusTone()];
+    }
+
+    public function messageLogs()
+    {
+        return $this->hasMany(MessageLog::class)->latest('id');
     }
 
     public function isCancelled(): bool

@@ -12,6 +12,8 @@ use App\Http\Controllers\Backend\RoomController;
 use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\CommentController;
+use App\Http\Controllers\Backend\SystemController;
+use App\Http\Controllers\Backend\GuestMessageController;
 use App\Http\Controllers\Backend\ReviewController as AdminReviewController;
 use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Backend\FaqController;
@@ -31,6 +33,8 @@ use App\Http\Controllers\Frontend\FrontendRoomController;
 */
 
 Route::get('/', [UserController::class, 'Index'])->name('home');
+Route::get('/sitemap.xml', [\App\Http\Controllers\SeoController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [\App\Http\Controllers\SeoController::class, 'robots'])->name('robots');
 Route::view('/about', 'frontend.about.about')->name('about');
 Route::get('/service/details/{id}', [ServiceController::class, 'ShowService'])->name('service.details');
 
@@ -236,6 +240,18 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::controller(CommentController::class)->group(function () {
         Route::get('/all/comment/', 'AllComment')->name('all.comment');
         Route::post('/update/comment/status', 'UpdateCommentStatus')->name('update.comment.status');
+    });
+
+    // Guest message settings (wording, on/off, WhatsApp number, test send)
+    Route::get('/settings/guest-messages', [GuestMessageController::class, 'edit'])->name('guest.messages');
+    Route::post('/settings/guest-messages', [GuestMessageController::class, 'update'])->name('guest.messages.update');
+    Route::post('/settings/guest-messages/{key}/test', [GuestMessageController::class, 'test'])->name('guest.messages.test');
+
+    // Guest messages: sent / failed / retry
+    Route::controller(SystemController::class)->group(function () {
+        Route::get('/system/messages', 'messages')->name('system.messages');
+        Route::post('/system/messages/{uuid}/retry', 'retry')->name('system.retry');
+        Route::post('/system/messages/{uuid}/forget', 'forget')->name('system.forget');
     });
 
     // Guest reviews

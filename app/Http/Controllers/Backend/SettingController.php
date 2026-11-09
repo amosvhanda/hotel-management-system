@@ -87,6 +87,7 @@ class SettingController extends Controller
             'site_description' => 'nullable|string|max:5000',
             'default_currency' => 'nullable|string|max:10',
             'google_analytics' => 'nullable|string|max:50',
+            'google_site_verification' => 'nullable|string|max:120',
             'logo' => 'nullable|image|max:4096',
             'favicon' => 'nullable|image|max:1024',
         ]);
@@ -108,6 +109,7 @@ class SettingController extends Controller
             'meta_description',
             'meta_keywords',
             'google_analytics',
+            'google_site_verification',
             'copyright',
             'timezone',
             'language',

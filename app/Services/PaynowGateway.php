@@ -123,11 +123,13 @@ class PaynowGateway
 
         if ($paid && ! $alreadyPaid) {
             app(\App\Http\Controllers\Frontend\BookingController::class)->notifyAdmins($booking);
+            app(\App\Services\GuestMessenger::class)->newBooking($booking->fresh('room.type'), 'payment_received');
         }
 
         // Cancelled/failed payments release the room dates.
-        if (! $paid && in_array(strtolower((string) $status), ['cancelled', 'failed'], true)) {
+        if (! $paid && in_array(strtolower((string) $status), ['cancelled', 'failed'], true) && ! $booking->isCancelled()) {
             $booking->cancelAndRelease();
+            app(\App\Services\GuestMessenger::class)->send($booking, 'booking_cancelled');
         }
     }
 

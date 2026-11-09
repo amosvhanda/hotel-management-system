@@ -9,7 +9,8 @@
         <meta name="author" content="Amos Vhanda">
         <!-- jQuery first, so inline scripts inside pages can use it -->
         <script src="{{ asset('frontend/assets/js/jquery.min.js') }}"></script>
-        <meta name="description" content="{{ $site->meta_description ?: ($site->tagline ?: 'Book your stay at ' . $site->name) }}">
+        <meta name="description" content="{{ Str::limit(strip_tags(trim(View::yieldContent('meta_description')) ?: ($site->meta_description ?: ($site->tagline ?: 'Book your stay at ' . $site->name))), 300) }}">
+        @include('partials.seo')
         @if ($site->meta_keywords)<meta name="keywords" content="{{ $site->meta_keywords }}">@endif
 
         <!-- Bootstrap CSS -->
@@ -143,5 +144,16 @@
 @stack('scripts')
 
 
+        @if ($site->whatsappDigits())
+            <a class="hms-wa-float" href="{{ \App\Support\Phone::whatsappLink($site->whatsappDigits(), 'Hi ' . $site->name . ', I have a question about a stay.') }}"
+               target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp"><i class="bx bxl-whatsapp"></i><span>Chat on WhatsApp</span></a>
+            <style>
+                .hms-wa-float{position:fixed;right:18px;bottom:18px;z-index:999;display:flex;align-items:center;gap:8px;background:#25d366;color:#fff!important;
+                    border-radius:999px;padding:10px 16px 10px 12px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.18);text-decoration:none}
+                .hms-wa-float i{font-size:26px;line-height:1}
+                .hms-wa-float:hover{background:#1ebe5b}
+                @media (max-width:575px){.hms-wa-float span{display:none}.hms-wa-float{padding:12px}}
+            </style>
+        @endif
     </body>
 </html>

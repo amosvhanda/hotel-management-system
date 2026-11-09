@@ -1,10 +1,4 @@
-@if ((int) $item->status === 1)
-    <span class="hms-badge ok">Confirmed</span>
-@elseif ((int) $item->status === 2)
-    <span class="hms-badge bad">Cancelled</span>
-@else
-    <span class="hms-badge wait">Pending</span>
-@endif
+<span class="hms-badge {{ $item->statusTone() === 'muted' ? 'bad' : $item->statusTone() }}">{{ $item->statusLabel() }}</span>
 @if ((int) $item->payment_status === 1)
     <span class="hms-badge ok">Paid</span>
 @elseif (in_array(strtolower((string) $item->paynow_status), ['cancelled', 'failed']))

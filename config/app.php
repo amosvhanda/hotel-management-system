@@ -76,7 +76,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    // Hotel time: reminders, "today", check-in day and reports all use Harare time.
+    'timezone' => env('APP_TIMEZONE', 'Africa/Harare'),
 
     /*
     |--------------------------------------------------------------------------

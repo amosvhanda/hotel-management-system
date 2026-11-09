@@ -174,6 +174,15 @@
                                     </div>
                                 </div>
 
+                                <!-- Google Search Console -->
+                                <div class="row mb-3">
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-gsv">Google Search Console code</label></div>
+                                    <div class="col-sm-9 text-secondary">
+                                        <input id="f-gsv" type="text" name="google_site_verification" class="form-control" value="{{ old('google_site_verification', $site->google_site_verification) }}" placeholder="e.g. a1B2c3D4e5…">
+                                        <small>From Search Console → Add property → HTML tag: paste only the <code>content="…"</code> value. Your sitemap is <code>{{ url('/sitemap.xml') }}</code>.</small>
+                                    </div>
+                                </div>
+
                                 <!-- Google Analytics ID -->
                                 <div class="row mb-3">
                                     <div class="col-sm-3"><label class="form-label mb-0" for="f-google_analytics">Google Analytics ID</label></div>

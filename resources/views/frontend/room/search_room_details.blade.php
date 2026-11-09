@@ -1,4 +1,21 @@
 @extends('frontend.main_master')
+@section('title', $roomdetails->type->name ?? 'Room')
+@section('meta_description', $roomdetails->short_desc ?: ($roomdetails->type->name ?? 'Room') . ' — book online')
+@section('og_image', $roomdetails->image ? asset('upload/roomimg/' . $roomdetails->image) : '')
+@push('jsonld')
+@php
+    $rv = App\Models\Review::approved()->where('rooms_id', $roomdetails->id);
+    $roomLd = array_filter([
+        '@context' => 'https://schema.org', '@type' => 'HotelRoom',
+        'name' => $roomdetails->type->name ?? 'Room', 'description' => strip_tags((string) $roomdetails->short_desc),
+        'image' => $roomdetails->image ? asset('upload/roomimg/' . $roomdetails->image) : null,
+        'bed' => $roomdetails->bed_style, 'occupancy' => ['@type' => 'QuantitativeValue', 'maxValue' => (int) $roomdetails->room_capacity],
+        'offers' => ['@type' => 'Offer', 'price' => (string) $roomdetails->price, 'priceCurrency' => App\Models\SiteSetting::current()->default_currency ?: 'USD', 'url' => route('room.details', $roomdetails->id)],
+        'aggregateRating' => ($c = (clone $rv)->count()) ? ['@type' => 'AggregateRating', 'ratingValue' => round((clone $rv)->avg('rating'), 1), 'reviewCount' => $c, 'bestRating' => 5] : null,
+    ]);
+@endphp
+<script type="application/ld+json">{!! json_encode($roomLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+@endpush
 @section('main')
 @php($site = App\Models\SiteSetting::current())
 @include('frontend.body.page_head', [

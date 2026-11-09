@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoomNumber extends Model
 {
+    use \App\Models\Concerns\Auditable;
+
     use HasFactory;
     protected $guarded = [];
 

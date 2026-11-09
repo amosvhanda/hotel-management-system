@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        // Superseded by 2025_07_22_110136_create_services_table (which builds the full
+        // table). Kept as a no-op so existing databases' migration history still matches.
     }
 
     /**

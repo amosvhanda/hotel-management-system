@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 /** A guest's review of their stay. Only approved reviews are shown on the website. */
 class Review extends Model
 {
+    use \App\Models\Concerns\Auditable;
+
     protected $guarded = [];
 
     protected $casts = ['approved_at' => 'datetime'];

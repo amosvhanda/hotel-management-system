@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Guest reminders (pre-arrival, check-in day, rate your stay). Hotel time zone.
+        $schedule->command('guests:send-messages')->everyFifteenMinutes()->withoutOverlapping();
     }
 
     /**

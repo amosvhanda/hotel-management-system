@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class SiteSetting extends Model
 {
+    use \App\Models\Concerns\Auditable;
+
     use HasFactory;
 
     protected $guarded = [];
 
     protected $casts = [
         'homepage' => 'array',
+        'messages' => 'array',
         'theme' => 'array',
         'maintenance_mode' => 'boolean',
         'social_sharing_enabled' => 'boolean',
@@ -269,6 +272,12 @@ class SiteSetting extends Model
         }
 
         return asset(self::DEFAULT_FAVICON);
+    }
+
+    /** WhatsApp number in international form for wa.me links, e.g. 263771234567 (falls back to the phone). */
+    public function whatsappDigits(): ?string
+    {
+        return \App\Support\Phone::international($this->whatsapp_number ?: $this->phone);
     }
 
     public function getCopyrightTextAttribute(): string

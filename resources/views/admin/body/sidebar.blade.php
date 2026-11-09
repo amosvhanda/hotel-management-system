@@ -147,6 +147,8 @@
                 </li>
                 <li> <a href="{{ route('theme.setting') }}"><i class='bx bx-radio-circle'></i>Brand colours</a>
                 </li>
+                <li> <a href="{{ route('guest.messages') }}"><i class='bx bx-radio-circle'></i>Guest messages</a></li>
+                <li> <a href="{{ route('system.messages') }}"><i class='bx bx-radio-circle'></i>Message log</a></li>
                 <li> <a href="{{ route('homepage.setting') }}"><i class='bx bx-radio-circle'></i>Homepage</a>
                 </li>
 

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Mail\BookConfirm;
+use App\Mail\GuestMessageMail;
 use App\Models\Booking;
 use App\Models\BookingRoomList;
 use App\Models\Faq;
@@ -51,7 +51,8 @@ class AdminTest extends TestCase
         $this->actingAs($admin)->post('/update/booking/status/' . $booking->id, ['payment_status' => 1, 'status' => 1]);
 
         $this->assertEquals(1, $booking->refresh()->status);
-        Mail::assertSent(BookConfirm::class, 1);
+        Mail::assertSent(GuestMessageMail::class, fn ($m) => str_contains($m->subjectLine, "is confirmed") && $m->hasTo($booking->email));
+        Mail::assertSent(GuestMessageMail::class, 1);
     }
 
     public function test_email_failure_does_not_break_the_update(): void

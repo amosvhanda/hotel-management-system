@@ -67,6 +67,8 @@ php artisan event:cache || true
 fix_storage
 
 php artisan up
+# Tell the queue worker to pick up the new code after its current job.
+php artisan queue:restart || true
 
 # PHP-FPM caches compiled code and never re-checks files (opcache
 # validate_timestamps=0). Reload it so it serves the freshly cached config/views,

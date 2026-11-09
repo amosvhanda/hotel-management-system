@@ -26,6 +26,9 @@ env_set DOMAIN "${DOMAIN}"
 env_set APP_URL "https://${DOMAIN}"
 env_set ASSET_URL "https://${DOMAIN}"
 env_set SESSION_SECURE_COOKIE true
+# Background sending (queue container) + hotel time zone.
+env_set QUEUE_CONNECTION database
+grep -q '^APP_TIMEZONE=' .env || env_set APP_TIMEZONE Africa/Harare
 
 # Paynow / EcoCash keys from GitHub Actions secrets (only when provided).
 for key in PAYNOW_INTEGRATION_ID PAYNOW_INTEGRATION_KEY PAYNOW_AUTH_EMAIL; do
@@ -56,6 +59,9 @@ docker compose exec -T app bash deploy/docker-after-deploy.sh
 if [ "$(id -u)" = "0" ] && [ -d storage ]; then
   chown -R 33:33 storage || true
 fi
+
+echo "==> Checking the queue worker is running"
+docker compose ps queue --status running --quiet | grep -q . || { echo "Queue worker is not running:" >&2; docker compose logs --tail=40 queue >&2; exit 1; }
 
 echo "==> Removing unused dangling images (keeps running images)"
 docker image prune -f

@@ -27,14 +27,15 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        $this->applySmtpSettings();
+        static::applySmtpSettings();
     }
 
     /**
      * Use the SMTP details saved in Admin → Settings → SMTP, when they are filled in.
      * Only the smtp mailer and the "from" address are overridden, so .env keeps working otherwise.
      */
-    private function applySmtpSettings(): void
+    /** Public so the queue worker can re-read SMTP settings before each email (staff may change them any time). */
+    public static function applySmtpSettings(): void
     {
         try {
             if (! Schema::hasTable('smtp_settings')) {

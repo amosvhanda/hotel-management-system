@@ -211,6 +211,7 @@ class BookingController extends Controller
         }
 
         $this->notifyAdmins($booking);
+        app(\App\Services\GuestMessenger::class)->newBooking($booking, 'booking_received');
 
         return redirect()->route('user.booking')
             ->with($this->alert("Booking #{$booking->code} received. Please pay in cash when you arrive at the hotel."));
@@ -232,6 +233,7 @@ class BookingController extends Controller
         }
 
         $booking->cancelAndRelease();
+        app(\App\Services\GuestMessenger::class)->send($booking, 'booking_cancelled');
 
         return back()->with($this->alert("Booking #{$booking->code} cancelled."));
     }
@@ -277,6 +279,7 @@ class BookingController extends Controller
             $booking->update(['payment_status' => $request->payment_status]);
             if (! $booking->isCancelled()) {
                 $booking->cancelAndRelease();
+                app(\App\Services\GuestMessenger::class)->send($booking, 'booking_cancelled');
             }
 
             return back()->with($this->alert('Booking cancelled. The room is free again for those dates.'));
@@ -299,28 +302,16 @@ class BookingController extends Controller
         $message = 'Booking updated successfully.';
         $type = 'success';
 
-        // Email the guest when the booking is confirmed (only once).
+        // Email the guest when the booking is confirmed (once; sent in the background).
         if (! $wasConfirmed && (int) $booking->status === Booking::STATUS_COMPLETE) {
-            try {
-                $booking->loadMissing('room.type');
-                Mail::to($booking->email)->send(new BookConfirm([
-                    'code'      => $booking->code,
-                    'room'      => $booking->room->type->name ?? null,
-                    'check_in'  => $booking->check_in,
-                    'check_out' => $booking->check_out,
-                    'nights'    => $booking->total_night,
-                    'rooms'     => (int) $booking->number_of_rooms,
-                    'guests'    => (int) $booking->persion,
-                    'total'     => $booking->total_price,
-                    'payment'   => (int) $booking->payment_status === 1 ? 'Paid' : ($booking->payment_method === 'COD' ? 'Cash on arrival' : 'Awaiting ' . $booking->payment_method . ' payment'),
-                    'name'      => $booking->name,
-                    'email'     => $booking->email,
-                    'phone'     => $booking->phone,
-                ]));
-                $message .= ' Confirmation email sent to the guest.';
-            } catch (\Throwable $e) {
-                Log::warning('Booking confirmation email failed', ['booking' => $booking->id, 'error' => $e->getMessage()]);
-                $message .= ' But the confirmation email could not be sent — check SMTP settings.';
+            $result = app(\App\Services\GuestMessenger::class)->send($booking->loadMissing('room.type'), 'booking_confirmed');
+            $message .= match ($result) {
+                'queued' => ' Confirmation email is on its way to the guest.',
+                'disabled' => ' (Confirmation email is switched off in Guest messages.)',
+                'already_sent' => '',
+                default => ' But the confirmation email could not be queued — check Guest messages.',
+            };
+            if ($result === 'error' || $result === 'no_recipient') {
                 $type = 'warning';
             }
         }

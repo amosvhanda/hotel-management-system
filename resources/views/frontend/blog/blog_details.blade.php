@@ -1,4 +1,7 @@
 @extends('frontend.main_master')
+@section('title', $blog->post_titile)
+@section('meta_description', strip_tags((string) $blog->short_descp))
+@section('og_image', $blog->post_image ? asset($blog->post_image) : '')
 @section('main')
 @php
     $site = App\Models\SiteSetting::current();

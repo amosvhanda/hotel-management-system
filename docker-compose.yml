@@ -142,6 +142,40 @@ services:
       - hotel
     mem_limit: 256m
 
+  # Sends guest emails / WhatsApp in the background so pages stay fast and a mail
+  # failure never breaks a booking. Same image as the app; runs as www-data.
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    image: hotel-app:${APP_IMAGE_TAG:-latest}
+    container_name: hotel-queue
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: ${DB_DATABASE:-hotel}
+      DB_USERNAME: ${DB_USERNAME:-hotel}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - ./storage:/var/www/html/storage
+      - ./.env:/var/www/html/.env:ro
+      - uploads:/var/www/html/public/upload
+    depends_on:
+      mysql:
+        condition: service_healthy
+      app:
+        condition: service_healthy
+    entrypoint: ["/usr/local/bin/app-entrypoint.sh"]
+    command: ["sh", "-c", "su -s /bin/sh www-data -c 'php artisan queue:work --sleep=3 --tries=3 --backoff=60 --max-time=3600'"]
+    networks:
+      - hotel
+    mem_limit: 256m
+
 volumes:
   mysql_data:
     name: hotel_mysql_data

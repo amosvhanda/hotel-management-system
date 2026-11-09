@@ -84,13 +84,7 @@
                    <div>
                        <p class="mb-0 text-secondary">Booking Status</p>
                        <h6 class="my-1 text-warning">
-                        @if ($editData->status == '1')
-                        <span class="text-success">Confirmed</span>
-                        @elseif ($editData->status == '2')
-                        <span class="text-secondary">Cancelled</span>
-                        @else
-                        <span class="text-danger">Pending</span>
-                         @endif </h6>
+                        <span class="badge {{ $editData->statusBadgeClass() }}">{{ $editData->statusLabel() }}</span> </h6>
                         
                    </div>
                    <div class="widgets-icons-2 rounded-circle bg-gradient-orange text-white ms-auto"><i class='bx bxs-group'></i>
@@ -214,6 +208,10 @@
           <div class="col-md-12" style="margin-top: 20px;">
             <button type="submit" class="btn btn-primary">Save changes</button> 
             <a href="{{ route('download.invoice',$editData->id) }}" class="btn btn-warning px-3 radius-10"><i class="lni lni-download"></i> Download Invoice</a>
+            @php($waGuest = \App\Support\Phone::whatsappLink($editData->phone, 'Hi ' . strtok((string) $editData->name, ' ') . ', this is ' . \App\Models\SiteSetting::current()->name . ' about your booking #' . $editData->code . ' (' . \Carbon\Carbon::parse($editData->check_in)->format('d M') . ' – ' . \Carbon\Carbon::parse($editData->check_out)->format('d M Y') . ').'))
+            @if ($waGuest)
+                <a href="{{ $waGuest }}" target="_blank" rel="noopener" class="btn btn-success px-3 radius-10"><i class="bx bxl-whatsapp"></i> WhatsApp guest</a>
+            @endif
           </div>
 
                     </div> 
@@ -322,6 +320,7 @@
        </div>
     </div><!--end row-->
  
+    @include('backend.booking._timeline')
 </div>
 
 

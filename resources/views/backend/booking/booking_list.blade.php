@@ -65,13 +65,7 @@
                                     <br><small class="text-secondary">{{ $item->payment_method === 'COD' ? 'Cash on arrival' : $item->payment_method }}</small>
                                 </td>
                                 <td>
-                                    @if ((int) $item->status === 1)
-                                        <span class="badge bg-success-subtle text-success">Confirmed</span>
-                                    @elseif ((int) $item->status === 2)
-                                        <span class="badge bg-secondary-subtle text-secondary">Cancelled</span>
-                                    @else
-                                        <span class="badge bg-warning-subtle text-warning">Pending</span>
-                                    @endif
+                                    <span class="badge {{ $item->statusBadgeClass() }}">{{ $item->statusLabel() }}</span>
                                 </td>
                                 <td class="text-end text-nowrap">
                                     <a href="{{ route('edit_booking', $item->id) }}" class="btn btn-sm btn-primary">Manage</a>
