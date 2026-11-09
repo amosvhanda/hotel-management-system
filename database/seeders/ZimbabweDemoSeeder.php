@@ -114,9 +114,21 @@ class ZimbabweDemoSeeder extends Seeder
              'features' => ['Free Wi-Fi', 'Air conditioning', 'Smart TV', 'Work desk', 'Tea & coffee station', 'Hair dryer', 'Safety box', 'Electronic door lock', 'Smoke alarms', 'Wake-up service', 'Slippers', 'Walk-in shower', 'Bathtub', 'Minibar', 'Nespresso machine', 'Separate lounge', 'Dining area', 'Complimentary breakfast', 'Airport transfer', '24-hour room service', 'Laundry & dry cleaning', 'Pool access']],
         ];
 
+        // Filename only — views prepend upload/roomimg/ (same as RoomController uploads).
+        $demoImages = [
+            'frontend/assets/img/hotel/room-single.jpg',
+            'frontend/assets/img/hotel/room-deluxe-2.jpg',
+            'frontend/assets/img/hotel/room-deluxe-3.jpg',
+            'frontend/assets/img/hotel/room-suite.jpg',
+        ];
+
         foreach (Room::orderBy('id')->get()->values() as $i => $room) {
             $p = $profiles[$i % count($profiles)];
             RoomType::whereKey($room->roomtype_id)->update(['name' => $p['name']]);
+
+            $imageName = 'demo-room-'.($i + 1).'.jpg';
+            $this->copyAsset($demoImages[$i % count($demoImages)], 'upload/roomimg/'.$imageName);
+
             $room->update([
                 'price'         => $p['price'],
                 'discount'      => $p['discount'],
@@ -128,6 +140,7 @@ class ZimbabweDemoSeeder extends Seeder
                 'bed_style'     => $p['bed'],
                 'short_desc'    => $p['short'],
                 'description'   => $p['long'],
+                'image'         => $imageName,
             ]);
 
             // Replace the room's features so every filter chip on /rooms has real data behind it.

@@ -1,0 +1,137 @@
+# Hotel Management System — one named stack. Deploys recreate the SAME containers.
+# HTTPS/HTTP via shared Traefik (/opt/edge) already running on this VPS with SyncCode.
+#
+#   bash deploy/first-app-setup.sh
+#   bash deploy/release.sh
+
+name: hotel
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: hotel-mysql
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-hotel}
+      MYSQL_USER: ${DB_USERNAME:-hotel}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+    networks:
+      - hotel
+    mem_limit: 1g
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    image: hotel-app:${APP_IMAGE_TAG:-latest}
+    container_name: hotel-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: ${DB_DATABASE:-hotel}
+      DB_USERNAME: ${DB_USERNAME:-hotel}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - ./storage:/var/www/html/storage
+      - ./.env:/var/www/html/.env:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - hotel
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(0);'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    mem_limit: 512m
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: nginx
+    image: hotel-nginx:${APP_IMAGE_TAG:-latest}
+    container_name: hotel-nginx
+    restart: unless-stopped
+    volumes:
+      - ./storage/app/public:/var/www/html/storage/app/public:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - hotel
+      - edge
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=edge
+      # Gzip text in nginx only. Do NOT compress at Traefik.
+      - traefik.http.routers.hotel.rule=Host(`${DOMAIN:-hotel.synccode.co.zw}`) || Host(`www.${DOMAIN:-hotel.synccode.co.zw}`) || Host(`${SERVER_IP:?Set SERVER_IP in .env}`)
+      - traefik.http.routers.hotel.entrypoints=websecure
+      - traefik.http.routers.hotel.tls=true
+      - traefik.http.routers.hotel.tls.certresolver=letsencrypt
+      - traefik.http.routers.hotel-http.rule=Host(`${DOMAIN:-hotel.synccode.co.zw}`) || Host(`www.${DOMAIN:-hotel.synccode.co.zw}`) || Host(`${SERVER_IP:?Set SERVER_IP in .env}`)
+      - traefik.http.routers.hotel-http.entrypoints=web
+      - traefik.http.routers.hotel-http.service=hotel
+      - traefik.http.services.hotel.loadbalancer.server.port=80
+    mem_limit: 128m
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    image: hotel-app:${APP_IMAGE_TAG:-latest}
+    container_name: hotel-scheduler
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: ${DB_DATABASE:-hotel}
+      DB_USERNAME: ${DB_USERNAME:-hotel}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - ./storage:/var/www/html/storage
+      - ./.env:/var/www/html/.env:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+      app:
+        condition: service_healthy
+    entrypoint: ["/usr/local/bin/app-entrypoint.sh"]
+    command: ["sh", "-c", "while true; do php artisan schedule:run --no-interaction; sleep 60; done"]
+    networks:
+      - hotel
+    mem_limit: 256m
+
+volumes:
+  mysql_data:
+    name: hotel_mysql_data
+
+networks:
+  hotel:
+    name: hotel_net
+    driver: bridge
+  edge:
+    external: true

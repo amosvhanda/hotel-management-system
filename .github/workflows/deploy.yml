@@ -1,0 +1,191 @@
+# Multi-app VPS deploy (same server as SyncCode).
+# Never deploys until tests pass on this commit.
+# First install: join existing Traefik edge + this app (MySQL, migrate, seed).
+# Later: rsync + compose rebuild + migrate/optimize.
+#
+# Secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, SSH_PATH (/opt/apps/hotel), DOMAIN
+# Optional: SSH_PORT, ADMIN_EMAIL, ADMIN_PASSWORD
+name: Deploy to server
+
+on:
+  workflow_dispatch:
+    inputs:
+      first_install:
+        description: 'First hotel install — create .env, start stack, migrate, seed (edge must already exist)'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Tests (required before deploy)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.40.0
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          extensions: mbstring, gd, zip, pdo_sqlite, bcmath, intl, exif
+
+      - name: Setup Node
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install PHP Dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Build Assets
+        run: npm run build
+
+      - name: Copy Environment File
+        run: cp .env.example .env
+
+      - name: Generate Application Key
+        run: php artisan key:generate
+
+      - name: Tests
+        run: php artisan test
+
+  deploy:
+    name: Deploy
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Check required secrets
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+        run: |
+          missing=0
+          for name in SSH_HOST SSH_USER SSH_PRIVATE_KEY SSH_PATH; do
+            eval "val=\${$name}"
+            if [ -z "$val" ]; then
+              echo "Missing GitHub Actions secret: $name" >&2
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          PORT="${SSH_PORT:-22}"
+          ssh-keyscan -p "$PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
+          echo "Host deploy-target
+            HostName ${SSH_HOST}
+            User ${{ secrets.SSH_USER }}
+            Port ${PORT}
+            IdentityFile ~/.ssh/id_deploy
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes" > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+          ssh deploy-target 'echo SSH_OK'
+
+      - name: Ensure app directory exists
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          ssh deploy-target "sudo mkdir -p '${SSH_PATH}' /opt/apps && sudo chown -R '${SSH_USER}:${SSH_USER}' /opt/apps '${SSH_PATH}'"
+
+      - name: Rsync project
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+        run: |
+          rsync -az --delete \
+            -e "ssh" \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='node_modules/' \
+            --exclude='vendor/' \
+            --exclude='tests/' \
+            --exclude='.env' \
+            --exclude='.env.backup' \
+            --exclude='.env.deploy' \
+            --exclude='.env.deploy.local' \
+            --exclude='.env.production' \
+            --exclude='database/*.sqlite' \
+            --exclude='database/*.sqlite-journal' \
+            --exclude='storage/app/' \
+            --exclude='storage/logs/' \
+            --exclude='storage/framework/cache/' \
+            --exclude='storage/framework/sessions/' \
+            --exclude='storage/framework/views/' \
+            --exclude='storage/pail/' \
+            --exclude='public/build/' \
+            --exclude='public/hot' \
+            --exclude='public/storage' \
+            --exclude='bootstrap/cache/*.php' \
+            --exclude='hotel.sql' \
+            ./ "deploy-target:${SSH_PATH}/"
+
+      - name: First app setup
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.first_install }}
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+          DOMAIN: ${{ secrets.DOMAIN }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          DOMAIN="${DOMAIN:-hotel.synccode.co.zw}"
+          ssh deploy-target bash -s <<EOF
+          set -euo pipefail
+          cd '${SSH_PATH}'
+          chmod +x deploy/*.sh docker/app-entrypoint.sh || true
+          export DOMAIN='${DOMAIN}'
+          export ADMIN_EMAIL='${ADMIN_EMAIL:-}'
+          export ADMIN_PASSWORD='${ADMIN_PASSWORD:-}'
+          bash deploy/first-app-setup.sh
+          EOF
+
+      - name: Build and restart containers
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.first_install }}
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+        run: |
+          ssh deploy-target bash -s <<EOF
+          set -euo pipefail
+          cd '${SSH_PATH}'
+          chmod +x deploy/*.sh docker/app-entrypoint.sh || true
+          if [ ! -f .env ] || ! command -v docker >/dev/null 2>&1; then
+            echo "Hotel app not bootstrapped yet. Skipping update deploy."
+            echo "Run Actions → Deploy to server → first_install once."
+            exit 0
+          fi
+          if [ -f /opt/edge/docker-compose.yml ]; then
+            (cd /opt/edge && docker compose up -d)
+          fi
+          if ! docker network inspect edge >/dev/null 2>&1; then
+            echo "Docker network 'edge' missing. SyncCode Traefik edge must be running." >&2
+            exit 1
+          fi
+          docker compose config >/dev/null
+          bash deploy/release.sh
+          EOF

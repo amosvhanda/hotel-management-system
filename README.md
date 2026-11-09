@@ -105,26 +105,17 @@ php artisan test
 
 ## Deploying to production
 
-1. **Server:** PHP 8.1+ (`pdo_mysql`, `gd`, `mbstring`, `xml`, `zip`, `fileinfo`), MySQL/MariaDB, HTTPS certificate.
-2. **Upload the code** (without `vendor/`, `node_modules/`, `.env`) and run `composer install --no-dev --optimize-autoloader`.
-3. **Point the web root at `public/`** (never at the project folder).
-4. **Create `.env`** from `.env.example` and set:
-   ```
-   APP_ENV=production
-   APP_DEBUG=false
-   APP_URL=https://your-domain.co.zw
-   DB_CONNECTION=mysql   # plus DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD
-   PAYNOW_INTEGRATION_ID=...
-   PAYNOW_INTEGRATION_KEY=...
-   ```
-   then `php artisan key:generate` (new installs only).
-5. **Database:** `php artisan migrate --force` (add `--seed` on a brand-new database), or import your existing data first.
-6. **Permissions:** `storage/`, `bootstrap/cache/` and `public/upload/` must be writable by the web server.
-7. **Cache for speed:** `php artisan optimize` (run `php artisan optimize:clear` whenever you change `.env` or deploy new code).
-8. **Paynow:** in the Paynow dashboard, make sure your site is reachable at `https://your-domain/paynow/result`.
-9. **Email:** enter real SMTP details in **Admin → Settings → SMTP** and send yourself a test booking confirmation.
-10. **Backups:** schedule a daily database backup (e.g. `mysqldump`) and keep a copy of `public/upload/`.
-11. **After going live:** change the seeded passwords, remove sample accounts you don't use, and check `storage/logs/laravel.log` for errors.
+Production runs on the **same Docker + Traefik VPS as SyncCode**, at **https://hotel.synccode.co.zw**.
+
+Full steps (DNS, GitHub secrets, first install, Paynow): see [docs/SERVER_DEPLOYMENT.md](docs/SERVER_DEPLOYMENT.md).
+
+Summary:
+
+1. Create DNS A record `hotel.synccode.co.zw` → the SyncCode VPS IP.
+2. Add GitHub Actions secrets: `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_PATH=/opt/apps/hotel`, `DOMAIN=hotel.synccode.co.zw`.
+3. Run **Actions → Deploy to server** once with `first_install=true` (creates `.env`, MySQL, migrate, seed). Later pushes to `main` rebuild and migrate automatically.
+4. On the server `.env`, set `PAYNOW_INTEGRATION_ID` / `PAYNOW_INTEGRATION_KEY`, then after HTTPS works set `APP_URL=https://hotel.synccode.co.zw` and `SESSION_SECURE_COOKIE=true`.
+5. Change seeded passwords, configure SMTP in **Admin → Settings**, and point Paynow at `https://hotel.synccode.co.zw/paynow/result`.
 
 ---
 
