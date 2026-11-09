@@ -31,6 +31,11 @@
     --hms-radius: 8px;
     --hms-shadow: 0 1px 2px rgba(20, 36, 27, .05), 0 12px 32px rgba(20, 36, 27, .06);
 
+    /* Nav text: adapt per theme so hover/active never use a dark green on dark paper */
+    --hms-nav: #15201a;
+    --hms-nav-hover: #1f3a2b;
+    --hms-nav-on-dark: #e8ebe3;
+
     --hms-display: "Fraunces", Georgia, serif;
     --hms-text: "Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
     --hms-ease: cubic-bezier(.2, .7, .2, 1);
@@ -44,6 +49,9 @@ html.theme-dark {
     --hms-paper: #0e1711;
     --hms-brand: #8fb89a;
     --hms-brand-dark: #b7d4bf;
+    --hms-nav: #eef0e6;
+    --hms-nav-hover: #c9b88a;
+    --hms-nav-on-dark: #eef0e6;
 }
 
 /* ---------- Type ---------- */
@@ -71,23 +79,34 @@ h1, h2, h3, h4,
     font-family: var(--hms-text) !important;
 }
 
-/* ---------- Top bar: quiet, not a banner ---------- */
+/* ---------- Top bar: always dark surface — keep light text in both themes ---------- */
 .top-header-bg { background: var(--hms-forest) !important; }
 .top-header { padding: 7px 0; }
 .top-header .header-right ul li a,
-.top-header .header-right ul li i {
-    color: #dfe5d8 !important;
+.top-header .header-right ul li i,
+.top-header .hms-topline {
+    color: var(--hms-nav-on-dark) !important;
     font-size: 13px;
     letter-spacing: .01em;
 }
-.top-header .header-right ul li a:hover { color: var(--hms-sand) !important; }
+.top-header .header-right ul li i { color: var(--hms-sand) !important; }
+.top-header .header-right ul li a:hover,
+.top-header .header-right ul li a:focus {
+    color: var(--hms-sand) !important;
+}
+html.theme-dark .top-header-bg { background: #08100b !important; }
+html.theme-dark .top-header .header-right ul li a,
+html.theme-dark .top-header .hms-topline {
+    color: var(--hms-nav-on-dark) !important;
+}
+html.theme-dark .top-header .header-right ul li i { color: var(--hms-sand) !important; }
 
 /* ---------- Navigation ---------- */
 .main-nav { background: var(--hms-paper); border-bottom: 1px solid var(--hms-line); box-shadow: none; }
 .main-nav nav .navbar-nav .nav-item a {
     font-size: 15px;
     font-weight: 500;
-    color: var(--hms-ink);
+    color: var(--hms-nav) !important;
     position: relative;
 }
 .main-nav nav .navbar-nav .nav-item > a.nav-link::after {
@@ -95,17 +114,23 @@ h1, h2, h3, h4,
     position: absolute;
     left: 0; right: 0; bottom: 4px;
     height: 1px;
-    background: var(--hms-canopy);
+    background: var(--hms-nav-hover);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform .25s var(--hms-ease);
 }
 .main-nav nav .navbar-nav .nav-item > a.nav-link:hover::after,
 .main-nav nav .navbar-nav .nav-item > a.nav-link.active::after { transform: scaleX(1); }
-.main-nav nav .navbar-nav .nav-item:hover a,
+.main-nav nav .navbar-nav .nav-item:hover > a,
 .main-nav nav .navbar-nav .nav-item a:hover,
+.main-nav nav .navbar-nav .nav-item a:focus,
 .main-nav nav .navbar-nav .nav-item a.active,
-.main-nav nav .navbar-nav .nav-item .active { color: var(--hms-canopy) !important; }
+.main-nav nav .navbar-nav .nav-item .active {
+    color: var(--hms-nav-hover) !important;
+}
+.main-nav nav .navbar-nav .nav-item > a.nav-link i {
+    color: inherit !important;
+}
 .main-nav nav .navbar-nav .dropdown-menu {
     border: 1px solid var(--hms-line);
     border-radius: var(--hms-radius);
@@ -867,7 +892,7 @@ html.theme-dark .hms-reason span { color: var(--hms-ink); }
     font-size: 26px;
     font-weight: 400;
     letter-spacing: -0.02em;
-    color: var(--hms-ink);
+    color: var(--hms-nav) !important;
 }
 
 .main-nav nav.navbar { display: flex; align-items: center; flex-wrap: nowrap; }
@@ -927,12 +952,14 @@ html.theme-dark .hms-reason span { color: var(--hms-ink); }
         padding: 11px 14px;
         border-radius: 6px;
         font-size: 15px;
-        color: var(--hms-ink) !important;
+        color: var(--hms-nav) !important;
         transition: background-color .18s var(--hms-ease), padding-left .18s var(--hms-ease);
     }
-    .main-nav nav .navbar-nav .nav-item .dropdown-menu li a:hover {
+    .main-nav nav .navbar-nav .nav-item .dropdown-menu li a:hover,
+    .main-nav nav .navbar-nav .nav-item .dropdown-menu li a:focus,
+    .main-nav nav .navbar-nav .nav-item .dropdown-menu li a.active {
         background: var(--hms-soft);
-        color: var(--hms-canopy) !important;
+        color: var(--hms-nav-hover) !important;
         padding-left: 20px;
     }
 }
@@ -946,8 +973,20 @@ html.theme-dark .hms-reason span { color: var(--hms-ink); }
     font-weight: 600;
     letter-spacing: .01em;
 }
-.hms-theme { width: 38px; height: 38px; font-size: 18px; background: transparent; color: var(--hms-muted); border-color: var(--hms-line); transition: border-color .2s var(--hms-ease), color .2s var(--hms-ease); }
-.hms-theme:hover { color: var(--hms-ink); border-color: var(--hms-ink); }
+.hms-theme {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+    background: transparent;
+    color: var(--hms-nav) !important;
+    border-color: var(--hms-line);
+    transition: border-color .2s var(--hms-ease), color .2s var(--hms-ease);
+}
+.hms-theme:hover,
+.hms-theme:focus {
+    color: var(--hms-nav-hover) !important;
+    border-color: var(--hms-nav-hover);
+}
 
 /* Stuck to the top after scrolling: slimmer, hairline shadow, no heavy glow */
 .sticky-nav .main-nav {
@@ -970,23 +1009,58 @@ html.theme-dark .hms-reason span { color: var(--hms-ink); }
     font-weight: 400;
     padding: 16px 5%;
     width: 90%;
-    color: var(--hms-ink);
+    color: var(--hms-nav) !important;
     border-top: 1px solid var(--hms-line);
     text-transform: none;
 }
-.mean-container .mean-nav ul li a.mean-expand { font-family: var(--hms-text); color: var(--hms-ink); border-left: 1px solid var(--hms-line); background: transparent; height: auto; }
-.mean-container .mean-nav ul li li a { font-family: var(--hms-text); font-size: 16px; padding-left: 9%; width: 86%; color: var(--hms-muted); }
-.mean-container .mean-nav ul li a.active { color: var(--hms-canopy); }
+.mean-container .mean-nav ul li a.mean-expand {
+    font-family: var(--hms-text);
+    color: var(--hms-nav) !important;
+    border-left: 1px solid var(--hms-line);
+    background: transparent;
+    height: auto;
+}
+.mean-container .mean-nav ul li li a {
+    font-family: var(--hms-text);
+    font-size: 16px;
+    padding-left: 9%;
+    width: 86%;
+    color: var(--hms-muted) !important;
+}
+.mean-container .mean-nav ul li a.active,
+.mean-container .mean-nav ul li a:hover {
+    color: var(--hms-nav-hover) !important;
+}
+.mean-container a.meanmenu-reveal { color: var(--hms-nav) !important; }
+.mean-container a.meanmenu-reveal span { background: var(--hms-nav) !important; }
 .nav-item-btn { display: block; padding: 18px 5%; }
 .nav-item-btn .default-btn { display: block; text-align: center; }
 @media (min-width: 992px) { .nav-item-btn { display: none; } }
 
-/* Dark theme */
+/* Dark theme — surfaces + explicit nav text so legacy theme-dark.css cannot win */
 html.theme-dark .main-nav, html.theme-dark .sticky-nav .main-nav,
 html.theme-dark .mobile-nav, html.theme-dark .mean-container .mean-bar,
 html.theme-dark .mean-container .mean-nav { background: var(--hms-paper) !important; }
 html.theme-dark .main-nav nav .navbar-nav .nav-item .dropdown-menu { background: #121d16 !important; }
-html.theme-dark .navbar-brand strong, html.theme-dark .mobile-nav .logo strong { color: var(--hms-ink); }
+html.theme-dark .navbar-brand strong,
+html.theme-dark .mobile-nav .logo strong { color: var(--hms-nav) !important; }
+html.theme-dark .main-nav nav .navbar-nav .nav-item a,
+html.theme-dark .main-nav nav .navbar-nav .nav-item > a.nav-link {
+    color: var(--hms-nav) !important;
+}
+html.theme-dark .main-nav nav .navbar-nav .nav-item:hover > a,
+html.theme-dark .main-nav nav .navbar-nav .nav-item a:hover,
+html.theme-dark .main-nav nav .navbar-nav .nav-item a:focus,
+html.theme-dark .main-nav nav .navbar-nav .nav-item a.active,
+html.theme-dark .main-nav nav .navbar-nav .nav-item .active {
+    color: var(--hms-nav-hover) !important;
+}
+html.theme-dark .mean-container .mean-nav ul li a { color: var(--hms-nav) !important; }
+html.theme-dark .mean-container .mean-nav ul li a.active,
+html.theme-dark .mean-container .mean-nav ul li a:hover { color: var(--hms-nav-hover) !important; }
+html.theme-dark .mean-container a.meanmenu-reveal { color: var(--hms-nav) !important; }
+html.theme-dark .mean-container a.meanmenu-reveal span { background: var(--hms-nav) !important; }
+html.theme-dark .hms-theme { color: var(--hms-nav) !important; border-color: var(--hms-line); }
 
 @media (prefers-reduced-motion: reduce) {
     .sticky-nav .main-nav { animation: none; }

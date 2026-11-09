@@ -199,6 +199,10 @@ class SiteSetting extends Model
         }
         if ($changed('ink')) {
             $v['--hms-ink'] = $c['ink'];
+            $v['--hms-nav'] = $c['ink'];
+        }
+        if ($changed('canopy')) {
+            $v['--hms-nav-hover'] = $c['canopy'];
         }
         if ($changed('muted')) {
             $v['--hms-muted'] = $c['muted'];
@@ -219,7 +223,10 @@ class SiteSetting extends Model
             $css .= $name . ':' . $value . ';';
         }
 
-        return ':root{' . $css . '}';
+        // Keep nav readable in dark mode even when light-theme tokens were customized.
+        $dark = '--hms-nav:#eef0e6;--hms-nav-hover:#c9b88a;--hms-nav-on-dark:#eef0e6;';
+
+        return ':root{' . $css . '}html.theme-dark{' . $dark . '}';
     }
 
     /** Hotel name shown across the site. */

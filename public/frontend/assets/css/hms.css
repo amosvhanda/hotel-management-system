@@ -414,11 +414,11 @@ h1, h2, h3, h4, .section-title h2, .inner-title h3, .footer-widget h3 {
    The template's coral (#EE786C / #B56952) stays out of the public chrome.
    ========================================================================== */
 
-.main-nav nav .navbar-nav .nav-item a { color: var(--hms-ink); }
+.main-nav nav .navbar-nav .nav-item a { color: var(--hms-nav, var(--hms-ink)); }
 .main-nav nav .navbar-nav .nav-item:hover a,
 .main-nav nav .navbar-nav .nav-item .active,
 .main-nav nav .navbar-nav .nav-item a:hover,
-.main-nav nav .navbar-nav .nav-item a.active { color: var(--hms-brand-dark) !important; }
+.main-nav nav .navbar-nav .nav-item a.active { color: var(--hms-nav-hover, var(--hms-brand-dark)) !important; }
 .sp-color, .section-title span { color: var(--hms-brand) !important; }
 .footer-widget h3 { color: #f6f1ea; }
 .footer-widget .footer-list li a,
