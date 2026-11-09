@@ -45,10 +45,12 @@ php artisan serve
 
 Seeded accounts (change these passwords immediately):
 
-| Role        | Email             | Password   |
-|-------------|-------------------|------------|
-| Super Admin | admin@gmail.com   | `password` |
-| Guest       | user@gmail.com    | `password` |
+| Role        | Email                          | Password   |
+|-------------|--------------------------------|------------|
+| Super Admin | admin@hotel.synccode.co.zw     | `password` (production: `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env`) |
+| Guest       | guest@hotel.synccode.co.zw     | `password` |
+
+Emails use the `DOMAIN` setting in `.env` (default `hotel.synccode.co.zw`).
 
 Staff sign in at `/admin/login`.
 

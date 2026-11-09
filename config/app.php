@@ -57,6 +57,12 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    /*
+    | Our own domain. Used for demo/seed emails (reservations@, admin@, guests),
+    | so nothing points at example.com or gmail.com.
+    */
+    'domain' => env('DOMAIN', 'hotel.synccode.co.zw'),
+
     'asset_url' => env('ASSET_URL'),
 
     /*

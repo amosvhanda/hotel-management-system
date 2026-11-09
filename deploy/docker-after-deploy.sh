@@ -24,6 +24,10 @@ echo "Database connection OK\n";
 
 php artisan migrate --force
 
+# Logins on our domain: moves admin@gmail.com / user@gmail.com to
+# ADMIN_EMAIL (with ADMIN_PASSWORD) and guest@<DOMAIN>. Safe every deploy.
+php artisan db:seed --class=UsersTableSeeder --force || echo "WARNING: could not update starter logins" >&2
+
 # One time only: Mopane Heights branding, rooms, photos and page text.
 # The marker lives in storage/ (kept between deploys), so later edits made in
 # Admin are never overwritten. Delete storage/app/.demo_content_done to re-run.

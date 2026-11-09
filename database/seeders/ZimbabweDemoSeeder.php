@@ -61,7 +61,7 @@ class ZimbabweDemoSeeder extends Seeder
             'site_description' => 'Mopane Heights Hotel is a modern city hotel in Harare with comfortable rooms, a restaurant serving local and international dishes, free Wi-Fi and easy online booking — pay with Paynow, EcoCash, or in cash when you arrive.',
             'address'          => '45 Samora Machel Avenue, Harare, Zimbabwe',
             'phone'            => '+263 77 000 0000',
-            'email'            => 'reservations@example.com',
+            'email'            => 'reservations@' . config('app.domain'),
             'meta_title'       => 'Mopane Heights Hotel | Book a Hotel Room in Harare',
             'meta_description' => 'Book comfortable rooms in central Harare. Free Wi-Fi, restaurant, airport transfers. Pay with Paynow, EcoCash or in cash on arrival.',
             'meta_keywords'    => 'Harare hotel, Zimbabwe hotel, hotel booking Harare, EcoCash hotel booking',
@@ -354,7 +354,7 @@ class ZimbabweDemoSeeder extends Seeder
             [$name, $province, $address] = $guests[$i % count($guests)];
             $b->update([
                 'name'     => $name,
-                'email'    => Str::slug($name, '.') . '@example.com',
+                'email'    => Str::slug($name, '.') . '@' . config('app.domain'),
                 'phone'    => '077' . str_pad((string) (1000000 + $i), 7, '0', STR_PAD_LEFT),
                 'country'  => 'Zimbabwe',
                 'state'    => $province,
@@ -364,7 +364,7 @@ class ZimbabweDemoSeeder extends Seeder
         }
 
         // Friendlier display names for the two sample guest accounts.
-        User::where('email', 'user@gmail.com')->where('name', 'User')->update(['name' => 'Tafadzwa Moyo']);
+        User::whereIn('email', ['user@gmail.com', 'guest@' . config('app.domain')])->whereIn('name', ['User', 'Guest User'])->update(['name' => 'Tafadzwa Moyo']);
         User::where('email', 'khan@gmail.com')->where('name', 'Khan')->update(['name' => 'Kudzai Dube']);
     }
 }

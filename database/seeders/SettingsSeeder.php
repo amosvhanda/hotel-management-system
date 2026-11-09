@@ -16,7 +16,7 @@ class SettingsSeeder extends Seeder
                 'tagline'          => 'Comfortable rooms and warm hospitality',
                 'site_description' => 'Comfortable, well-kept rooms, friendly staff and simple online booking.',
                 'phone'            => '+263 77 000 0000',
-                'email'            => 'reservations@example.com',
+                'email'            => 'reservations@' . config('app.domain'),
                 'address'          => 'Harare, Zimbabwe',
                 'copyright'        => '© ' . date('Y') . ' ' . config('app.name', 'Hotel') . '. All rights reserved.',
             ]);

@@ -46,7 +46,7 @@
                     <div class="col-12">
                         <label for="login" class="form-label">Email, username or phone</label>
                         <input type="text" name="login" id="login" value="{{ old('login') }}" autofocus autocomplete="username"
-                               class="form-control @error('login') is-invalid @enderror" placeholder="admin@example.com">
+                               class="form-control @error('login') is-invalid @enderror" placeholder="admin@{{ config('app.domain') }}">
                         @error('login')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-12">
