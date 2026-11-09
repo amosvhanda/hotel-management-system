@@ -6,6 +6,7 @@ use App\Models\SiteSetting;
 use App\Models\SmtpSetting;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,6 +18,15 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $appUrl = (string) config('app.url');
+
+        // Behind Traefik, PHP sees HTTP on the internal network. Always generate
+        // absolute links/assets from APP_URL so HTTPS pages never emit http:// assets.
+        if (str_starts_with($appUrl, 'https://')) {
+            URL::forceRootUrl(rtrim($appUrl, '/'));
+            URL::forceScheme('https');
+        }
+
         $this->applySmtpSettings();
     }
 

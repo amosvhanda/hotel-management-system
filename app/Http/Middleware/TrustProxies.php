@@ -8,11 +8,13 @@ use Illuminate\Http\Request;
 class TrustProxies extends Middleware
 {
     /**
-     * The trusted proxies for this application.
+     * Trust Traefik / Docker edge proxies so X-Forwarded-Proto is honoured.
+     * Without this, HTTPS terminates at Traefik and Laravel still sees HTTP,
+     * which breaks secure cookies and can 500 after APP_URL is set to https.
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.

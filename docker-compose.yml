@@ -89,10 +89,17 @@ services:
       - traefik.http.routers.hotel.entrypoints=websecure
       - traefik.http.routers.hotel.tls=true
       - traefik.http.routers.hotel.tls.certresolver=letsencrypt
-      # HTTP (ACME challenge + optional IP access until DNS-only).
-      - traefik.http.routers.hotel-http.rule=Host(`${DOMAIN:-hotel.synccode.co.zw}`) || Host(`${SERVER_IP:?Set SERVER_IP in .env}`)
+      # Domain HTTP → HTTPS (ACME HTTP-01 uses Traefik's own high-priority router).
+      - traefik.http.middlewares.hotel-https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.hotel-https-redirect.redirectscheme.permanent=true
+      - traefik.http.routers.hotel-http.rule=Host(`${DOMAIN:-hotel.synccode.co.zw}`)
       - traefik.http.routers.hotel-http.entrypoints=web
+      - traefik.http.routers.hotel-http.middlewares=hotel-https-redirect
       - traefik.http.routers.hotel-http.service=hotel
+      # Optional plain HTTP via server IP (no TLS cert for IP — do not redirect).
+      - traefik.http.routers.hotel-http-ip.rule=Host(`${SERVER_IP:?Set SERVER_IP in .env}`)
+      - traefik.http.routers.hotel-http-ip.entrypoints=web
+      - traefik.http.routers.hotel-http-ip.service=hotel
       - traefik.http.services.hotel.loadbalancer.server.port=80
     mem_limit: 128m
 
