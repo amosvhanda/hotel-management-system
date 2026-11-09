@@ -13,7 +13,14 @@ mkdir -p \
   bootstrap/cache
 
 echo "Checking database connection..."
-php artisan db:show
+# db:show needs doctrine/dbal (not installed). Probe via Laravel DB facade.
+php -r '
+require "/var/www/html/vendor/autoload.php";
+$app = require_once "/var/www/html/bootstrap/app.php";
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+Illuminate\Support\Facades\DB::connection()->getPdo();
+echo "Database connection OK\n";
+'
 
 php artisan migrate --force
 php artisan storage:link || true
