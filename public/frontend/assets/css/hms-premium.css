@@ -49,9 +49,9 @@ html.theme-dark {
     --hms-paper: #0e1711;
     --hms-brand: #8fb89a;
     --hms-brand-dark: #b7d4bf;
-    --hms-nav: #eef0e6;
-    --hms-nav-hover: #c9b88a;
-    --hms-nav-on-dark: #eef0e6;
+    --hms-nav: #f5f7f0;
+    --hms-nav-hover: #e2d3a8;
+    --hms-nav-on-dark: #f5f7f0;
 }
 
 /* ---------- Type ---------- */

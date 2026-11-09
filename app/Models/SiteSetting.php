@@ -224,7 +224,7 @@ class SiteSetting extends Model
         }
 
         // Keep nav readable in dark mode even when light-theme tokens were customized.
-        $dark = '--hms-nav:#eef0e6;--hms-nav-hover:#c9b88a;--hms-nav-on-dark:#eef0e6;';
+        $dark = '--hms-nav:#f5f7f0;--hms-nav-hover:#e2d3a8;--hms-nav-on-dark:#f5f7f0;';
 
         return ':root{' . $css . '}html.theme-dark{' . $dark . '}';
     }
