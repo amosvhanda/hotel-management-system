@@ -150,16 +150,20 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.first_install }}
         env:
           SSH_PATH: ${{ secrets.SSH_PATH }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
           DOMAIN: ${{ secrets.DOMAIN }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
         run: |
           DOMAIN="${DOMAIN:-hotel.synccode.co.zw}"
+          # VPS outbound curl to ifconfig.me can fail; SSH_HOST is the public IP.
+          SERVER_IP="${SSH_HOST}"
           ssh deploy-target bash -s <<EOF
           set -euo pipefail
           cd '${SSH_PATH}'
           chmod +x deploy/*.sh docker/app-entrypoint.sh || true
           export DOMAIN='${DOMAIN}'
+          export SERVER_IP='${SERVER_IP}'
           export ADMIN_EMAIL='${ADMIN_EMAIL:-}'
           export ADMIN_PASSWORD='${ADMIN_PASSWORD:-}'
           bash deploy/first-app-setup.sh
