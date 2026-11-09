@@ -136,7 +136,8 @@ services:
       app:
         condition: service_healthy
     entrypoint: ["/usr/local/bin/app-entrypoint.sh"]
-    command: ["sh", "-c", "while true; do php artisan schedule:run --no-interaction; sleep 60; done"]
+    # Run as www-data (like PHP-FPM) so it never leaves root-owned files in storage/.
+    command: ["sh", "-c", "while true; do su -s /bin/sh www-data -c 'php artisan schedule:run --no-interaction'; sleep 60; done"]
     networks:
       - hotel
     mem_limit: 256m

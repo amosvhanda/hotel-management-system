@@ -5,6 +5,11 @@ set -euo pipefail
 cd /var/www/html
 
 php artisan down || true
+
+# Start clean: drop config/route/view/event caches and compiled views left by the
+# previous release, so nothing old can be mixed with the new code.
+php artisan optimize:clear || true
+rm -f storage/framework/views/*.php bootstrap/cache/config.php bootstrap/cache/events.php || true
 mkdir -p \
   storage/framework/cache/data \
   storage/framework/sessions \
@@ -62,4 +67,33 @@ php artisan event:cache || true
 fix_storage
 
 php artisan up
+
+# PHP-FPM caches compiled code and never re-checks files (opcache
+# validate_timestamps=0). Reload it so it serves the freshly cached config/views,
+# not versions it picked up before this script ran.
+reload_fpm() {
+  kill -USR2 1 2>/dev/null && sleep 2 || true
+}
+reload_fpm
+
+smoke() {
+  su -s /bin/sh www-data -c "php deploy/smoke.php"
+}
+
+echo "==> Smoke test (pages rendered as www-data, like the live site)"
+if ! smoke; then
+  echo "==> Smoke test failed — repairing caches and retrying once"
+  php artisan optimize:clear || true
+  rm -f storage/framework/views/*.php || true
+  php artisan config:cache
+  php artisan view:cache
+  php artisan event:cache || true
+  fix_storage
+  reload_fpm
+  if ! smoke; then
+    echo "==> STILL FAILING. Last Laravel log lines:" >&2
+    tail -n 60 storage/logs/laravel.log 2>/dev/null | cut -c1-400 >&2 || true
+    exit 1
+  fi
+fi
 echo "Docker release commands finished."

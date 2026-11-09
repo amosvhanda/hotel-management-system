@@ -21,3 +21,4 @@ yarn-error.log
 /.vscode
 
 /Claude outputs
+/diagnose-output.txt

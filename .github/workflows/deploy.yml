@@ -201,37 +201,58 @@ jobs:
           bash deploy/release.sh
           EOF
 
-      - name: Verify HTTPS is live
+      - name: Verify site is live (HTTPS, key pages, still OK after 60s)
         env:
           DOMAIN: ${{ secrets.DOMAIN }}
         run: |
           DOMAIN="${DOMAIN:-hotel.synccode.co.zw}"
-          URL="https://${DOMAIN}/"
-          echo "Checking ${URL} (valid certificate required)…"
-          # Let's Encrypt can take a minute on first issue — retry up to ~3 min.
+          check_pages() {
+            local bad=0
+            for path in / /rooms /about /login /admin/login; do
+              code="$(curl -sS -o /tmp/page.html -w '%{http_code}' --max-time 20 "https://${DOMAIN}${path}" || echo 000)"
+              echo "  https://${DOMAIN}${path} → ${code}"
+              if [ "$code" -lt 200 ] 2>/dev/null || [ "$code" -ge 400 ] 2>/dev/null || [ "$code" = "000" ]; then bad=1; fi
+            done
+            return $bad
+          }
+
+          echo "Waiting for HTTPS + pages (certificate may take a minute on first issue)…"
           ok=0
           for i in $(seq 1 18); do
-            code="$(curl -sS -o /tmp/home.html -w '%{http_code}' --max-time 15 "$URL" || true)"
-            if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] 2>/dev/null; then ok=1; break; fi
-            echo "  attempt $i: HTTP ${code:-error} — retrying in 10s"
-            sleep 10
+            if check_pages; then ok=1; break; fi
+            echo "  attempt $i failed — retrying in 10s"; sleep 10
           done
-          if [ "$ok" -ne 1 ]; then
-            echo "HTTPS check failed for ${URL}. Check DNS A record and Traefik logs (docker logs edge-traefik)." >&2
-            exit 1
-          fi
-          echo "  HTTPS OK (HTTP $code)"
+          [ "$ok" -eq 1 ] || { echo "Site is not healthy after deploy." >&2; exit 1; }
 
           echo "Checking http:// redirects to https://…"
           loc="$(curl -sS -o /dev/null -w '%{redirect_url}' --max-time 15 "http://${DOMAIN}/" || true)"
-          case "$loc" in
-            https://*) echo "  Redirect OK → $loc" ;;
-            *) echo "http://${DOMAIN}/ does not redirect to HTTPS (got: '${loc}')" >&2; exit 1 ;;
-          esac
+          case "$loc" in https://*) echo "  Redirect OK → $loc" ;; *) echo "http:// does not redirect to HTTPS (got '${loc}')" >&2; exit 1 ;; esac
 
-          echo "Checking for mixed-content (http://) asset links…"
+          echo "Checking for mixed content…"
+          curl -sS --max-time 15 "https://${DOMAIN}/" -o /tmp/home.html
           if grep -Eo "(src|href)=\"http://${DOMAIN}[^\"]*\"" /tmp/home.html | head -5 | grep .; then
-            echo "Page still links assets over http:// — APP_URL/ASSET_URL not https." >&2
-            exit 1
+            echo "Page links assets over http:// — APP_URL/ASSET_URL not https." >&2; exit 1
           fi
-          echo "  No mixed content. Site is served over HTTPS."
+
+          echo "Re-checking after 60s (catches sites that break shortly after deploy)…"
+          sleep 60
+          check_pages || { echo "Site broke within a minute of deploying." >&2; exit 1; }
+          echo "Site is healthy."
+
+      - name: Show server errors (only when the deploy failed)
+        if: ${{ failure() }}
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+        run: |
+          ssh deploy-target bash -s <<EOF || true
+          cd '${SSH_PATH}'
+          echo "=== containers"; docker compose ps
+          echo; echo "=== smoke test (exact error per page)"
+          docker compose exec -T app su -s /bin/sh www-data -c "php deploy/smoke.php" || true
+          echo; echo "=== laravel.log (last 80 lines)"
+          docker compose exec -T app sh -c 'tail -n 80 storage/logs/laravel.log 2>/dev/null | cut -c1-400' || true
+          echo; echo "=== app / nginx container logs"
+          docker compose logs --tail=40 app nginx 2>&1 | cut -c1-300
+          echo; echo "=== root-owned files in storage (should be none)"
+          docker compose exec -T app sh -c 'find storage bootstrap/cache -user root | head -n 20' || true
+          EOF
