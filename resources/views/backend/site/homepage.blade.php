@@ -36,34 +36,34 @@
 
                                 <h5 class="mb-3">Opening photograph</h5>
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">Small line</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-hero_kicker">Small line</label></div>
                                     <div class="col-sm-9">
-                                        <input type="text" name="hero_kicker" class="form-control" value="{{ $value('hero_kicker') }}">
+                                        <input id="f-hero_kicker" type="text" name="hero_kicker" class="form-control" value="{{ $value('hero_kicker') }}">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">Headline</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-hero_title">Headline</label></div>
                                     <div class="col-sm-9">
-                                        <input type="text" name="hero_title" class="form-control" value="{{ $value('hero_title') }}">
+                                        <input id="f-hero_title" type="text" name="hero_title" class="form-control" value="{{ $value('hero_title') }}">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">Supporting line</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-hero_text">Supporting line</label></div>
                                     <div class="col-sm-9">
-                                        <textarea name="hero_text" rows="3" class="form-control">{{ $value('hero_text') }}</textarea>
+                                        <textarea id="f-hero_text" name="hero_text" rows="3" class="form-control">{{ $value('hero_text') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">Photograph</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-hero_image">Photograph</label></div>
                                     <div class="col-sm-9">
-                                        <input type="file" name="hero_image" class="form-control" accept="image/*">
+                                        <input id="f-hero_image" type="file" name="hero_image" class="form-control" accept="image/*">
                                         <img src="{{ $site->heroImageUrl() }}" alt="" class="mt-2" style="width:220px;height:120px;object-fit:cover;border-radius:8px">
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <div class="col-sm-3"><h6 class="mb-0">Booking note</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-booking_note">Booking note</label></div>
                                     <div class="col-sm-9">
-                                        <input type="text" name="booking_note" class="form-control" value="{{ $value('booking_note') }}">
+                                        <input id="f-booking_note" type="text" name="booking_note" class="form-control" value="{{ $value('booking_note') }}">
                                         <small class="text-muted">Shown under the date form. Mention how guests can pay.</small>
                                     </div>
                                 </div>
@@ -78,9 +78,9 @@
                                     'journal' => 'Journal',
                                 ] as $key => $label)
                                     <div class="row mb-3">
-                                        <div class="col-sm-3"><h6 class="mb-0">{{ $label }}</h6></div>
+                                        <div class="col-sm-3"><label class="form-label mb-0" for="f-key-_kicker">{{ $label }}</label></div>
                                         <div class="col-sm-9">
-                                            <input type="text" name="{{ $key }}_kicker" class="form-control mb-2" value="{{ $value($key . '_kicker') }}" placeholder="Small line">
+                                            <input id="f-key-_kicker" type="text" name="{{ $key }}_kicker" class="form-control mb-2" value="{{ $value($key . '_kicker') }}" placeholder="Small line">
                                             <input type="text" name="{{ $key }}_title" class="form-control" value="{{ $value($key . '_title') }}" placeholder="Heading">
                                         </div>
                                     </div>
@@ -89,27 +89,27 @@
                                 <h5 class="mb-3">Questions</h5>
                                 <p class="text-muted">The questions themselves are edited under FAQ. These lines sit above them.</p>
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">Small line</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-faq_kicker">Small line</label></div>
                                     <div class="col-sm-9">
-                                        <input type="text" name="faq_kicker" class="form-control" value="{{ $value('faq_kicker') }}">
+                                        <input id="f-faq_kicker" type="text" name="faq_kicker" class="form-control" value="{{ $value('faq_kicker') }}">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">Heading</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-faq_title">Heading</label></div>
                                     <div class="col-sm-9">
-                                        <input type="text" name="faq_title" class="form-control" value="{{ $value('faq_title') }}">
+                                        <input id="f-faq_title" type="text" name="faq_title" class="form-control" value="{{ $value('faq_title') }}">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">Intro</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-faq_intro">Intro</label></div>
                                     <div class="col-sm-9">
-                                        <textarea name="faq_intro" rows="2" class="form-control">{{ $value('faq_intro') }}</textarea>
+                                        <textarea id="f-faq_intro" name="faq_intro" rows="2" class="form-control">{{ $value('faq_intro') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <div class="col-sm-3"><h6 class="mb-0">Side photograph</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-faq_image">Side photograph</label></div>
                                     <div class="col-sm-9">
-                                        <input type="file" name="faq_image" class="form-control" accept="image/*">
+                                        <input id="f-faq_image" type="file" name="faq_image" class="form-control" accept="image/*">
                                         <img src="{{ $site->faqImageUrl() }}" alt="" class="mt-2" style="width:220px;height:120px;object-fit:cover;border-radius:8px">
                                     </div>
                                 </div>
@@ -121,43 +121,43 @@
                                     'about_title' => 'About heading',
                                 ] as $key => $label)
                                     <div class="row mb-3">
-                                        <div class="col-sm-3"><h6 class="mb-0">{{ $label }}</h6></div>
-                                        <div class="col-sm-9"><input type="text" name="{{ $key }}" class="form-control" value="{{ $value($key) }}"></div>
+                                        <div class="col-sm-3"><label class="form-label mb-0" for="f-key">{{ $label }}</label></div>
+                                        <div class="col-sm-9"><input id="f-key" type="text" name="{{ $key }}" class="form-control" value="{{ $value($key) }}"></div>
                                     </div>
                                 @endforeach
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">About paragraph</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-about_text">About paragraph</label></div>
                                     <div class="col-sm-9">
-                                        <textarea name="about_text" rows="3" class="form-control">{{ $value('about_text') }}</textarea>
+                                        <textarea id="f-about_text" name="about_text" rows="3" class="form-control">{{ $value('about_text') }}</textarea>
                                         <small class="text-muted">Leave this as the sample and the About page uses the description from Site Setting instead.</small>
                                     </div>
                                 </div>
                                 @foreach (['about_point_1' => 'About point 1', 'about_point_2' => 'About point 2', 'about_point_3' => 'About point 3'] as $key => $label)
                                     <div class="row mb-3">
-                                        <div class="col-sm-3"><h6 class="mb-0">{{ $label }}</h6></div>
-                                        <div class="col-sm-9"><input type="text" name="{{ $key }}" class="form-control" value="{{ $value($key) }}"></div>
+                                        <div class="col-sm-3"><label class="form-label mb-0" for="f-key-2">{{ $label }}</label></div>
+                                        <div class="col-sm-9"><input id="f-key-2" type="text" name="{{ $key }}" class="form-control" value="{{ $value($key) }}"></div>
                                     </div>
                                 @endforeach
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">Why stay</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-about_why_kicker">Why stay</label></div>
                                     <div class="col-sm-9">
-                                        <input type="text" name="about_why_kicker" class="form-control mb-2" value="{{ $value('about_why_kicker') }}" placeholder="Small line">
+                                        <input id="f-about_why_kicker" type="text" name="about_why_kicker" class="form-control mb-2" value="{{ $value('about_why_kicker') }}" placeholder="Small line">
                                         <input type="text" name="about_why_title" class="form-control" value="{{ $value('about_why_title') }}" placeholder="Heading">
                                     </div>
                                 </div>
                                 @foreach ([1, 2, 3] as $n)
                                     <div class="row mb-3">
-                                        <div class="col-sm-3"><h6 class="mb-0">Reason {{ $n }}</h6></div>
+                                        <div class="col-sm-3"><label class="form-label mb-0" for="f-about_feature_-n-_title">Reason {{ $n }}</label></div>
                                         <div class="col-sm-9">
-                                            <input type="text" name="about_feature_{{ $n }}_title" class="form-control mb-2" value="{{ $value('about_feature_'.$n.'_title') }}">
+                                            <input id="f-about_feature_-n-_title" type="text" name="about_feature_{{ $n }}_title" class="form-control mb-2" value="{{ $value('about_feature_'.$n.'_title') }}">
                                             <textarea name="about_feature_{{ $n }}_text" rows="2" class="form-control">{{ $value('about_feature_'.$n.'_text') }}</textarea>
                                         </div>
                                     </div>
                                 @endforeach
                                 <div class="row mb-3">
-                                    <div class="col-sm-3"><h6 class="mb-0">About closing line</h6></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-about_cta_title">About closing line</label></div>
                                     <div class="col-sm-9">
-                                        <input type="text" name="about_cta_title" class="form-control mb-2" value="{{ $value('about_cta_title') }}">
+                                        <input id="f-about_cta_title" type="text" name="about_cta_title" class="form-control mb-2" value="{{ $value('about_cta_title') }}">
                                         <input type="text" name="about_cta_text" class="form-control" value="{{ $value('about_cta_text') }}">
                                     </div>
                                 </div>
@@ -172,13 +172,13 @@
                                     'footer_plan' => 'Footer note',
                                 ] as $key => $label)
                                     <div class="row mb-3">
-                                        <div class="col-sm-3"><h6 class="mb-0">{{ $label }}</h6></div>
-                                        <div class="col-sm-9"><input type="text" name="{{ $key }}" class="form-control" value="{{ $value($key) }}"></div>
+                                        <div class="col-sm-3"><label class="form-label mb-0" for="f-key-3">{{ $label }}</label></div>
+                                        <div class="col-sm-9"><input id="f-key-3" type="text" name="{{ $key }}" class="form-control" value="{{ $value($key) }}"></div>
                                     </div>
                                 @endforeach
                                 <div class="row mb-4">
-                                    <div class="col-sm-3"><h6 class="mb-0">Contact paragraph</h6></div>
-                                    <div class="col-sm-9"><textarea name="contact_text" rows="2" class="form-control">{{ $value('contact_text') }}</textarea></div>
+                                    <div class="col-sm-3"><label class="form-label mb-0" for="f-contact_text">Contact paragraph</label></div>
+                                    <div class="col-sm-9"><textarea id="f-contact_text" name="contact_text" rows="2" class="form-control">{{ $value('contact_text') }}</textarea></div>
                                 </div>
 
                                 <div class="row">

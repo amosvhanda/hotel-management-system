@@ -1,27 +1,21 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
-    </div>
+@extends('auth.layout')
+@section('title', 'Confirm password')
+@section('side_title', 'Just making sure it is you.')
+@section('side_text', 'This step protects sensitive actions on your account.')
+@section('content')
+    <h1>Confirm your password</h1>
+    <p class="lead">Enter your password to continue.</p>
 
-    <form method="POST" action="{{ route('password.confirm') }}">
+    <form method="POST" action="{{ route('password.confirm') }}" novalidate>
         @csrf
-
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="field">
+            <label for="password">Password</label>
+            <div class="pw">
+                <input type="password" name="password" id="password" required autofocus autocomplete="current-password" @error('password') aria-invalid="true" @enderror>
+                <button type="button" aria-pressed="false">Show</button>
+            </div>
+            @error('password')<div class="err">{{ $message }}</div>@enderror
         </div>
-
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
+        <button type="submit" class="btn">Confirm password</button>
     </form>
-</x-guest-layout>
+@endsection

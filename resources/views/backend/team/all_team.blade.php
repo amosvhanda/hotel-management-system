@@ -5,7 +5,8 @@
 
     <!-- Breadcrumb -->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="ps-3">
+        <div class="breadcrumb-title pe-3">All Team</div>
+<div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"><i class="bx bx-home-alt"></i></a></li>
@@ -24,10 +25,10 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                <table id="example" class="table align-middle hms-table" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Sl</th>
+                            <th class="hms-col-num">#</th>
                             <th>Image</th>
                             <th>Name</th>
                             <th>Position</th>
@@ -40,7 +41,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    <img src="{{ asset($item->image ?? 'upload/no_image.jpg') }}" alt="Team Image" style="width:70px; height:40px;">
+                                    <img src="{{ asset($item->image ?? 'upload/no_image.jpg') }}" alt="Team Image" class="hms-thumb">
                                 </td>
                                 <td>{{ $item->name ?? 'N/A' }}</td>
                                 <td>{{ $item->postion ?? 'N/A' }}</td>
@@ -53,11 +54,11 @@
                                 </td>
                                 <td>
                                     @can('team.edit')
-                                        <a href="{{ route('edit.team', $item->id) }}" class="btn btn-warning btn-sm radius-30">Edit</a>
+                                        <a href="{{ route('edit.team', $item->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                                     @endcan
 
                                     @can('team.delete')
-                                        <a href="{{ route('delete.team', $item->id) }}" class="btn btn-danger btn-sm radius-30" id="delete">Delete</a>
+                                        <a href="{{ route('delete.team', $item->id) }}" class="btn btn-sm btn-outline-danger" id="delete">Delete</a>
                                     @endcan
                                 </td>
                             </tr>

@@ -43,7 +43,7 @@ class BookingController extends Controller
                 ->with($this->alert('Please choose your dates and a room first.', 'error'));
         }
 
-        $nights = Carbon::parse($book_data['check_in'])->diffInDays(Carbon::parse($book_data['check_out']));
+        $nights = \App\Models\Booking::stayNights($book_data['check_in'], $book_data['check_out']);
 
         return view('frontend.checkout.checkout', compact('book_data', 'room', 'nights'));
     }
@@ -132,7 +132,7 @@ class BookingController extends Controller
                 ->with($this->alert('Online payment is not available right now. Please choose Pay at Hotel.', 'error'));
         }
 
-        $nights = Carbon::parse($book_data['check_in'])->diffInDays(Carbon::parse($book_data['check_out']));
+        $nights = \App\Models\Booking::stayNights($book_data['check_in'], $book_data['check_out']);
         $subtotal = $room->price * $nights * $book_data['number_of_rooms'];
         $discount = round(($room->discount / 100) * $subtotal, 2);
         $total = $subtotal - $discount;
@@ -298,7 +298,7 @@ class BookingController extends Controller
         }
 
         DB::transaction(function () use ($booking, $request, $checkIn, $checkOut) {
-            $nights = Carbon::parse($checkIn)->diffInDays(Carbon::parse($checkOut));
+            $nights = \App\Models\Booking::stayNights($checkIn, $checkOut);
             $price = $booking->room->price ?? $booking->actual_price;
             $subtotal = $price * $nights * $request->number_of_rooms;
             $discount = round((($booking->room->discount ?? 0) / 100) * $subtotal, 2);
@@ -395,7 +395,7 @@ class BookingController extends Controller
     public function notifyAdmins(Booking $booking): void
     {
         try {
-            Notification::send(User::where('role', 'admin')->get(), new BookingComplete($booking->name));
+            Notification::send(User::where('role', 'admin')->get(), new BookingComplete($booking));
         } catch (\Throwable $e) {
             Log::warning('Admin booking notification failed', ['booking' => $booking->id, 'error' => $e->getMessage()]);
         }

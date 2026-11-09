@@ -55,14 +55,14 @@
         </div>
 
         <div class="col-md-4">
-            <label for="input2" class="form-label">Total Child </label>
-            <input type="text" name="total_child" class="form-control" id="input2" value="{{ $editData->total_child }}">
+            <label for="f-total_child" class="form-label">Total Child </label>
+            <input type="text" name="total_child" class="form-control" id="f-total_child" value="{{ $editData->total_child }}">
         </div>
 
 
         <div class="col-md-6">
-            <label for="input3" class="form-label">Main Image </label>
-            <input type="file" name="image" class="form-control" id="image"  >
+            <label for="image" class="form-label">Main Image </label>
+            <input type="file" name="image" class="form-control" id="image" accept="image/*"  >
 
             <img id="showImage" src="{{ (!empty($editData->image)) ? url('upload/roomimg/'.$editData->image) : url('upload/no_image.jpg') }}" alt="Admin" class="bg-primary" width="70" height="50"> 
         </div>
@@ -71,7 +71,7 @@
 
 
         <div class="col-md-6">
-            <label for="input4" class="form-label">Gallery Image </label>
+            <label for="multiImg" class="form-label">Gallery Image </label>
             <input type="file" name="multi_img[]" class="form-control" multiple id="multiImg" accept="image/jpeg, image/jpg, image/gif, image/png" >
 
             @foreach ($multiimgs as $item)
@@ -88,23 +88,23 @@
 
 
         <div class="col-md-3">
-            <label for="input1" class="form-label">Room Price  </label>
-            <input type="text" name="price" class="form-control" id="input1" value="{{ $editData->price }}" >
+            <label for="f-price" class="form-label">Room Price  </label>
+            <input type="text" name="price" class="form-control" id="f-price" value="{{ $editData->price }}" >
         </div>
 
         <div class="col-md-3">
-            <label for="input2" class="form-label">Size </label>
-            <input type="text" name="size" class="form-control" id="input2"  value="{{ $editData->size }}">
+            <label for="f-size" class="form-label">Size </label>
+            <input type="text" name="size" class="form-control" id="f-size"  value="{{ $editData->size }}">
         </div>
 
         <div class="col-md-3">
-            <label for="input2" class="form-label">Discount ( % )</label>
-            <input type="text" name="discount" class="form-control" id="input2"  value="{{ $editData->discount }}">
+            <label for="f-discount" class="form-label">Discount ( % )</label>
+            <input type="text" name="discount" class="form-control" id="f-discount"  value="{{ $editData->discount }}">
         </div>
 
         <div class="col-md-3">
-            <label for="input2" class="form-label">Room Capacity </label>
-            <input type="text" name="room_capacity" class="form-control" id="input2" value="{{ $editData->room_capacity }}">
+            <label for="f-room_capacity" class="form-label">Room Capacity </label>
+            <input type="text" name="room_capacity" class="form-control" id="f-room_capacity" value="{{ $editData->room_capacity }}">
         </div>
 
         <div class="col-md-6">
@@ -118,8 +118,8 @@
         </div>
 
         <div class="col-md-6">
-            <label for="input7" class="form-label">Bed Style</label>
-            <select name="bed_style" id="input7" class="form-select">
+            <label for="f-bed_style" class="form-label">Bed Style</label>
+            <select name="bed_style" id="f-bed_style" class="form-select">
                 <option selected="">Choose...</option>
                 <option value="Queen Bed" {{ $editData->bed_style == 'Queen Bed'?'selected':''}}> Queen Bed </option>
                 <option value="Twin Bed" {{ $editData->bed_style == 'Twin Bed'?'selected':''}}>Twin Bed </option>
@@ -133,7 +133,7 @@
         </div>
 
         <div class="col-md-12">
-            <label for="input11" class="form-label"> Description </label>
+            <label for="myeditorinstance" class="form-label"> Description </label>
             <textarea name="description" class="form-control" id="myeditorinstance" >{!! $editData->description !!}</textarea>
         </div>
 
@@ -231,7 +231,7 @@
  
         <div class="col-md-12">
             <div class="d-md-flex d-grid align-items-center gap-3">
-                <button type="submit" class="btn btn-primary px-4">Save Changes</button> 
+                <button type="submit" class="btn btn-primary px-4">Save changes</button> 
             </div>
         </div>
     </form>
@@ -267,13 +267,13 @@
 
                 <div class="row">
                 <div class="col-md-4">
-                    <label for="input2" class="form-label">Room No </label>
-                    <input type="text" name="room_no" class="form-control" id="input2" >
+                    <label for="f-room_no" class="form-label">Room No </label>
+                    <input type="text" name="room_no" class="form-control" id="f-room_no" >
                 </div>
         
                 <div class="col-md-4">
-                    <label for="input7" class="form-label">Status </label>
-                    <select name="status" id="input7" class="form-select">
+                    <label for="f-status" class="form-label">Status </label>
+                    <select name="status" id="f-status" class="form-select">
                         <option selected="">Select Status...</option>
                         <option value="Active">Active </option>
                         <option value="Inactive">Inactive  </option>
@@ -283,7 +283,7 @@
 
                 <div class="col-md-4">
                     
-                    <button type="submit" class="btn btn-success" style="margin-top: 28px;">Save</button>
+                    <button type="submit" class="btn btn-success" style="margin-top: 28px;">Save changes</button>
                     
                 </div> 
             </div> 

@@ -32,36 +32,36 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0"> Name</h6>
+                        <label class="form-label mb-0" for="f-name">Name</label>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="text" name="name" class="form-control" value="{{ $team->name }}"  />
+                        <input id="f-name" type="text" name="name" class="form-control" value="{{ $team->name }}"  />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Postion</h6>
+                        <label class="form-label mb-0" for="f-postion">Position</label>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="text" name="postion"  class="form-control"  value="{{ $team->postion }}"  />
+                        <input id="f-postion" type="text" name="postion"  class="form-control"  value="{{ $team->postion }}"  />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Facebook</h6>
+                        <label class="form-label mb-0" for="f-facebook">Facebook</label>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="text" name="facebook" class="form-control"  value="{{ $team->facebook }}"   />
+                        <input id="f-facebook" type="text" name="facebook" class="form-control"  value="{{ $team->facebook }}"   />
                     </div>
                 </div>
                
                
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Photo </h6>
+                        <label class="form-label mb-0" for="image">Photo</label>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <input class="form-control" name="image" type="file" id="image">
+                        <input class="form-control" name="image" type="file" id="image" accept="image/*">
                     </div>
                 </div>
 
@@ -71,7 +71,7 @@
                         <h6 class="mb-0">  </h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <img id="showImage" src="{{ asset($team->image)  }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="80">
+                        <img id="showImage" src="{{ asset($team->image)  }}" alt="Preview" class="hms-preview">
                     </div>
                 </div>
                
@@ -81,7 +81,7 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+                        <input type="submit" class="btn btn-primary px-4" value="Save changes" />
                     </div>
                 </div>
             </div>

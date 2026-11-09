@@ -1,14 +1,20 @@
 <div class="sidebar-wrapper" data-simplebar="true">
+    @php($brand = App\Models\SiteSetting::current())
     <div class="sidebar-header">
-        <div>
-            <img src="{{asset('backend/assets/images/logo-icon.png')}}" class="logo-icon" alt="logo icon">
-        </div>
-        <div>
-            <h4 class="logo-text">{{ \Illuminate\Support\Str::limit(App\Models\SiteSetting::current()->name, 14) }}</h4>
-        </div>
-        <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i>
-        </div>
-     </div>
+        <a href="{{ route('home') }}" class="hms-brand" title="View website">
+            <img class="hms-brand-mark" src="{{ asset($brand->favicon ?: 'backend/assets/images/logo-icon.png') }}" alt="">
+            <span class="hms-brand-full">
+                @if ($brand->logo_light_url)
+                    <img src="{{ $brand->logo_light_url }}" class="hms-brand-logo" alt="{{ $brand->name }}">
+                @elseif ($brand->logo_url)
+                    <span class="hms-brand-chip"><img src="{{ $brand->logo_url }}" class="hms-brand-logo" alt="{{ $brand->name }}"></span>
+                @else
+                    <span class="logo-text">{{ \Illuminate\Support\Str::limit($brand->name, 16) }}</span>
+                @endif
+            </span>
+        </a>
+        <button type="button" class="toggle-icon hms-collapse ms-auto" title="Collapse menu" aria-label="Collapse menu"><i class='bx bx-chevrons-left'></i></button>
+    </div>
     <!--navigation-->
     <ul class="metismenu" id="menu">
 
@@ -23,7 +29,7 @@
         @if(Auth::user()->can('team.menu'))
         <li>
             <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-group"></i>
                 </div>
                 <div class="menu-title">Manage Teams </div>
             </a>
@@ -46,7 +52,7 @@
     <li>
         <a href="javascript:;" class="has-arrow">
             <div class="parent-icon">
-                <i class="bx bx-category"></i>
+                <i class="bx bx-concierge"></i>
             </div>
             <div class="menu-title">Manage Services</div>
         </a>
@@ -68,7 +74,7 @@
         @if(Auth::user()->can('bookarea.menu'))
         <li>
             <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-calendar-check"></i>
                 </div>
                 <div class="menu-title">Manage Book Area </div>
             </a>
@@ -84,7 +90,7 @@
 
         <li>
             <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-layer"></i>
                 </div>
                 <div class="menu-title">Manage Room Type </div>
             </a>
@@ -100,7 +106,7 @@
 
         <li>
             <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class='bx bx-cart'></i>
+                <div class="parent-icon"><i class="bx bx-calendar"></i>
                 </div>
                 <div class="menu-title">Booking </div>
             </a>
@@ -114,7 +120,7 @@
         </li>
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-bed"></i>
                 </div>
                 <div class="menu-title">Manage RoomList</div>
             </a>
@@ -129,7 +135,7 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-cog"></i>
                 </div>
                 <div class="menu-title">Setting</div>
             </a>
@@ -138,6 +144,8 @@
                 </li>
 
                 <li> <a href="{{ route('site.setting') }}"><i class='bx bx-radio-circle'></i>Site Setting</a>
+                </li>
+                <li> <a href="{{ route('theme.setting') }}"><i class='bx bx-radio-circle'></i>Brand colours</a>
                 </li>
                 <li> <a href="{{ route('homepage.setting') }}"><i class='bx bx-radio-circle'></i>Homepage</a>
                 </li>
@@ -149,9 +157,9 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-message-square-detail"></i>
                 </div>
-                <div class="menu-title">Tesimonial</div>
+                <div class="menu-title">Testimonials</div>
             </a>
             <ul>
                 <li> <a href="{{ route('all.testimonial') }}"><i class='bx bx-radio-circle'></i>All Testimonial</a>
@@ -166,7 +174,7 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-help-circle'></i>
+                <div class="parent-icon"><i class="bx bx-help-circle"></i>
                 </div>
                 <div class="menu-title">FAQ</div>
             </a>
@@ -181,7 +189,7 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-news"></i>
                 </div>
                 <div class="menu-title">Blog</div>
             </a>
@@ -198,7 +206,7 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-comment-detail"></i>
                 </div>
                 <div class="menu-title">Manage Comment</div>
             </a>
@@ -212,7 +220,7 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-bar-chart-alt-2"></i>
                 </div>
                 <div class="menu-title">Booking Report </div>
             </a>
@@ -225,7 +233,7 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-images"></i>
                 </div>
                 <div class="menu-title">Hotel Gallery </div>
             </a>
@@ -239,7 +247,7 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-envelope"></i>
                 </div>
                 <div class="menu-title">Contact Message </div>
             </a>
@@ -256,7 +264,7 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-shield-quarter"></i>
                 </div>
                 <div class="menu-title">Role & Permission </div>
             </a>
@@ -278,7 +286,7 @@
 
         <li>
             <a class="has-arrow" href="javascript:;">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                <div class="parent-icon"><i class="bx bx-user-circle"></i>
                 </div>
                 <div class="menu-title">Manage Admin User </div>
             </a>
@@ -298,7 +306,7 @@
 
 
         <li>
-            <a href="#" target="_blank">
+            <a href="mailto:{{ App\Models\SiteSetting::current()->email }}">
                 <div class="parent-icon"><i class="bx bx-support"></i>
                 </div>
                 <div class="menu-title">Support</div>

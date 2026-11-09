@@ -209,7 +209,7 @@
           </div>
 
           <div class="col-md-12" style="margin-top: 20px;">
-            <button type="submit" class="btn btn-primary">Update</button> 
+            <button type="submit" class="btn btn-primary">Save changes</button> 
             <a href="{{ route('download.invoice',$editData->id) }}" class="btn btn-warning px-3 radius-10"><i class="lni lni-download"></i> Download Invoice</a>
           </div>
 
@@ -246,7 +246,7 @@
                         </div>
 
                         <div class="col-md-12 mb-2">
-                            <label for="">CheckOut</label>
+                            <label for="">Check-out</label>
                             <input type="date" required name="check_out" id="check_out" class="form-control" value="{{ $editData->check_out }}">
                         </div>
 
@@ -262,7 +262,7 @@
                         </div>
 
                         <div class="mt-2">
-                            <button type="submit" class="btn btn-primary">Update </button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
 
                         </div>
 

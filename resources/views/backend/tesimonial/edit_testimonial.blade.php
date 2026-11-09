@@ -32,18 +32,18 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0"> Name</h6>
+                        <label class="form-label mb-0" for="f-name">Name</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input type="text" name="name" class="form-control" value="{{ $testimonial->name }}" />
+                        <input id="f-name" type="text" name="name" class="form-control" value="{{ $testimonial->name }}" />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">City</h6>
+                        <label class="form-label mb-0" for="f-city">City</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input type="text" name="city"  class="form-control" value="{{ $testimonial->city }}" />
+                        <input id="f-city" type="text" name="city"  class="form-control" value="{{ $testimonial->city }}" />
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -58,10 +58,10 @@
 
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Photo </h6>
+                        <label class="form-label mb-0" for="image">Photo</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input class="form-control" name="image" type="file" id="image">
+                        <input class="form-control" name="image" type="file" id="image" accept="image/*">
                     </div>
                 </div>
 
@@ -71,7 +71,7 @@
                         <h6 class="mb-0">  </h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <img id="showImage" src="{{ asset($testimonial->image) }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="80">
+                        <img id="showImage" src="{{ asset($testimonial->image) }}" alt="Preview" class="hms-preview">
                     </div>
                 </div>
 
@@ -81,7 +81,7 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+                        <input type="submit" class="btn btn-primary px-4" value="Save changes" />
                     </div>
                 </div>
             </div>
@@ -116,13 +116,13 @@
                         },
                         messages :{
                             name: {
-                                required : 'Please Enter Team Name',
+                                required : 'Please enter a name',
                             },
                             postion: {
-                                required : 'Please Enter Team Postion',
+                                required : 'Please Enter Team Position',
                             },
                             facebook: {
-                                required : 'Please Enter Facebook Url',
+                                required : 'Please enter the Facebook link',
                             },
 
 

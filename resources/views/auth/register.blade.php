@@ -1,85 +1,37 @@
-@extends('frontend.main_master')
-@section('main')
+@extends('auth.layout')
+@section('title', 'Create account')
+@section('side_title', 'Book once, return easily.')
+@section('side_text', 'An account keeps your reservations, invoices and details together, so the next stay takes a minute.')
+@section('content')
+    <h1>Create your account</h1>
+    <p class="lead">Takes under a minute. You can book straight after.</p>
 
-    <!-- Inner Banner -->
-    <div class="inner-banner inner-bg10">
-        <div class="container">
-            <div class="inner-title">
-                <ul>
-                    <li>
-                        <a href="index.html">Home</a>
-                    </li>
-                    <li><i class='bx bx-chevron-right'></i></li>
-                    <li>Sign Up</li>
-                </ul>
-                <h3>Sign Up</h3>
-            </div>
+    <form method="POST" action="{{ route('register') }}" novalidate>
+        @csrf
+        <div class="field">
+            <label for="name">Full name</label>
+            <input type="text" name="name" id="name" value="{{ old('name') }}" required autofocus autocomplete="name" @error('name') aria-invalid="true" @enderror>
+            @error('name')<div class="err">{{ $message }}</div>@enderror
         </div>
-    </div>
-    <!-- Inner Banner End -->
-
-    <!-- Sign Up Area -->
-    <div class="sign-up-area pt-100 pb-70">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="user-all-form">
-                        <div class="contact-form">
-                            <div class="section-title text-center">
-                                <span class="sp-color">Sign Up</span>
-                                <h2>Create an Account!</h2>
-                            </div>
-
-    <form method="POST" action="{{ route('register') }}">
-      @csrf
-
-        <div class="row">
-            <div class="col-lg-12 ">
-                <div class="form-group">
-                    <input type="text" name="name" id="name" class="form-control" required data-error="Please enter your Username" placeholder="Username">
-                </div>
-            </div>
-
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <input type="email" name="email" id="email" class="form-control" required data-error="Please enter email" placeholder="Email">
-                </div>
-            </div>
-
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <input type="password" name="password" id="password" class="form-control" required data-error="Please enter email" placeholder="password">
-                </div>
-            </div>
-
-            <div class="col-12">
-                <div class="form-group">
-                    <input class="form-control" type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password">
-                </div>
-            </div>
-
-            <div class="col-lg-12 col-md-12 text-center">
-                <button type="submit" class="default-btn btn-bg-three border-radius-5">
-                    Sign Up
-                </button>
-            </div>
-
-            <div class="col-12">
-                <p class="account-desc">
-                    Already have an account? 
-                    <a href="{{ route('login') }}">Sign In</a>
-                </p>
-            </div>
+        <div class="field">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" value="{{ old('email') }}" required autocomplete="email" @error('email') aria-invalid="true" @enderror>
+            @error('email')<div class="err">{{ $message }}</div>@enderror
         </div>
+        <div class="field">
+            <label for="password">Password</label>
+            <div class="pw">
+                <input type="password" name="password" id="password" required autocomplete="new-password" @error('password') aria-invalid="true" @enderror>
+                <button type="button" aria-pressed="false">Show</button>
+            </div>
+            <div class="hint">Use at least 8 characters.</div>
+            @error('password')<div class="err">{{ $message }}</div>@enderror
+        </div>
+        <div class="field">
+            <label for="password_confirmation">Confirm password</label>
+            <input type="password" name="password_confirmation" id="password_confirmation" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn">Create account</button>
     </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Sign Up Area End -->
-
-
-
+    <p class="alt">Already have an account? <a href="{{ route('login') }}">Sign in</a></p>
 @endsection

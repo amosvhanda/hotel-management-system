@@ -207,7 +207,7 @@ class BlogController extends Controller
 
      public function BlogDetails($slug){
 
-        $blog = BlogPost::where('post_slug',$slug)->first();
+        $blog = BlogPost::where('post_slug',$slug)->firstOrFail();
         $bcategory = BlogCategory::latest()->get();
         $lpost = BlogPost::latest()->limit(3)->get();
 

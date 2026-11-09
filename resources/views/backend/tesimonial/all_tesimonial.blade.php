@@ -5,7 +5,8 @@
 	<!--breadcrumb-->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
          
-        <div class="ps-3">
+        <div class="breadcrumb-title pe-3">All Testimonial</div>
+<div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0">
                     <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
@@ -29,10 +30,10 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                <table id="example" class="table align-middle hms-table" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Sl</th>
+                            <th class="hms-col-num">#</th>
                             <th>Image</th>
                             <th>Name</th>
                             <th>City</th> 
@@ -43,12 +44,12 @@
                        @foreach ($testimonial as $key=> $item ) 
                         <tr>
                             <td>{{ $key+1 }}</td>
-                            <td> <img src="{{ asset($item->image) }}" alt="" style="width:70px; height:40px;" > </td>
+                            <td> <img src="{{ asset($item->image) }}" alt="" class="hms-thumb" > </td>
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->city }}</td> 
                             <td>
-    <a href="{{ route('edit.testimonial',$item->id) }}" class="btn btn-warning px-3 radius-30"> Edit</a>
-    <a href="{{ route('delete.testimonial',$item->id) }}" class="btn btn-danger px-3 radius-30" id="delete"> Delete</a>
+    <a href="{{ route('edit.testimonial',$item->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+    <a href="{{ route('delete.testimonial',$item->id) }}" class="btn btn-sm btn-outline-danger" id="delete">Delete</a>
 
                             </td>
                         </tr>

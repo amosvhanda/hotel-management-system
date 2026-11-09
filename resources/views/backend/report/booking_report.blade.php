@@ -38,8 +38,8 @@
     </div>
 
     <div class="col-md-6">
-        <label for="input1" class="form-label">End Date</label>
-        <input type="date" name="end_date" class="form-control" id="input1"  >
+        <label for="f-end_date" class="form-label">End Date</label>
+        <input type="date" name="end_date" class="form-control" id="f-end_date"  >
     </div>
   
 

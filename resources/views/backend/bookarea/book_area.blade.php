@@ -32,25 +32,25 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0"> Short Title</h6>
+                        <label class="form-label mb-0" for="f-short_title">Short Title</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input type="text" name="short_title" class="form-control" value="{{ $book->short_title }}"  />
+                        <input id="f-short_title" type="text" name="short_title" class="form-control" value="{{ $book->short_title }}"  />
                     </div>
                 </div>
                 
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Main Title</h6>
+                        <label class="form-label mb-0" for="f-main_title">Main Title</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input type="text" name="main_title"  class="form-control" value="{{ $book->main_title }}" />
+                        <input id="f-main_title" type="text" name="main_title"  class="form-control" value="{{ $book->main_title }}" />
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Short Description </h6>
+                        <label class="form-label mb-0" for="input40">Short Description</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
         <textarea class="form-control" id="input40" name="short_desc" rows="3" placeholder="Description"> {{ $book->short_desc }} </textarea>
@@ -59,20 +59,20 @@
 
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Link Url</h6>
+                        <label class="form-label mb-0" for="f-link_url">Link Url</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input type="text" name="link_url"  class="form-control" value="{{ $book->link_url }}"  />
+                        <input id="f-link_url" type="text" name="link_url"  class="form-control" value="{{ $book->link_url }}"  />
                     </div>
                 </div>
                
                
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Photo </h6>
+                        <label class="form-label mb-0" for="image">Photo</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input class="form-control" name="image" type="file" id="image">
+                        <input class="form-control" name="image" type="file" id="image" accept="image/*">
                     </div>
                 </div>
 
@@ -82,7 +82,7 @@
                         <h6 class="mb-0">  </h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <img id="showImage" src="{{ asset($book->image) }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="80">
+                        <img id="showImage" src="{{ asset($book->image) }}" alt="Preview" class="hms-preview">
                     </div>
                 </div>
                
@@ -92,7 +92,7 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+                        <input type="submit" class="btn btn-primary px-4" value="Save changes" />
                     </div>
                 </div>
             </div>

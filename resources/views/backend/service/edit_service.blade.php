@@ -35,20 +35,20 @@
                                 <!-- Service Name -->
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Service Name</h6>
+                                        <label class="form-label mb-0" for="f-title">Service Name</label>
                                     </div>
                                     <div class="form-group col-sm-9 text-secondary">
-                                        <input type="text" name="title" class="form-control" value="{{ old('title', $service->title) }}" />
+                                        <input id="f-title" type="text" name="title" class="form-control" value="{{ old('title', $service->title) }}" />
                                     </div>
                                 </div>
 
                                 <!-- Description -->
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Description</h6>
+                                        <label class="form-label mb-0" for="f-description">Description</label>
                                     </div>
                                     <div class="form-group col-sm-9 text-secondary">
-                                        <textarea name="description" class="form-control" rows="4">{{ old('description', $service->description) }}</textarea>
+                                        <textarea id="f-description" name="description" class="form-control" rows="4">{{ old('description', $service->description) }}</textarea>
                                     </div>
                                 </div>
 
@@ -57,7 +57,7 @@
                                 <!-- Service Image -->
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Service Image</h6>
+                                        <label class="form-label mb-0" for="image">Service Image</label>
                                     </div>
                                     <div class="form-group col-sm-9 text-secondary">
                                         <input class="form-control" name="image" type="file" id="image" accept="image/*" />

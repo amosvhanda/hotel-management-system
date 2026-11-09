@@ -30,36 +30,36 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0"> Name</h6>
+                        <label class="form-label mb-0" for="f-name">Name</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input type="text" name="name" class="form-control"  />
+                        <input id="f-name" type="text" name="name" class="form-control"  />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Postion</h6>
+                        <label class="form-label mb-0" for="f-postion">Position</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input type="text" name="postion"  class="form-control"  />
+                        <input id="f-postion" type="text" name="postion"  class="form-control"  />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Facebook</h6>
+                        <label class="form-label mb-0" for="f-facebook">Facebook</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input type="text" name="facebook" class="form-control"   />
+                        <input id="f-facebook" type="text" name="facebook" class="form-control"   />
                     </div>
                 </div>
                
                
                 <div class="row mb-3">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Photo </h6>
+                        <label class="form-label mb-0" for="image">Photo</label>
                     </div>
                     <div class="form-group col-sm-9 text-secondary">
-                        <input class="form-control" name="image" type="file" id="image">
+                        <input class="form-control" name="image" type="file" id="image" accept="image/*">
                     </div>
                 </div>
 
@@ -69,7 +69,7 @@
                         <h6 class="mb-0">  </h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <img id="showImage" src="{{ url('upload/no_image.jpg') }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="80">
+                        <img id="showImage" src="{{ url('upload/no_image.jpg') }}" alt="Preview" class="hms-preview">
                     </div>
                 </div>
                
@@ -79,7 +79,7 @@
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9 text-secondary">
-                        <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+                        <input type="submit" class="btn btn-primary px-4" value="Add team member" />
                     </div>
                 </div>
             </div>
@@ -116,16 +116,16 @@
                         },
                         messages :{
                             name: {
-                                required : 'Please Enter Team Name',
+                                required : 'Please enter a name',
                             }, 
                             postion: {
-                                required : 'Please Enter Team Postion',
+                                required : 'Please Enter Team Position',
                             }, 
                             facebook: {
-                                required : 'Please Enter Facebook Url',
+                                required : 'Please enter the Facebook link',
                             },
                             image: {
-                                required : 'Please Select Image',
+                                required : 'Please choose an image',
                             }, 
                              
             

@@ -1,34 +1,39 @@
 @extends('frontend.main_master')
+@section('title', 'Available rooms')
 @section('main')
 
-@php($site = App\Models\SiteSetting::current())
+@php
+    $site = App\Models\SiteSetting::current();
+@endphp
 @include('frontend.body.page_head', [
     'kicker' => $site->home('rooms_page_kicker'),
     'title' => $site->home('rooms_page_title'),
-    'lead' => $site->home('booking_note'),
+    'lead' => \Carbon\Carbon::parse($checkIn)->format('d M').' to '.\Carbon\Carbon::parse($checkOut)->format('d M Y').', '.$nights.($nights === 1 ? ' night' : ' nights').', '.$guests.($guests === 1 ? ' guest' : ' guests'),
 ])
 
 <section class="hms-band hms-band--paper">
     <div class="container">
-        @php $empty_array = []; @endphp
+        @include('frontend.room._filters', [
+            'action' => route('booking.search'),
+            'resetUrl' => route('booking.search', ['check_in' => $checkIn, 'check_out' => $checkOut, 'persion' => 1]),
+            'showDates' => false,
+            'count' => $rooms->count(),
+        ])
+
         <div class="hms-room-grid">
-            @foreach ($rooms as $item)
-                @php
-                    $av_room = App\Models\Booking::availableRooms($item->id, old('check_in'), old('check_out'));
-                @endphp
-                @if ($av_room > 0 && old('persion') <= $item->total_adult)
-                    @include('frontend.room._tile', [
-                        'room' => $item,
-                        'url' => route('search_room_details', $item->id.'?check_in='.old('check_in').'&check_out='.old('check_out').'&persion='.old('persion')),
-                    ])
-                @else
-                    @php $empty_array[] = $item->id; @endphp
-                @endif
-            @endforeach
+            @forelse ($rooms as $item)
+                @include('frontend.room._tile', [
+                    'room' => $item,
+                    'url' => route('search_room_details', $item->id).'?'.$stayQuery,
+                    'left' => $item->rooms_left,
+                ])
+            @empty
+                <div class="hms-empty">
+                    No rooms are free for those dates.
+                    <div class="mt-3"><a href="{{ route('froom.all') }}" class="hms-text-link">Try different dates</a></div>
+                </div>
+            @endforelse
         </div>
-        @if (count($rooms) == count($empty_array))
-            <p class="hms-empty">No rooms are free for those dates.</p>
-        @endif
     </div>
 </section>
 

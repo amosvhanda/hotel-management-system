@@ -6,10 +6,13 @@
 <header class="top-header top-header-bg">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-3 col-md-2 pr-0">
+            <div class="col-lg-4 col-md-3 pr-0">
+                @if ($setting->tagline)
+                    <p class="hms-topline">{{ $setting->tagline }}</p>
+                @endif
             </div>
 
-            <div class="col-lg-9 col-md-10">
+            <div class="col-lg-8 col-md-9">
                 <div class="header-right">
                     <ul>
                         @if ($setting->address)

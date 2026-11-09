@@ -40,8 +40,10 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('hms-tokens.css') }}?v=2">
         <link rel="stylesheet" href="{{ asset('frontend/assets/css/hms.css') }}?v=10">
-        <link rel="stylesheet" href="{{ asset('frontend/assets/css/hms-premium.css') }}?v=1">
+        <link rel="stylesheet" href="{{ asset('frontend/assets/css/hms-premium.css') }}?v=11">
+        @include('partials.theme-vars')
         <script>
             (function () {
                 var saved = null;
@@ -119,6 +121,7 @@
         <script src="{{ asset('frontend/assets/js/contact-form-script.js') }}"></script>
         <!-- Custom JS -->
         <script src="{{ asset('frontend/assets/js/custom.js') }}?v=9"></script>
+        <script src="{{ asset('frontend/assets/js/hms-premium.js') }}?v=3"></script>
 
          <script src="{{ asset('frontend/assets/js/toastr.min.js') }}"></script>
 

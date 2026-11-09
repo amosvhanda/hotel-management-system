@@ -33,14 +33,14 @@
                  
     
     <div class="col-md-6">
-        <label for="input1" class="form-label">Permission Name </label>
-        <input type="text" name="name" class="form-control"   >
+        <label for="f-name" class="form-label">Permission Name </label>
+        <input id="f-name" type="text" name="name" class="form-control"   >
          
     </div>
 
     <div class="col-md-6">
-        <label for="input1" class="form-label">Permission Group </label>
-        <select name="group_name" class="form-select mb-3" aria-label="Default select example">
+        <label for="f-group_name" class="form-label">Permission Group </label>
+        <select id="f-group_name" name="group_name" class="form-select mb-3" aria-label="Default select example">
             <option selected="">Select Group </option>
             <option value="Team">Team </option>
             <option value="Book Area">Book Area</option>
@@ -63,7 +63,7 @@
                  
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">
-                            <button type="submit" class="btn btn-primary px-4">Save Changes </button>
+                            <button type="submit" class="btn btn-primary px-4">Add permission</button>
                             
                         </div>
                     </div>
