@@ -9,7 +9,9 @@ use App\Models\Booking;
 use App\Models\Facility;
 use App\Models\Faq;
 use App\Models\Gallery;
+use App\Models\MultiImage;
 use App\Models\Room;
+use App\Models\RoomNumber;
 use App\Models\RoomType;
 use App\Models\Service;
 use App\Models\SiteSetting;
@@ -122,6 +124,12 @@ class ZimbabweDemoSeeder extends Seeder
             'frontend/assets/img/hotel/room-suite.jpg',
         ];
 
+        // Fresh production database: create one room per profile (with room
+        // numbers and a small photo gallery) so the site has bookable rooms.
+        if (! Room::exists()) {
+            $this->createDemoRooms(count($profiles));
+        }
+
         foreach (Room::orderBy('id')->get()->values() as $i => $room) {
             $p = $profiles[$i % count($profiles)];
             RoomType::whereKey($room->roomtype_id)->update(['name' => $p['name']]);
@@ -203,6 +211,39 @@ class ZimbabweDemoSeeder extends Seeder
         }
     }
 
+    /** Room type + room + 4 active room numbers + gallery photos, per profile. */
+    private function createDemoRooms(int $count): void
+    {
+        $galleries = [
+            ['room-single-2.jpg', 'room-single-3.jpg'],
+            ['room-deluxe-2.jpg', 'room-deluxe-3.jpg'],
+            ['room-twin-2.jpg', 'room-twin-3.jpg'],
+            ['room-suite-2.jpg', 'room-suite-3.jpg'],
+        ];
+
+        for ($i = 0; $i < $count; $i++) {
+            $type = RoomType::create(['name' => 'Room ' . ($i + 1)]); // renamed below
+            $room = Room::create(['roomtype_id' => $type->id, 'status' => 1]);
+
+            for ($n = 1; $n <= 4; $n++) {
+                RoomNumber::create([
+                    'rooms_id'     => $room->id,
+                    'room_type_id' => $type->id,
+                    'room_no'      => (string) (($i + 1) * 100 + $n),
+                    'status'       => 'Active',
+                ]);
+            }
+
+            foreach ($galleries[$i % count($galleries)] as $file) {
+                $dest = 'upload/roomimg/multi_img/mopane-' . $file;
+                $this->copyAsset('frontend/assets/img/hotel/' . $file, $dest);
+                if (is_file(public_path($dest))) {
+                    MultiImage::create(['rooms_id' => $room->id, 'multi_img' => basename($dest)]);
+                }
+            }
+        }
+    }
+
     private function copyAsset(string $from, string $to): void
     {
         $dest = public_path($to);
@@ -233,9 +274,16 @@ class ZimbabweDemoSeeder extends Seeder
             ['Nyasha Chirwa', 'Harare', 'We held our company workshop here. The conference room, catering and Wi-Fi were excellent and the team looked after every detail.'],
             ['Thabo Dlamini', 'Johannesburg', 'The airport pickup was waiting when I landed and check-in was quick. A comfortable, quiet stay in the middle of Harare.'],
         ];
+        $photos = ['guest-1.jpg', 'guest-2.jpg', 'team-2.jpg'];
         $existing = Testimonial::orderBy('id')->get()->values();
         foreach ($reviews as $i => [$name, $city, $message]) {
-            $row = $existing[$i] ?? new Testimonial(['image' => $existing[0]->image ?? null]);
+            $row = $existing[$i] ?? new Testimonial();
+            // Fresh database: give each guest a photo so no broken images show.
+            if (blank($row->image)) {
+                $dest = 'upload/testimonial/mopane-' . $photos[$i % count($photos)];
+                $this->copyAsset('frontend/assets/img/hotel/' . $photos[$i % count($photos)], $dest);
+                $row->image = is_file(public_path($dest)) ? $dest : null;
+            }
             $row->fill(['name' => $name, 'city' => $city, 'message' => $message])->save();
         }
     }

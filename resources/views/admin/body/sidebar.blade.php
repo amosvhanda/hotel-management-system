@@ -2,7 +2,7 @@
     @php($brand = App\Models\SiteSetting::current())
     <div class="sidebar-header">
         <a href="{{ route('home') }}" class="hms-brand" title="View website">
-            <img class="hms-brand-mark" src="{{ asset($brand->favicon ?: 'backend/assets/images/logo-icon.png') }}" alt="">
+            <img class="hms-brand-mark" src="{{ $brand->favicon_url }}" alt="">
             <span class="hms-brand-full">
                 @if ($brand->logo_light_url)
                     <img src="{{ $brand->logo_light_url }}" class="hms-brand-logo" alt="{{ $brand->name }}">

@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="{{ asset($site->favicon ?: 'backend/assets/images/favicon-32x32.png') }}" type="image/png" />
+    @include('partials.favicons', ['iconSite' => $site])
     <link href="{{ asset('backend/assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('backend/assets/css/bootstrap-extended.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -32,9 +32,7 @@
         <div class="hms-auth-form">
             <div class="inner">
                 <div class="mb-4">
-                    @if ($site->logo)
-                        <img src="{{ asset($site->logo) }}" alt="{{ $site->name }}" style="max-height:44px" class="mb-3">
-                    @endif
+                    <img src="{{ $site->logo_url }}" alt="{{ $site->name }}" style="max-height:44px" class="mb-3">
                     <h3 class="fw-bold mb-1">Welcome back</h3>
                     <p class="text-secondary mb-0">Sign in with your staff account.</p>
                 </div>

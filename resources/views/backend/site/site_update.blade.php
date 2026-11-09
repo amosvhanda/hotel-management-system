@@ -129,9 +129,7 @@
                                     <div class="col-sm-3"><label class="form-label mb-0" for="f-logo">Logo</label></div>
                                     <div class="col-sm-9 text-secondary">
                                         <input id="f-logo" type="file" name="logo" class="form-control" accept="image/*" />
-                                        @if($site->logo)
-                                            <img src="{{ asset($site->logo) }}" alt="Logo" style="width:100px; height:100px; margin-top:10px;">
-                                        @endif
+                                        <img src="{{ $site->logo_url }}" alt="Logo" style="max-width:220px; max-height:100px; margin-top:10px;">
                                     </div>
                                 </div>
 
@@ -140,9 +138,7 @@
                                     <div class="col-sm-3"><label class="form-label mb-0" for="f-favicon">Favicon</label></div>
                                     <div class="col-sm-9 text-secondary">
                                         <input id="f-favicon" type="file" name="favicon" class="form-control" accept="image/*" />
-                                        @if($site->favicon)
-                                            <img src="{{ asset($site->favicon) }}" alt="Favicon" style="width:50px; height:50px; margin-top:10px;">
-                                        @endif
+                                        <img src="{{ $site->favicon_url }}" alt="Favicon" style="width:50px; height:50px; margin-top:10px;">
                                     </div>
                                 </div>
 

@@ -193,3 +193,38 @@ jobs:
           docker compose config >/dev/null
           bash deploy/release.sh
           EOF
+
+      - name: Verify HTTPS is live
+        env:
+          DOMAIN: ${{ secrets.DOMAIN }}
+        run: |
+          DOMAIN="${DOMAIN:-hotel.synccode.co.zw}"
+          URL="https://${DOMAIN}/"
+          echo "Checking ${URL} (valid certificate required)…"
+          # Let's Encrypt can take a minute on first issue — retry up to ~3 min.
+          ok=0
+          for i in $(seq 1 18); do
+            code="$(curl -sS -o /tmp/home.html -w '%{http_code}' --max-time 15 "$URL" || true)"
+            if [ "$code" -ge 200 ] && [ "$code" -lt 400 ] 2>/dev/null; then ok=1; break; fi
+            echo "  attempt $i: HTTP ${code:-error} — retrying in 10s"
+            sleep 10
+          done
+          if [ "$ok" -ne 1 ]; then
+            echo "HTTPS check failed for ${URL}. Check DNS A record and Traefik logs (docker logs edge-traefik)." >&2
+            exit 1
+          fi
+          echo "  HTTPS OK (HTTP $code)"
+
+          echo "Checking http:// redirects to https://…"
+          loc="$(curl -sS -o /dev/null -w '%{redirect_url}' --max-time 15 "http://${DOMAIN}/" || true)"
+          case "$loc" in
+            https://*) echo "  Redirect OK → $loc" ;;
+            *) echo "http://${DOMAIN}/ does not redirect to HTTPS (got: '${loc}')" >&2; exit 1 ;;
+          esac
+
+          echo "Checking for mixed-content (http://) asset links…"
+          if grep -Eo "(src|href)=\"http://${DOMAIN}[^\"]*\"" /tmp/home.html | head -5 | grep .; then
+            echo "Page still links assets over http:// — APP_URL/ASSET_URL not https." >&2
+            exit 1
+          fi
+          echo "  No mixed content. Site is served over HTTPS."

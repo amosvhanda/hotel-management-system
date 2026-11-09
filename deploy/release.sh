@@ -12,6 +12,21 @@ if [ ! -f docker-compose.yml ]; then
   exit 1
 fi
 
+# --- Always deploy with HTTPS -------------------------------------------------
+# .env is mounted read-only into containers, so fix it on the host BEFORE
+# containers start and config:cache runs.
+env_get() { grep -E "^$1=" .env | head -n1 | cut -d= -f2- || true; }
+env_set() {
+  if grep -q "^$1=" .env; then sed -i "s|^$1=.*|$1=$2|" .env; else echo "$1=$2" >> .env; fi
+}
+DOMAIN="${DOMAIN:-$(env_get DOMAIN)}"
+DOMAIN="${DOMAIN:-hotel.synccode.co.zw}"
+echo "==> Enforcing HTTPS settings for https://${DOMAIN}"
+env_set DOMAIN "${DOMAIN}"
+env_set APP_URL "https://${DOMAIN}"
+env_set ASSET_URL "https://${DOMAIN}"
+env_set SESSION_SECURE_COOKIE true
+
 echo "==> Updating stack in place (same names: mysql/app/nginx/scheduler)"
 # Rebuild changed images; recreate only containers whose config/image changed.
 # Do not force-recreate healthy unchanged services.

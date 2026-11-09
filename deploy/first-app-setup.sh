@@ -88,8 +88,9 @@ ensure_mysql_env_keys() {
   env_set DB_USERNAME hotel
   env_set DOMAIN "${DOMAIN}"
   env_set SERVER_IP "${SERVER_IP}"
-  env_set APP_URL "http://${SERVER_IP}"
-  env_set SESSION_SECURE_COOKIE false
+  env_set APP_URL "https://${DOMAIN}"
+  env_set ASSET_URL "https://${DOMAIN}"
+  env_set SESSION_SECURE_COOKIE true
   if [ -z "$(env_get DB_PASSWORD)" ]; then
     env_set DB_PASSWORD "$(rand)"
   fi
@@ -257,10 +258,6 @@ docker image prune -f >/dev/null || true
 
 echo
 echo "Database installed and connected."
-echo "  By IP:   http://${SERVER_IP}/"
-echo "  Admin:   http://${SERVER_IP}/admin/login"
-echo "  Domain:  https://${DOMAIN} (after DNS A record points here)"
-echo "  After HTTPS works, set in .env then: docker compose exec -T app php artisan config:cache"
-echo "    APP_URL=https://${DOMAIN}"
-echo "    ASSET_URL=https://${DOMAIN}"
-echo "    SESSION_SECURE_COOKIE=true"
+echo "  Site:    https://${DOMAIN}/"
+echo "  Admin:   https://${DOMAIN}/admin/login"
+echo "  (DNS A record for ${DOMAIN} must point to ${SERVER_IP} for the Let's Encrypt certificate.)"

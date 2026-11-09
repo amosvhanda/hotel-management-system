@@ -1,7 +1,7 @@
 @php
     $site = App\Models\SiteSetting::current();
     $money = fn ($v) => '$' . number_format((float) $v, 2);
-    $logo = $site->logo && is_file(public_path($site->logo)) ? public_path($site->logo) : null;
+    $logo = $site->logo && is_file(public_path($site->logo)) ? public_path($site->logo) : public_path(App\Models\SiteSetting::DEFAULT_LOGO);
 @endphp
 <!DOCTYPE html>
 <html lang="en">

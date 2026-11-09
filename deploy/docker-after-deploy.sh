@@ -23,6 +23,18 @@ echo "Database connection OK\n";
 '
 
 php artisan migrate --force
+
+# One time only: Mopane Heights branding, rooms, photos and page text.
+# The marker lives in storage/ (kept between deploys), so later edits made in
+# Admin are never overwritten. Delete storage/app/.demo_content_done to re-run.
+if [ ! -f storage/app/.demo_content_done ]; then
+  echo "Loading Mopane Heights content (first time only)..."
+  if php artisan db:seed --class=ZimbabweDemoSeeder --force; then
+    touch storage/app/.demo_content_done
+  else
+    echo "WARNING: demo content failed to load — site still goes live." >&2
+  fi
+fi
 php artisan storage:link || true
 
 # Do not run route:cache — routes/api.php uses a closure which cannot be cached.

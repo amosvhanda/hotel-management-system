@@ -13,7 +13,7 @@
 
 	
 	<!--favicon-->
-	<link rel="icon" href="{{ asset(App\Models\SiteSetting::current()->favicon ?: 'backend/assets/images/favicon-32x32.png') }}" type="image/png"/>
+	@include('partials.favicons')
 	<!--plugins--> 
 	<link href="{{asset('backend/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css')}}" rel="stylesheet"/>
 	<link href="{{asset('backend/assets/plugins/simplebar/css/simplebar.css')}}" rel="stylesheet" />

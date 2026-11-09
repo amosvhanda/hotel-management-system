@@ -18,7 +18,7 @@
                     <blockquote class="hms-quote">
                         <p>{{ $item->message }}</p>
                         <footer>
-                            <img src="{{ asset($item->image) }}" alt="">
+                            @if ($item->image)<img src="{{ asset($item->image) }}" alt="">@endif
                             <span>
                                 <strong>{{ $item->name }}</strong>
                                 {{ $item->city }}

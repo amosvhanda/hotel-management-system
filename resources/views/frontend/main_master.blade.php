@@ -57,7 +57,7 @@
         </script>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="{{ asset($site->favicon ?: 'frontend/assets/img/favicon.png') }}">
+        @include('partials.favicons', ['iconSite' => $site])
 
         	<!-- toastr CSS -->
 	<link rel="stylesheet" type="text/css" href="{{ asset('frontend/assets/css/toastr.css') }}" >

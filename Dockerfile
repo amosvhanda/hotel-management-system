@@ -54,6 +54,10 @@ WORKDIR /var/www/html
 COPY --from=vendor /app /var/www/html
 COPY --from=assets /app/public/build /var/www/html/public/build
 
+# Images shipped in git. public/upload is a persistent volume in production, so
+# the entrypoint copies any of these that are missing into it (never overwrites).
+RUN cp -a public/upload /var/www/upload-seed
+
 RUN mkdir -p \
         storage/framework/cache/data \
         storage/framework/sessions \

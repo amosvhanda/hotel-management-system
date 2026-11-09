@@ -18,6 +18,16 @@ if [ "$(id -u)" = "0" ]; then
   chmod -R ug+rwx bootstrap/cache || true
 fi
 
+# Persistent uploads volume: add images from git that are missing, keep
+# everything staff uploaded in admin. Never overwrites existing files.
+if [ -d /var/www/upload-seed ]; then
+  mkdir -p public/upload
+  cp -Rn /var/www/upload-seed/. public/upload/ 2>/dev/null || true
+  if [ "$(id -u)" = "0" ]; then
+    chown -R www-data:www-data public/upload || true
+  fi
+fi
+
 # Symlink for local/dev; production nginx serves /storage via alias to this volume.
 if [ ! -e public/storage ]; then
   php artisan storage:link >/dev/null 2>&1 || ln -sfn ../storage/app/public public/storage || true

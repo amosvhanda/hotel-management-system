@@ -235,20 +235,40 @@ class SiteSetting extends Model
         return $this->site_name ?: config('app.name', 'Hotel');
     }
 
+    /** Built into every deploy (not the uploads volume), so it can never go missing. */
+    public const DEFAULT_LOGO = 'frontend/assets/img/brand/logo.png';
+    public const DEFAULT_LOGO_LIGHT = 'frontend/assets/img/brand/logo-light.png';
+    public const DEFAULT_FAVICON = 'frontend/assets/img/brand/favicon-32x32.png';
+
+    /** Logo set in Admin → Settings, or the built-in brand logo if none is set. */
     public function getLogoUrlAttribute(): ?string
     {
-        return $this->logo ? asset($this->logo) : null;
+        if ($this->logo) {
+            return asset($this->logo);
+        }
+
+        return asset(self::DEFAULT_LOGO);
     }
 
     /** White version of the logo for dark backgrounds: "<logo>-light.<ext>" when it exists. */
     public function getLogoLightUrlAttribute(): ?string
     {
         if (! $this->logo) {
-            return null;
+            return asset(self::DEFAULT_LOGO_LIGHT);
         }
         $light = preg_replace('/(\.[a-z0-9]+)$/i', '-light$1', $this->logo);
 
         return is_file(public_path($light)) ? asset($light) : null;
+    }
+
+    /** Favicon set in Admin → Settings, or the built-in brand icon if none is set. */
+    public function getFaviconUrlAttribute(): string
+    {
+        if ($this->favicon) {
+            return asset($this->favicon);
+        }
+
+        return asset(self::DEFAULT_FAVICON);
     }
 
     public function getCopyrightTextAttribute(): string
